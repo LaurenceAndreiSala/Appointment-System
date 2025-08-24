@@ -1,0 +1,42 @@
+
+/**************************/
+/* BELOW 1344px (Smaller desktops) */
+/**************************/
+
+@media (max-width: 84em) {
+    .section-main{
+        min-height: 100vh;
+    }
+
+    .heading-primary{
+        font-size: 3.2rem;
+    }
+
+    .main-text{
+        font-size: 2.8rem;
+    }
+
+    .footer{
+        padding: 12.8rem 0;
+      }
+
+      .footer-heading{
+        font-size: 1.2rem;
+        font-weight: 500;
+        line-height: 1.6;
+        margin-bottom: 2.2rem;
+        color: #fff;
+
+      }
+
+      .footer-link:link
+       {
+        text-decoration: none;
+        font-size: 1.2rem;
+        color: #fff;
+        font-weight: 500;
+        margin-right: 2.2rem;
+
+      }
+  }
+

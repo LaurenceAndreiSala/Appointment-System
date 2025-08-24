@@ -1,0 +1,135 @@
+
+
+body
+{
+  background-color: #e9ecef;
+  font-family: "Montserrat", sans-serif;
+}
+
+.btn--cta{
+    background-color:  #76292A;
+    color: #fff;
+    font-size: 1.8rem;
+    border-radius: 0.5625rem;
+  }
+
+.form--cta{
+  font-size: 1.4rem;
+  margin-left: 100px;
+
+}
+
+.card-sidebar{
+  background-color: #76292A;
+  min-height: 119vh;
+  width: 300px;
+}
+
+ .sidebar{
+    background-color: #76292A;
+    min-height: 110vh;
+
+ }
+
+
+.heading{
+  color: #fff;
+
+}
+
+
+.cta-text{
+    font-size: 2rem;
+}
+
+.nav{
+  font-size: 1.8rem;
+
+}
+
+
+.form-btn{
+  margin-left: 180px;
+}
+
+
+.btn-iimg{
+ margin-left: 180px;
+}
+
+
+
+
+.admin-form label,
+.admin-form input{
+ font-size: 1.5rem;
+ font-weight: 500;
+ display: block;
+ width: 100%;
+ padding: 5px;
+ border-radius: 7px;
+ outline: none  ;
+}
+
+.cta-form label,
+.cta-form input{
+
+    font-size: 1.6rem
+}
+
+.cta--form option,
+.cta--form select {
+  width: 100%;
+  padding: 1.2rem;
+  border: none;
+  font-size: 1.8rem;
+  background-color: #e9ecef;
+  color: black;
+  border-radius: 9px;
+  outline: none;
+}
+
+
+
+
+.form-group label,
+.form-group input{
+  font-size: 1.7rem;
+
+}
+
+.form-floating, textarea{
+  font-size:  1.8rem;
+}
+
+.cta-table{
+  font-size: 25px;
+}
+
+.table{
+    font-size: 28px;
+}
+
+
+.fileinput{
+    margin-left: 300px;
+}
+
+.bg-img{
+    background-color: #BD6E6E;
+}
+
+.form-control-plaintext{
+    font-size: 1.8rem;
+}
+
+
+
+.notif-text{
+    font-size: 1.8rem;
+}
+
+
+.modal-title{
+    text-align: center;
+}

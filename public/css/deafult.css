@@ -1,0 +1,46 @@
+
+body
+{
+
+  background-color: #e9ecef;
+}
+
+
+.card-sidebar{
+  background-color: #76292A;
+  height: 100vh;
+  width: 320px;
+}
+
+.cta-text{
+    font-size: 1.8rem;
+}
+
+
+
+.heading{
+  color: #fff;
+
+}
+
+.nav{
+    font-size: 1.8rem;
+
+  }
+
+
+
+
+  .btn{
+    font-size: 1.9rem;
+    border-radius: 5px;
+  }
+
+.input-group input{
+    font-size: 26px;
+}
+
+table, tbody, tr, td{
+    font-size: 1.3rem;
+}
+

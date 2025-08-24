@@ -1,0 +1,130 @@
+
+body{
+    font-family: 'Montserrat';
+}
+
+.container {
+    /* 1140px */
+    max-width: 120rem;
+    padding: 0 3.2rem;
+    margin: 0 auto;
+  }
+
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    height: 9.6rem;
+    padding: 0 4.8rem;
+    position: relative;
+  }
+
+  .logo {
+    height: 11.875rem;
+    margin-top: .5rem;
+  }
+
+
+  .main-nav-list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 4.8rem;
+  }
+
+
+  .main-nav-link:link,
+  .main-nav-link:visited {
+      display: inline-block;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      font-size: 1.8rem;
+      transition: all 0.3s;
+    }
+
+    .main-nav-link:hover,
+    .main-nav-link:active {
+      color: #BD6E6E;
+    }
+
+    .main-nav-link.nav-cta:link,
+    .main-nav-link.nav-cta:visited {
+      padding: 1.2rem 2.4rem;
+      border-radius: 0.5625rem;
+      color: #fff;
+      background-color: #76292A;
+    }
+
+    .main-nav-link.nav-cta:hover,
+    .main-nav-link.nav-cta:active {
+      background-color: #BD6E6E;
+    }
+
+
+
+    .btn-cta{
+        background-color: #000;
+        color: #fff;
+        cursor: pointer;
+        position: relative;
+        width: 18.75rem;
+        font-size: 2rem;
+        padding: 1rem 0;
+        border-radius: 0.5625rem;
+        transition: all 0.3s;
+        margin: 1.3rem 0.625rem;
+    }
+
+    .btn-cta:hover{
+        background-color: #fff;
+        color: #000;
+    }
+
+
+    .section-main{
+      min-height: 100vh;
+      background-color: #76292A;
+  }
+
+  .main{
+    padding: 4rem;
+   }
+
+   .heading-primary{
+    font-size: 6rem;
+   }
+
+  .main-text{
+    font-size: 3.2rem;
+  }
+
+  .footer{
+    padding: 12.8rem 0;
+  }
+
+  .info-col{
+    float: right;
+  }
+
+  .footer-heading{
+    font-size: 1.8rem;
+    font-weight: 500;
+    line-height: 1.6;
+    margin-bottom: 4rem;
+    color: #fff;
+
+  }
+
+  .footer-link:link
+   {
+    text-decoration: none;
+    font-size: 1.8rem;
+    color: #fff;
+    font-weight: 500;
+    margin-right: 2.5rem;
+
+  }
+
+
