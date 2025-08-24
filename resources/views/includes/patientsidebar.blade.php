@@ -5,7 +5,7 @@
     <h3>Dr. {{ Auth::user()->firstname }}</h3>
     <p>System Patient</p>
 
-    <ul>
+    <ul class="patientside">
       <li><a href="{{ route('patient.patient-dashboard') }}"><i class="fas fa-chart-line"></i> Dashboard</a></li>
       <li><a href="#"><i class="fas fa-calendar-plus"></i> Book Appointment</a></li>
       <li><a href="#"><i class="fas fa-calendar-check"></i> View Appointment</a></li>

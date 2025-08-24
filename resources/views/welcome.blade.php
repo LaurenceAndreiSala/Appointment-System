@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.layout')
 
 @section('title', 'Appointment App | MainPage')
 @include('includes.navbar')
