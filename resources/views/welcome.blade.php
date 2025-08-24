@@ -2,6 +2,9 @@
 
 @section('title', 'Appointment App | MainPage')
 @include('includes.navbar')
+@section('css')
+      <link  href="{{ asset('css/style.css')}}" rel="stylesheet">
+
 @section('content')
 <div class="container-fluid section-main p-5">
     <div class="main">
