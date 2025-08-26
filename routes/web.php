@@ -15,7 +15,7 @@ use App\Http\Controllers\Auth\RegisterController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', [IntroPageController::class, 'intropage']);
+Route::get('/welcome', [IntroPageController::class, 'intropage']);
 
 // Login routes
 Route::get('/login', [LoginController::class, 'showlogin'])->name('login');
@@ -31,12 +31,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/admin-dashboard', [AdminDashboardController::class, 'index'])->name('admin.admin-dashboard');
     Route::get('/admin/create-doctors', [DoctorController::class, 'create'])->name('admin.create-doctors');
     Route::post('/admin/doctors/store', [DoctorController::class, 'store'])->name('doctors.store');
+    Route::get('/admin/set-appointment', [AdminDashboardController::class, 'setappointment'])->name('admin.set-appointment');  
+    Route::get('/admin/view-appointment', [AdminDashboardController::class, 'viewappointment'])->name('admin.view-appointment');  
+    Route::get('/admin/settings', [AdminDashboardController::class, 'settings'])->name('admin.settings');  
 });
 
+// Patient Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/patient/patient-dashboard', [PatientDashboardController::class, 'index'])->name('patient.patient-dashboard');
+    Route::get('/patient/book-appointment', [PatientDashboardController::class, 'showbook'])->name('patient.book-appointment');  
+    Route::get('/patient/view-appointment', [PatientDashboardController::class, 'viewappointment'])->name('patient.view-appointment');  
+    Route::get('/patient/video-call', [PatientDashboardController::class, 'chatcall'])->name('patient.video-call');  
+    Route::get('/patient/give-feedback', [PatientDashboardController::class, 'feedback'])->name('patient.give-feedback');  
+    Route::get('/patient/view-precription', [PatientDashboardController::class, 'precription'])->name('patient.view-precription');  
 });
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/doctor/doctor-dashboard', [DoctorDashboardController::class, 'index'])->name('doctor.doctor-dashboard');
 });
+
+Route::post('/patients/{id}/approve', [PatientDashboardController::class, 'approve'])->name('patients.approve');
+Route::post('/patients/{id}/deny', [PatientDashboardController::class, 'deny'])->name('patients.deny');

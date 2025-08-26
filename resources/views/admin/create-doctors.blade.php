@@ -1,38 +1,62 @@
 @extends('layouts.layout')
 
 @section('content')
-@include('includes.leftnavbar')
+@include('includes.adminleftnavbar')
+
+<!-- Notification Bell -->
+<div class="notification-bell">
+  <i class="fas fa-bell"></i>
+  <span class="badge">3</span>
+</div>
 
 <!-- Main Content -->
-  <div class="main">
+<div class="main">
     <h1>Create Doctor Account</h1>
 
     @if(session('success'))
         <p style="color:green;">{{ session('success') }}</p>
     @endif
 
-    <form method="POST" action="{{ route('doctors.store') }}">
-        @csrf
+    <div class="stats">
+        <form method="POST" action="{{ route('doctors.store') }}" class="doctor-form">
+            @csrf
 
-        <label>First Name:</label>
-        <input type="text" name="firstname" required><br><br>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="firstname" required>
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="lastname" required>
+                </div>
+            </div>
 
-        <label>Last Name:</label>
-        <input type="text" name="lastname" required><br><br>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+            </div>
 
-        <label>Username:</label>
-        <input type="text" name="username" required><br><br>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" name="password_confirmation" required>
+                </div>
+            </div>
 
-        <label>Email:</label>
-        <input type="email" name="email" required><br><br>
+            <button type="submit" class="btn-submit">Create Doctor</button>
+        </form>
+    </div>
+</div>
 
-        <label>Password:</label>
-        <input type="password" name="password" required><br><br>
-
-        <label>Confirm Password:</label>
-        <input type="password" name="password_confirmation" required><br><br>
-
-        <button type="submit">Create Doctor</button>
-    </form>
-    
 @endsection

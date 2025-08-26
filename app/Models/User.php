@@ -21,6 +21,7 @@ use HasApiTokens, HasFactory, Notifiable;
         'firstname',
         'lastname',
         'username',
+        'status',
         'email',
         'password',
         'role_id',

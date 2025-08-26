@@ -2,7 +2,7 @@
 
 @section('title', 'Admin Dashboard | Appointment')
 @section('content')
-@include('includes.leftnavbar')
+@include('includes.adminleftnavbar')
 
 <!-- Notification Bell -->
 <div class="notification-bell">
@@ -11,7 +11,7 @@
 </div>
   <!-- Main Content -->
   <div class="main">
-    <h1>Dashboard</h1>
+    <h1>Administrative Dashboard</h1>
 
     <!-- Stats -->
     <div class="stats">
@@ -21,15 +21,15 @@
       </div>
       <div class="stat-card">
         <h2>{{ $patientCount }}</h2>
-        <p>Registered Patients</p>
+        <p>Appointment Patients</p>
       </div>
       <div class="stat-card">
         <h2>{{ $totaluserCount }}</h2>
-        <p>Today New Users</p>
+        <p>All Users</p>
       </div>
       <div class="stat-card">
         <h2>85</h2>
-        <p>Today Appointments</p>
+        <p>Total Payment</p>
       </div>
     </div>
 
@@ -40,33 +40,26 @@
         <div class="card">
           <h3>Today Appointments</h3>
           <ul class="appointment-list">
-            <li>
-              <div class="patient-info">
-                 <div>
-                  <strong>M.J. Mical</strong><br>
-                  <small>Health Checkup</small>
-                </div>
-              </div>
-              <span class="tag green">On Going</span>
-            </li>
-            <li>
-              <div class="patient-info">
+          @forelse($patients as $patient)
+        <li>
+            <div class="patient-info">
                 <div>
-                  <strong>Sanath Deo</strong><br>
-                  <small>Report</small>
+                    <strong>{{ $patient->firstname }} {{ $patient->lastname }}</strong><br>
+                    <small>Report Patient</small>
                 </div>
-              </div>
-              <span class="time">12:30 PM</span>
-            </li>
-            <li>
-              <div class="patient-info">
-                 <div>
-                  <strong>Loeara Phanj</strong><br>
-                  <small>Consultation</small>
+            </div>
+            <span class="tag green">On Going</span>
+        </li>
+    @empty
+        <li>
+            <div class="patient-info">
+                <div>
+                    <strong>No Patients</strong><br>
+                    <small>Nothing queued</small>
                 </div>
-              </div>
-              <span class="time">01:00 PM</span>
-            </li>
+            </div>
+        </li>
+    @endforelse
           </ul>
         </div>
       </div>

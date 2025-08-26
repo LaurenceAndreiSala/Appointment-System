@@ -1,0 +1,104 @@
+:root {
+  --slide-count: 5; 
+  --slide-duration: 3s;
+}
+
+.bg-slideshow,
+.bg-slideshow * { box-sizing: border-box; }
+
+.bg-slideshow{
+  position: fixed;
+  inset: 0;
+  z-index: -2; 
+  overflow: hidden;
+  pointer-events: none; 
+}
+
+.bg-slideshow .slide {
+  position: absolute;
+  inset: 0;              
+  background-size: cover; 
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;         
+  opacity: 0;
+  will-change: opacity;
+  animation-name: fade;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: calc(var(--slide-duration) * var(--slide-count));
+}
+
+.bg-slideshow .slide:nth-child(1){ animation-delay: calc(var(--slide-duration) * 0); }
+.bg-slideshow .slide:nth-child(2){ animation-delay: calc(var(--slide-duration) * 1); }
+.bg-slideshow .slide:nth-child(3){ animation-delay: calc(var(--slide-duration) * 2); }
+.bg-slideshow .slide:nth-child(4){ animation-delay: calc(var(--slide-duration) * 3); } 
+.bg-slideshow .slide:nth-child(5){ animation-delay: calc(var(--slide-duration) * 4); } 
+
+
+@keyframes fade{
+  
+  0%   { opacity: 0; }
+  8%  { opacity: 1; }
+  33%  { opacity: 1; }
+  41% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+
+.bg-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: -1; 
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-overlay::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35));
+  pointer-events: none;
+}
+
+
+.bg-overlay .overlay-inner{
+  position: relative;
+  z-index: 2;
+  color: white;
+  text-align: center;
+  pointer-events: auto; 
+  padding: 2rem;
+  max-width: 1100px;
+}
+
+.bg-overlay h1{
+  margin: 0 0 0.5rem 0;
+  font-size: clamp(1.4rem, 3vw, 3rem);
+  letter-spacing: 0.6px;
+}
+.bg-overlay .lead{
+  margin: 0 0 1rem 0;
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+}
+
+.btn-link{
+  display: inline-block;
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  pointer-events: auto;
+}
+
+@media (max-width: 600px){
+  .bg-overlay .overlay-inner{ padding: 1rem; }
+}
+
+

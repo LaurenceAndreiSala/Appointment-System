@@ -6,8 +6,8 @@
 
 @section('content')
 <div class="auth-wrapper">
-    <div class="auth-card">
-        <h2 class="auth-title">Sign Up</h2>
+    <div class="auth-card auth-card bg-info bg-gradient">
+        <h2 class="auth-title text-white">Sign Up</h2>
 
         <form method="POST" action="{{ route('register.store') }}">
             @csrf
@@ -62,11 +62,11 @@
             <div class="form-group">
                 <input type="password" name="password_confirmation" placeholder="Confirm Password" required>
             </div>
-            <button type="submit" class="btn-auth">Register</button>
+            <button type="submit" class="btn btn-light w-100 mt-3 ">Register</button>
 
-            <p class="auth-cta">
+            <p class="auth-cta text-white">
                 Already have an account? 
-                <a href="{{ route('login') }}">Login</a>
+                <a href="{{ route('login') }} "class="text-white">Login</a>
             </p>
         </form>
     </div>

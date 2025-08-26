@@ -11,15 +11,15 @@
     <!-- Stats -->
     <div class="stats">
       <div class="stat-card" id="manageUsersCard">
-        <h2>2000+</h2>
-        <p>Manage Users</p>
+        <h2>{{ $patientCount }}</h2>
+        <p>Manage Patients</p>
       </div>
       <div class="stat-card">
         <h2>68</h2>
         <p>Today New Users</p>
       </div>
       <div class="stat-card">
-        <h2>85</h2>
+        <h2>{{ $patientCount }}</h2>
         <p>Today Appointments</p>
       </div>
     </div>
@@ -31,85 +31,69 @@
         <div class="card">
           <h3>Upcoming Appointments</h3>
           <ul class="appointment-list">
-            <li>
-              <div class="patient-info">
-                <img src="{{ asset('img/loloy.png') }}" alt="Admin">
+          @forelse($patients as $patient)
+        <li>
+            <div class="patient-info">
                 <div>
-                  <strong>M.J. Mical</strong><br>
-                  <small>Health Checkup</small>
+                    <strong>{{ $patient->firstname }} {{ $patient->lastname }}</strong><br>
+                    <small>Report Patient</small>
                 </div>
-              </div>
-              <span class="tag green">On Going</span>
-            </li>
-            <li>
-              <div class="patient-info">
-               <img src="{{ asset('img/loloy.png') }}" alt="Admin">
+            </div>
+            <span class="tag green">On Going</span>
+        </li>
+    @empty
+        <li>
+            <div class="patient-info">
                 <div>
-                  <strong>Sanath Deo</strong><br>
-                  <small>Report</small>
+                    <strong>No Patients</strong><br>
+                    <small>Nothing queued</small>
                 </div>
-              </div>
-              <span class="time">12:30 PM</span>
-            </li>
-            <li>
-              <div class="patient-info">
-                <img src="{{ asset('img/loloy.png') }}" alt="Admin">
-                <div>
-                  <strong>Loeara Phanj</strong><br>
-                  <small>Consultation</small>
-                </div>
-              </div>
-              <span class="time">01:00 PM</span>
-            </li>
+            </div>
+        </li>
+    @endforelse
           </ul>
         </div>
       </div>
 
-      <!-- Right Side -->
-      <div>
-        <div class="card">
-          <h3>Next Appointmen Details</h3>
-          <div class="patient-info">
-            <img src="{{ asset('img/loloy.png') }}" alt="Admin">
-            <div>
-              <strong>Sanath Deo</strong><br>
-              <small>Patient ID: 022009220005</small><br>
-              <small>Diagnosis: Health Checkup</small><br>
-              <small>Last Appointment: 15 Dec 2021</small>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+
 
   <!-- Modal for Manage Users -->
-  <div class="modal" id="userModal">
+<div class="modal" id="userModal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h2>Manage Users</h2>
-        <span class="close-btn" id="closeModal">&times;</span>
-      </div>
-      <div class="user-list" id="userList">
-        <!-- Example Users -->
-        <div class="user-item">
-          <span>1. John Doe</span>
-          <div class="user-actions">
-            <button class="btn-edit">Edit</button>
-            <button class="btn-delete">Delete</button>
-          </div>
+        <div class="modal-header">
+            <h2>Approve Patients</h2>
+            <span class="close-btn" id="closeModal">&times;</span>
         </div>
-        <div class="user-item">
-          <span>2. Jane Smith</span>
-          <div class="user-actions">
-            <button class="btn-edit">Edit</button>
-            <button class="btn-delete">Delete</button>
-          </div>
+        <div class="user-list" id="userList">
+            @forelse($patients as $patient)
+            <div class="user-item">
+                <div>
+                    <strong>{{ $patient->firstname }} {{ $patient->lastname }}</strong><br>
+                    @if($patient->status == 'pending')
+                        <span class="tag green">Pending</span>
+                    @elseif($patient->status == 'approved')
+                        <span class="tag green">Approved</span>
+                    @else
+                        <span class="tag red">Denied</span>
+                    @endif
+                </div>
+                <div class="user-actions">
+                    <form method="POST" action="{{ route('patients.approve', $patient->id) }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn-edit">Confirm</button>
+                    </form>
+                    <form method="POST" action="{{ route('patients.deny', $patient->id) }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn-delete">Denied</button>
+                    </form>
+                </div>
+            </div>
+            @empty
+                <p>No patients found.</p>
+            @endforelse
         </div>
-      </div>
-      <button class="btn-add" id="addUserBtn">+ Add User</button>
     </div>
-  </div>
+</div>
 
   <script>
     const manageUsersCard = document.getElementById('manageUsersCard');

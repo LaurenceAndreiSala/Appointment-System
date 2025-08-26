@@ -6,11 +6,11 @@
 
 @section('content')
 <div class="auth-wrapper">
-    <div class="login-card">
+    <div class="login-card login-card bg-info bg-gradient">
         <div class="logo-wrapper">
             <img class="logo" src="{{ asset('img/logo.png') }}" alt="Logo">
         </div>
-        <h2 class="login-title">Login</h2>
+        <h2 class="login-title text-white ">Login</h2>
 
         <form method="POST" action="{{ route('login') }}">
             @csrf
@@ -35,20 +35,22 @@
             </div>
 
             <!-- Remember + Forgot -->
-            <div class="form-options">
+            <div class="form-options text-white">
                 <label>
                     <input type="checkbox" name="remember"> Remember me
                 </label>
-                <a href="#" class="forgot-link">Forgot Password?</a>
+                <a href="#" class="forgot-link text-white ">Forgot Password?</a>
             </div>
 
             <!-- Login Button -->
-            <button type="submit" class="btn-login">Login</button>
+            <button type="submit" class="btn btn-light w-100 mt-3 ">Login</button>
 
             <!-- Register CTA -->
-            <p class="register-cta">
-                Don’t have an account? <a href="{{ route('register') }}">Register</a>
+            <p class="register-cta text-white ">
+                Don’t have an account? <a href="{{ route('register') }}"class="text-light fw-bold">Register</a>
+                
             </p>
+        
         </form>
     </div>
 </div>

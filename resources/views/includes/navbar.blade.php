@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-light bg-light ">
+<!-- <nav class="navbar navbar-expand-md navbar-light bg-light ">
         <div class="container-fluid">
             <a class="navbar-brand pl-5">
                 <img class="logo" alt="SPC logo" src="img/logo.png"/>
@@ -9,4 +9,4 @@
                   </ul>
             </div>
         </div>
-    </nav>
+    </nav> -->
