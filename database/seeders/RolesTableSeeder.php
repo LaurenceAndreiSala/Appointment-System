@@ -30,16 +30,18 @@ class RolesTableSeeder extends Seeder
             ['description' => 'Patient user']
         );
 
+
         // Create default admin account
         User::firstOrCreate(
-            ['email' => 'admin@example.com'], // unique check
+            ['email' => 'admin@gmail.com'], // ✅ match email
             [
                 'firstname' => 'System',
                 'lastname' => 'Admin',
                 'username' => 'admin',
                 'email' => 'admin@gmail.com',
-                'password' => Hash::make('admin123'), // 🔐 change this later
-                'role_id' => $adminRole->id,
+                'password' => Hash::make('admin123'), // 🔐 change later
+                'role' => $adminRole->id,
+                'status' => 'active'
             ]
         );
     }

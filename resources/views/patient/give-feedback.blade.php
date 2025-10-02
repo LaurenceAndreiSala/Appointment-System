@@ -14,6 +14,6 @@
     <h1>Give Feedback</h1>
 
     <div class="cards">
-      
+    
   </div>
 @endsection

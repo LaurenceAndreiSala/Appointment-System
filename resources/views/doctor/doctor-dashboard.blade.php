@@ -1,137 +1,266 @@
 @extends('layouts.layout')
+@section('title', 'Doctor Dashboard | MediCare')
 
-@section('title', 'Doctor Dashboard | Dashboard')
 @section('content')
-@include('includes.doctorsidebar')
+@include('includes.doctornavbar')
 
-  <!-- Main Content -->
-  <div class="main">
-    <h1>Doctor Dashboard</h1>
 
-    <!-- Stats -->
-    <div class="stats">
-      <div class="stat-card" id="manageUsersCard">
-        <h2>{{ $patientCount }}</h2>
-        <p>Manage Patients</p>
+<div class="container-fluid">
+  <div class="row">
+
+    @include('includes.doctorsidebar')
+
+     <!-- ✅ Offcanvas Sidebar (mobile only) -->
+    <div class="offcanvas offcanvas-start bg-primary text-white" tabindex="-1" id="doctorSidebar">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Menu</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
       </div>
-      <div class="stat-card">
-        <h2>68</h2>
-        <p>Today New Users</p>
-      </div>
-      <div class="stat-card">
-        <h2>{{ $patientCount }}</h2>
-        <p>Today Appointments</p>
+      <div class="offcanvas-body">
+        <div class="text-center mb-4">
+          <img src="{{ Auth::user()->profile_picture 
+                        ? asset(Auth::user()->profile_picture) 
+                        : asset('img/default.png') }}" 
+              alt="Doctor Profile" 
+              class="rounded-circle img-fluid mb-2"
+              style="width:80px; height:80px; object-fit:cover;">
+          <h6 class="text-white mb-0">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</h6>
+          <small class="text-light">Doctor</small>
+        </div>
+
+        <ul class="nav flex-column gap-2">
+          <li class="nav-item">
+            <a href="{{ route('doctor.doctor-dashboard') }}" 
+               class="nav-link text-white d-flex align-items-center {{ request()->routeIs('doctor.doctor-dashboard') ? 'active bg-info text-primary rounded' : '' }}">
+              <i data-feather="activity" class="me-2 text-white"></i> Dashboard Overview
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.view-appointment') }}" 
+               class="nav-link text-white d-flex align-items-center {{ request()->routeIs('doctor.view-appointment') ? 'active bg-info text-primary rounded' : '' }}">
+              <i data-feather="calendar" class="me-2 text-success"></i> View Appointments
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.view-patients') }}" 
+               class="nav-link text-white d-flex align-items-center {{ request()->routeIs('doctor.view-patients') ? 'active bg-info text-primary rounded' : '' }}">
+              <i data-feather="users" class="me-2 text-danger"></i> View Patients
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.chat-call') }}" 
+               class="nav-link text-white d-flex align-items-center {{ request()->routeIs('doctor.chat-call') ? 'active bg-info text-primary rounded' : '' }}">
+              <i data-feather="message-circle" class="me-2 text-success"></i> Chat / Video Call
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.write-prescriptions') }}" 
+               class="nav-link text-white d-flex align-items-center {{ request()->routeIs('doctor.write-prescriptions') ? 'active bg-info text-primary rounded' : '' }}">
+              <i data-feather="edit" class="me-2 text-secondary"></i> Manage Prescription
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.my-profile') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.my-profile') ? 'active bg-white text-primary rounded' : 'text-white' }}">
+              <i data-feather="user" class="me-2 text-danger"></i> My Profile
+            </a>
+          </li>
+          <li class="nav-item mt-3">
+            <form action="{{ route('logout') }}" method="POST">
+              @csrf
+              <button type="submit" class="btn btn-light d-flex text-primary align-items-center">
+                <i data-feather="log-out" class="me-2"></i> Logout
+              </button>
+            </form>
+          </li>
+        </ul>
       </div>
     </div>
 
-    <!-- Grid Section -->
-    <div class="grid">
-      <!-- Left Side -->
-      <div>
-        <div class="card">
-          <h3>Upcoming Appointments</h3>
-          <ul class="appointment-list">
-          @forelse($patients as $patient)
-        <li>
-            <div class="patient-info">
-                <div>
-                    <strong>{{ $patient->firstname }} {{ $patient->lastname }}</strong><br>
-                    <small>Report Patient</small>
-                </div>
+<!-- ✅ Main Content -->
+    <div class="col-md-9 col-lg-10 p-4">
+      <!-- Stats Cards -->
+      <div class="row g-4 mb-4">
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="card text-center shadow-sm border-0 bg-primary text-white">
+            <div class="card-body">
+              <i class="fas fa-calendar-check fa-2x mb-2"></i>
+              <h2 class="fw-bold p-4">{{ $appointmentCount }}</h2>
+              <p class="mb-0">Today’s Appointments</p>
             </div>
-            <span class="tag green">On Going</span>
-        </li>
-    @empty
-        <li>
-            <div class="patient-info">
-                <div>
-                    <strong>No Patients</strong><br>
-                    <small>Nothing queued</small>
-                </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card text-center shadow-sm border-0 bg-success text-white">
+            <div class="card-body">
+              <i class="fas fa-procedures fa-2x mb-2"></i>
+              <h2 class="fw-bold p-4">{{ $patientCount }}</h2>
+              <p class="mb-0">Total Patients</p>
             </div>
-        </li>
-    @endforelse
-          </ul>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card text-center shadow-sm border-0 bg-warning text-white">
+            <div class="card-body">
+              <i class="fas fa-prescription-bottle-alt fa-2x mb-2"></i>
+              <h2 class="fw-bold p-4">{{ $prescriptionsCount ?? 0 }}</h2>
+              <p class="mb-0">Prescriptions Written</p>
+            </div>
+          </div>
         </div>
       </div>
 
-
-
-  <!-- Modal for Manage Users -->
-<div class="modal" id="userModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Approve Patients</h2>
-            <span class="close-btn" id="closeModal">&times;</span>
-        </div>
-        <div class="user-list" id="userList">
-            @forelse($patients as $patient)
-            <div class="user-item">
-                <div>
-                    <strong>{{ $patient->firstname }} {{ $patient->lastname }}</strong><br>
-                    @if($patient->status == 'pending')
-                        <span class="tag green">Pending</span>
-                    @elseif($patient->status == 'approved')
-                        <span class="tag green">Approved</span>
+      <!-- Appointments Table -->
+      <div class="card shadow-sm border-0 mb-4 p-4">
+        <h3 class="fw-bold mb-3">View All Appointments</h3>
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped align-middle text-center">
+            <thead class="table-dark">
+              <tr>
+                <th>Profile</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($appointments as $appt)
+                <tr>
+                  <td>
+                    @if($appt->patient?->profile_picture)
+                      <img src="{{ asset($appt->patient->profile_picture) }}" 
+                           alt="Profile Picture" 
+                           class="rounded-circle"
+                           style="width:50px; height:50px; object-fit:cover;">
                     @else
-                        <span class="tag red">Denied</span>
+                      <img src="{{ asset('img/default-avatar.png') }}" 
+                           alt="Default" 
+                           class="rounded-circle"
+                           style="width:50px; height:50px; object-fit:cover;">
                     @endif
-                </div>
-                <div class="user-actions">
-                    <form method="POST" action="{{ route('patients.approve', $patient->id) }}" class="d-inline">
+                  </td>
+                  <td>{{ $appt->patient?->firstname }} {{ $appt->patient?->lastname }}</td>
+                  <td>{{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}</td>
+<td>
+  {{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}
+  <br>
+  @if($appt->slot)
+    {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }} - 
+    {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
+  @else
+    <em>No slot assigned</em>
+  @endif
+</td>
+                  <td>
+                    @if($appt->status == 'pending')
+                      <span class="badge bg-warning text-dark">Pending</span>
+                    @elseif($appt->status == 'approved')
+                      <span class="badge bg-success">Approved</span>
+                    @elseif($appt->status == 'denied')
+                      <span class="badge bg-danger">Denied</span>
+                    @elseif($appt->status == 'cancelled')
+                      <span class="badge bg-secondary">Cancelled</span>
+                    @else
+                      <span class="badge bg-info">{{ ucfirst($appt->status) }}</span>
+                    @endif
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-center gap-2">
+                      <form action="{{ route('doctor.appointments.approve', $appt->id) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn-edit">Confirm</button>
-                    </form>
-                    <form method="POST" action="{{ route('patients.deny', $patient->id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                      </form>
+                      <form action="{{ route('doctor.view-appointment.deny', $appt->id) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn-delete">Denied</button>
-                    </form>
-                </div>
-            </div>
-            @empty
-                <p>No patients found.</p>
-            @endforelse
+                        <button type="submit" class="btn btn-sm btn-danger">Deny</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              @empty
+                <tr>
+                  <td colspan="6">No appointments found.</td>
+                </tr>
+              @endforelse
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
+
+  </div>
 </div>
 
-  <script>
-    const manageUsersCard = document.getElementById('manageUsersCard');
-    const modal = document.getElementById('userModal');
-    const closeModal = document.getElementById('closeModal');
-    const addUserBtn = document.getElementById('addUserBtn');
-    const userList = document.getElementById('userList');
+<script>
+  const notifUrl = "{{ route('doctor.notifications.fetch') }}";
+</script>
+<script src="{{ asset('js/notification.js') }}"></script>
 
-    // Open modal when clicking the card
-    manageUsersCard.addEventListener('click', () => {
-      modal.style.display = 'flex';
-    });
+<!-- Sidebar Slide CSS -->
+<style>
+  #sidebar {
+    transition: transform 0.3s ease-in-out;
+  }
+  @media (max-width: 991.98px) { /* Bootstrap lg breakpoint */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 75%;
+      height: 100%;
+      z-index: 1050;
+      transform: translateX(-100%);
+    }
+    #sidebar.active {
+      transform: translateX(0);
+    }
+  }
+</style>
 
-    // Close modal
-    closeModal.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
+<!-- JS -->
+<script>
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('mainContent');
+const toggleBtn = document.getElementById('sidebarToggle');
+const sidebarClose = document.getElementById('sidebarClose');
 
-    // Add User Example
-    addUserBtn.addEventListener('click', () => {
-      const newUser = document.createElement('div');
-      newUser.classList.add('user-item');
-      newUser.innerHTML = `
-        <span>New User</span>
-        <div class="user-actions">
-          <button class="btn-edit">Edit</button>
-          <button class="btn-delete">Delete</button>
-        </div>
-      `;
-      userList.appendChild(newUser);
-    });
+// Hamburger toggle (mobile)
+toggleBtn.addEventListener('click', () => {
+  sidebar.style.transform = 'translateX(0)';
+});
 
-    // Close when clicking outside modal
-    window.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.style.display = 'none';
-      }
-    });
-  </script>
+// Close button (mobile)
+sidebarClose.addEventListener('click', () => {
+  sidebar.style.transform = 'translateX(-100%)';
+});
 
-  @endsection
+// Click outside to close sidebar (mobile)
+document.addEventListener('click', function(e){
+  if(window.innerWidth < 992){
+    if(!sidebar.contains(e.target) && !toggleBtn.contains(e.target)){
+      sidebar.style.transform = 'translateX(-100%)';
+    }
+  }
+});
+
+// Adjust main content margin based on sidebar (desktop)
+function handleResize() {
+  if(window.innerWidth >= 992){
+    sidebar.style.transform = 'translateX(0)';
+    mainContent.style.marginLeft = '250px'; // match sidebar width
+  } else {
+    sidebar.style.transform = 'translateX(-100%)';
+    mainContent.style.marginLeft = '0';
+  }
+}
+
+window.addEventListener('resize', handleResize);
+window.addEventListener('load', handleResize);
+</script>
+
+@endsection
+

@@ -3,31 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="School Registrar Appointment System" >
+    <title>MediCare - @yield('title')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-
-    <link rel="icon" href="{{ asset('img/logo1.png')}}" />
-    <link rel="manifest" href="{{ asset('manifest.webmanifest')}}" />
-
-    <title>@yield('title', 'Appointment App')</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link  href="{{ asset('css/bootstrap.min.css')}}" rel="stylesheet">
-
-    <link  href=" @yield('css')" rel="stylesheet">
-    <link  href="{{ asset('css/admin.css')}}" rel="stylesheet">
-    <link  href="{{ asset('css/admindashboard.css')}}" rel="stylesheet">
-    <link  href="{{ asset('css/patient.css')}}" rel="stylesheet">
-    <link  href="{{ asset('css/doctor.css')}}" rel="stylesheet">
-    <link  href="{{ asset('css/secretary.css')}}" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Font Awesome Free CDN -->
+    
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<head>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-      @yield('content')
 
-      <src hreg
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    @yield('content')
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init();</script>
+    <!-- Feather -->
+    <script>feather.replace();</script>
 </body>
 </html>

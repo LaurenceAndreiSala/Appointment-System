@@ -64,4 +64,34 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
+
+    protected function schedule(Schedule $schedule)
+{
+    $schedule->call(function () {
+        $tomorrow = Carbon::tomorrow()->toDateString();
+
+        $appointments = \App\Models\Appointment::with(['doctor','patient'])
+            ->whereDate('appointment_date', $tomorrow)
+            ->where('status', 'approved')
+            ->get();
+
+        foreach ($appointments as $appt) {
+            // Notify patient
+            Notification::create([
+                'user_id' => $appt->patient_id,
+                'title'   => 'Appointment Reminder',
+                'message' => "Reminder: You have an appointment with Dr. {$appt->doctor->firstname} on {$appt->appointment_date} at {$appt->appointment_time}",
+            ]);
+
+            // Notify doctor
+            Notification::create([
+                'user_id' => $appt->doctor_id,
+                'title'   => 'Appointment Reminder',
+                'message' => "Reminder: You have an appointment with {$appt->patient->firstname} {$appt->patient->lastname} tomorrow at {$appt->appointment_time}",
+            ]);
+        }
+    })->dailyAt('08:00'); // run every 8 AM
 }
+
+}
+

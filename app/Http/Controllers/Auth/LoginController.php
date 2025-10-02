@@ -28,13 +28,18 @@ class LoginController extends Controller
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();
 
-        // ✅ Role-based redirects
-        if (Auth::user()->role_id == 1) { 
-            return redirect()->route('admin.admin-dashboard'); 
-        } elseif (Auth::user()->role_id == 2) { 
-            return redirect()->route('doctor.doctor-dashboard'); 
-        } else { 
-            return redirect()->route('patient.patient-dashboard'); 
+        $roleId = Auth::user()->role_id;
+
+        switch ($roleId) {
+            case 1:
+                return redirect()->route('admin.admin-dashboard'); 
+            case 2:
+                return redirect()->route('doctor.doctor-dashboard'); 
+            case 3:
+                return redirect()->route('patient.patient-dashboard'); 
+            default:
+                Auth::logout();
+                return redirect('/login')->withErrors(['role' => 'Unauthorized role']);
         }
     }
 

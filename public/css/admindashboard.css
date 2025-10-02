@@ -127,13 +127,6 @@
       font-size: 14px;
     }
 
-    /* Grid Layout */
-    .grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 25px;
-    }
-
     .card {
       background: rgba(255,255,255,0.9);
       padding: 25px;
@@ -287,6 +280,7 @@
    .notification-bell {
     position: absolute;
     top: 20px;
+    margin-left: 20px;
     right: 100px;
     font-size: 22px;
     color: #000;
