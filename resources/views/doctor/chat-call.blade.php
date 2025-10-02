@@ -76,7 +76,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="col-12 col-md-9 col-lg-10 p-4 p-md-5">
+    <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
       <h2 class="fw-bold">Chat / Video Call</h2>
       <p class="text-muted">Start or join video consultations for your approved appointments.</p>
 
@@ -108,7 +108,7 @@
 </td>
                   <td>
                     <button type="button"
-        class="btn btn-primary start-call-btn"
+        class="btn btn-success start-call-btn"
         data-appointment-id="{{ $appt->id }}">
   📞 Call
 </button>
@@ -130,7 +130,7 @@
 <script>
   const notifUrl = "{{ route('doctor.notifications.fetch') }}";
 </script>
-<script src="{{ asset('js/notification.js') }}"></script><!-- CSRF Token for fetch -->
+<script src="{{ asset('js/notification.js') }}"></script>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <script>

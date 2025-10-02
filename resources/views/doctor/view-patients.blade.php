@@ -78,9 +78,7 @@
     </div>
 
 <!-- Main Content -->
-<div class="col-md-9 col-lg-10 p-5">
-
-
+    <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
         <div class="card shadow-sm border-0 mb-4 p-4">
         <h3 class="fw-bold mb-3">View All Patients</h3>
         <div class="table-responsive">

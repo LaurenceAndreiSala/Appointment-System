@@ -26,8 +26,9 @@
       @include('includes.adminleftnavbar')
 
     <!-- Main Content -->
-    <main class="col-md-9 col-lg-10 p-5">
-      <div class="card shadow-sm border-0 mb-4 p-4">
+   <main class="col-lg-10 offset-lg-2 p-5">
+  <div class="card shadow-sm border-0 mb-4 p-4">
+    <div class="card-body">
          <h3 class="fw-bold mb-3">Create Doctor Account</h3>
 
     @if(session('success'))
@@ -160,7 +161,9 @@
     @if($doctor->is_absent)
       <button type="submit" class="btn btn-sm btn-warning">Mark Present</button>
     @else
-      <button type="submit" class="btn btn-sm btn-outline-warning">Mark Absent</button>
+<button type="submit" class="btn btn-sm btn-outline-warning">
+  <i class="fas fa-exclamation-triangle"></i> Mark Absent
+</button>
     @endif
   </form>
 </td>

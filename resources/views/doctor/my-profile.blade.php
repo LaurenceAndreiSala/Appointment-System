@@ -79,7 +79,7 @@
 
 
     <!-- ✅ Main Content -->
-    <div class="col-12 col-md-9 col-lg-10 p-4 p-md-5">
+    <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
        <h2 class="fw-bold mb-4">My Doctor Profile</h2>
 
   @if(session('success'))

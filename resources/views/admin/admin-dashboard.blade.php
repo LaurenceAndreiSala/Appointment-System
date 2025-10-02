@@ -27,9 +27,9 @@
   @include('includes.adminleftnavbar')
 
     <!-- Main Content -->
-    <main class="col-md-9 col-lg-10 p-5">
-      <div class="card shadow-sm border-0 mb-4 p-4">
-        <div class="card-body">
+   <main class="col-lg-10 offset-lg-2 p-5">
+  <div class="card shadow-sm border-0 mb-4 p-4">
+    <div class="card-body">
           <!-- Stats -->
           <div class="row g-4">
             <div class="col-md-3">

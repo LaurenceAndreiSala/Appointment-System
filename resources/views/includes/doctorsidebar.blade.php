@@ -19,13 +19,8 @@
   </div>
 </nav>
 
-
-
-<div class="container-fluid">
-  <div class="row">
-
 <!-- Sidebar -->
-<div class="col-md-3 col-lg-2 border-end min-vh-100 p-3 bg-primary">
+<div class="col-md-3 col-lg-2 border-end min-vh-100 p-3 bg-primary position-fixed">
     <!-- Profile Section -->
   <div class="text-center mb-4 b">
     <img src="{{ Auth::user()->profile_picture 

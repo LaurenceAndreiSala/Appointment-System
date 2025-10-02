@@ -63,9 +63,23 @@
   </div>
 </section>
 
+   <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+    </style>
+    
 <!-- Footer -->
-<footer class="bg-dark text-light py-4">
-  <div class="container text-center small text-muted">
+<footer class="bg-dark text-white py-4">
+  <div class="container text-center small">
     &copy; 2025 MediCAL. All rights reserved.
   </div>
 </footer>

@@ -78,7 +78,7 @@
     </div>
 
 <!-- ✅ Main Content -->
-    <div class="col-md-9 col-lg-10 p-4">
+    <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
       <!-- Stats Cards -->
       <div class="row g-4 mb-4">
         <div class="col-12 col-sm-6 col-lg-4">
@@ -202,23 +202,38 @@
 
 <!-- Sidebar Slide CSS -->
 <style>
+ #sidebar {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Desktop (lg and up) → Sidebar is visible */
+@media (min-width: 992px) {
   #sidebar {
-    transition: transform 0.3s ease-in-out;
+    position: sticky;
+    top: 0;
+    width: 220px; /* adjust as needed */
   }
-  @media (max-width: 991.98px) { /* Bootstrap lg breakpoint */
-    #sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 75%;
-      height: 100%;
-      z-index: 1050;
-      transform: translateX(-100%);
-    }
-    #sidebar.active {
-      transform: translateX(0);
-    }
+  #mainContent {
+    margin-left: 220px; /* push content aside */
   }
+}
+
+/* Mobile → Sidebar hidden by default, slides in */
+@media (max-width: 991.98px) {
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 75%;
+    z-index: 1050;
+    transform: translateX(-100%);
+  }
+  #sidebar.active {
+    transform: translateX(0);
+  }
+}
+
 </style>
 
 <!-- JS -->

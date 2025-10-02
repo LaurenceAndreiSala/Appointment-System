@@ -78,8 +78,7 @@
     </div>
 
 <!-- Main Content -->
-<div class="col-md-9 col-lg-10 p-5">
-
+    <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
 <button type="button" class="btn btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#archivedPrescriptionsModal">
   <i class="fas fa-archive"></i> View Archived Prescriptions
 </button>
@@ -134,9 +133,18 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
     <div class="modal-body" id="viewPrescriptionContent">
+    <p><strong>MediCAL</strong></p>
+    <p><strong>Name:</strong> <span id=""></span></p>
+    <p><strong>Address:</strong> <span id=""></span></p>
+    <p><strong>Age:</strong> <span id=""></span></p>
+    <p><strong>Gender:</strong> <span id=""></span></p>
+    <p><strong>Date:</strong> <span id=""></span></p>
+    <p><strong>RX</strong></span></p>
     <p><strong>Medication:</strong> <span id="viewMedication"></span></p>
     <p><strong>Dosage:</strong> <span id="viewDosage"></span></p>
     <p><strong>Notes:</strong> <span id="viewNotes"></span></p>
+    <p><strong>Name:</strong> <span id=""></span></p>
+    <p><strong>License No.</strong> <span id=""></span></p>
 </div>
     </div>
   </div>

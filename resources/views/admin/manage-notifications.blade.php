@@ -25,8 +25,9 @@
   <div class="row">
     @include('includes.adminleftnavbar')
 
-    <main class="col-md-9 col-lg-10 p-5">
-      <div class="card shadow-sm border-0 mb-4 p-4">
+    <main class="col-lg-10 offset-lg-2 p-5">
+  <div class="card shadow-sm border-0 mb-4 p-4">
+    <div class="card-body">   
         <h3 class="fw-bold mb-3">Manage Notifications</h3>
 
         <div class="table-responsive">

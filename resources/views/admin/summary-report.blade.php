@@ -27,9 +27,9 @@
   @include('includes.adminleftnavbar')
 
     <!-- Main Content -->
-    <main class="col-md-9 col-lg-10 p-5">
-      <div class="card shadow-sm border-0 mb-4 p-4">
-        <div class="card-body">
+    <main class="col-lg-10 offset-lg-2 p-5">
+  <div class="card shadow-sm border-0 mb-4 p-4">
+    <div class="card-body">
           <!-- Stats -->
           <div class="row g-4">
             <div class="card mt-4">
@@ -85,35 +85,37 @@
     </div>
 </div>
 
-<!-- Row for two side-by-side charts -->
-<div class="row mt-4">
+<!-- Row for two centered side-by-side charts -->
+<div class="row mt-4 justify-content-center text-center">
     <!-- Financial Overview -->
-    <div class="col-md-6">
+    <div class="col-md-5">
         <div class="mycard">
             <div class="mycard-header">
                 <h3>Financial Overview</h3>
             </div>
-            <div class="mycard-content" style="height: 280px;">
+            <div class="mycard-content d-flex justify-content-center" style="height: 280px;">
                 <canvas id="financialOverview"></canvas>
             </div>
         </div>
     </div>
 
     <!-- Appointments Status -->
-    <div class="col-md-6">
+    <div class="col-md-5">
         <div class="mycard">
             <div class="mycard-header">
                 <h3>Appointments Status</h3>
             </div>
-            <div class="mycard-content" style="height: 280px;">
+            <div class="mycard-content d-flex justify-content-center" style="height: 280px;">
                 <canvas id="appointmentSummary"></canvas>
             </div>
         </div>
     </div>
 </div>
 
+
+
 <div class="text-center mt-3">
-  <label class="form-label">Download Report</label>
+  <label class="form-label">Download Summary Report</label>
   <select name="report" class="form-select" id="reportSelect" required>
     <option value="">-- Select Download --</option>
     <option value="pdf">Download PDF</option>

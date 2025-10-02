@@ -199,10 +199,13 @@ public function storeSlot(Request $request)
     $appointmentsPerDayLabels = [];
     $appointmentsPerDayData = [];
     for ($i = 6; $i >= 0; $i--) {
-        $d = Carbon::now()->subDays($i)->format('Y-m-d');
-        $appointmentsPerDayLabels[] = $d;
-        $appointmentsPerDayData[] = isset($appts[$d]) ? (int) $appts[$d] : 0;
-    }
+    $dateObj = Carbon::now()->subDays($i);
+    $formatted = $dateObj->format('M d, Y'); 
+    $dbFormat  = $dateObj->format('Y-m-d'); 
+
+    $appointmentsPerDayLabels[] = $formatted;
+    $appointmentsPerDayData[] = isset($appts[$dbFormat]) ? (int) $appts[$dbFormat] : 0;
+}
              $totalPayments = Payment::where('payment_status', 'success')->sum('amount');
 
     // Slots (existing)
