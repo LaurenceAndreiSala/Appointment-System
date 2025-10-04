@@ -22,83 +22,116 @@
 
       <div class="card shadow-sm border-0">
         <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-bordered table-striped align-middle text-center">
-              <thead class="table-dark">
-                <tr>
-                  <th>Doctor</th>
-                  <th>Date & Time</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                @forelse($appointments as $appt)
-                  <tr>
-                    <td>{{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}</td>
-                    <td>
-  {{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}
-  <br>
-  @if($appt->slot)
-    {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }} - 
-    {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
-  @else
-    <em>No slot assigned</em>
-  @endif
-</td>
-                    <td>
-                      @if($appt->status == 'pending')
-                        <span class="badge bg-warning text-dark">Pending</span>
-                      @elseif($appt->status == 'approved')
-                        <span class="badge bg-success">Approved</span>
-                      @elseif($appt->status == 'denied')
-                        <span class="badge bg-danger">Denied</span>
-                      @elseif($appt->status == 'cancelled')
-                        <span class="badge bg-secondary">Cancelled</span>
-                      @else
-                        <span class="badge bg-info">{{ ucfirst($appt->status) }}</span>
-                      @endif
-                    </td>
-                    <td>
-  @if($appt->status == 'pending')
-    <form action="{{ route('patient.cancel', $appt->id) }}" method="POST">
-      @csrf
-      <button type="submit" class="btn btn-sm btn-secondary">Cancel</button>
-    </form>
-  @elseif($appt->status == 'approved' && !$appt->payment)
-<button type="button" 
-        class="btn btn-sm btn-warning payNowBtn" 
-        data-bs-toggle="modal" 
-        data-bs-target="#paymentModal"
-        data-id="{{ $appt->id }}"
-        data-doctor="{{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}"
-        data-date="{{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}"
-        data-time="{{ $appt->appointment_time ? \Carbon\Carbon::parse($appt->appointment_time)->format('h:i A') : '' }}"
-        data-amount="{{ $appt->amount ?? 500 }}">  {{-- 👈 fallback if null --}}
-  <i class="fas fa-coins"></i> Pay Now
-</button>
+          <style>
+/* 🟩 Responsive table-to-card design */
+@media (max-width: 768px) {
+  table thead {
+    display: none;
+  }
+  table tbody tr {
+    display: block;
+    background: #fff;
+    margin-bottom: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  table tbody td {
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  table tbody td:last-child {
+    border-bottom: none;
+  }
+  table tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #333;
+  }
+}
+</style>
 
-@elseif($appt->payment && $appt->payment->payment_status == 'success')
-  <span class="badge bg-success">Paid</span><br>
-  <small>Ref: {{ $appt->payment->reference_number }}</small><br>
-<button type="button" 
-        class="btn btn-sm btn-outline-info mt-1 receiptBtn" 
-        data-bs-toggle="modal" 
-        data-bs-target="#"
-        data-url="{{ route('patient.payment.receipt', $appt->payment->id) }}">
- <i class='fas fa-download'></i> Download Receipt
-</button>
-@endif
-</td>
-                  </tr>
-                @empty
-                  <tr>
-                    <td colspan="4">You have no appointments.</td>
-                  </tr>
-                @endforelse
-              </tbody>
-            </table>
-          </div>
+<div class="table-responsive">
+  <table class="table table-bordered table-striped align-middle text-center mb-0">
+    <thead class="table-dark">
+      <tr>
+        <th>Doctor</th>
+        <th>Date & Time</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @forelse($appointments as $appt)
+        <tr>
+          <td data-label="Doctor">
+            {{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}
+          </td>
+          <td data-label="Date & Time">
+            {{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }} <br>
+            @if($appt->slot)
+              {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }} -
+              {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
+            @else
+              <em>No slot assigned</em>
+            @endif
+          </td>
+          <td data-label="Status">
+            @switch($appt->status)
+              @case('pending') <span class="badge bg-warning text-dark">Pending</span> @break
+              @case('approved') <span class="badge bg-success">Approved</span> @break
+              @case('denied') <span class="badge bg-danger">Denied</span> @break
+              @case('cancelled') <span class="badge bg-secondary">Cancelled</span> @break
+              @default <span class="badge bg-info">{{ ucfirst($appt->status) }}</span>
+            @endswitch
+          </td>
+          <td data-label="Action">
+            <div class="d-flex flex-column gap-2">
+              @if($appt->status == 'pending')
+                <form action="{{ route('patient.cancel', $appt->id) }}" method="POST">
+                  @csrf
+                  <button type="submit" class="btn btn-sm btn-secondary w-100">Cancel</button>
+                </form>
+
+              @elseif($appt->status == 'approved' && !$appt->payment)
+                <button type="button" 
+                        class="btn btn-sm btn-warning payNowBtn w-100" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#paymentModal"
+                        data-id="{{ $appt->id }}"
+                        data-doctor="{{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}"
+                        data-date="{{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}"
+                        data-time="{{ $appt->appointment_time ? \Carbon\Carbon::parse($appt->appointment_time)->format('h:i A') : '' }}"
+                        data-amount="{{ $appt->amount ?? 500 }}">
+                  <i class="fas fa-coins"></i> Pay Now
+                </button>
+
+              @elseif($appt->payment && $appt->payment->payment_status == 'success')
+                <span class="badge bg-success">Paid</span><br>
+                <small>Ref: {{ $appt->payment->reference_number }}</small><br>
+                <button type="button" 
+                        class="btn btn-sm btn-outline-info mt-1 receiptBtn w-100" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#receiptModal"
+                        data-url="{{ route('patient.payment.receipt', $appt->payment->id) }}">
+                  <i class="fas fa-download"></i> Receipt
+                </button>
+              @endif
+            </div>
+          </td>
+        </tr>
+      @empty
+        <tr>
+          <td colspan="4" class="text-muted py-4">You have no appointments.</td>
+        </tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
         </div>
       </div>
     </div>
@@ -221,7 +254,22 @@
   </div>
 </div>`
 
-
+<!-- ✅ Call Popup Modal -->
+<div class="modal fade" id="incomingCallModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-3 border-0 shadow-lg">
+      <h5 id="callerName" class="fw-bold mt-2"></h5>
+      <div class="d-flex justify-content-center mt-3 mb-2">
+        <button id="acceptCall" class="btn btn-success me-3 px-4">
+          <i class="fas fa-phone-alt me-1"></i> Accept
+        </button>
+        <button id="rejectCall" class="btn btn-danger px-4">
+          <i class="fas fa-phone-slash me-1"></i> Reject
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -309,4 +357,54 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
+   const fetchNotificationsUrl = "{{ route('patient.notifications.fetch') }}";
+</script>
+<script src="{{ asset('js/notificationcall.js') }}"></script>
+
+{{-- ✅ Ringing Popup JS --}}
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+<script>
+const userId = "{{ Auth::id() }}";
+
+const pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
+  cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
+  forceTLS: true
+});
+
+const channel = pusher.subscribe("appointments." + userId);
+
+let ringtone;
+
+channel.bind("App\\Events\\CallStarted", function(data) {
+  // create ringtone only once
+  if (!ringtone) {
+    ringtone = new Audio("{{ asset('sounds/ringtone.mp3') }}");
+    ringtone.loop = true;
+  }
+
+  // show modal
+  document.getElementById("callerName").innerText =
+    `📞 Dr. ${data.appointment.doctor.firstname} is calling...`;
+
+  const callModal = new bootstrap.Modal(document.getElementById("incomingCallModal"));
+  callModal.show();
+
+  // play ringtone when modal buttons are clicked
+  ringtone.play().catch(err => console.warn("Autoplay blocked until user interacts"));
+
+  document.getElementById("acceptCall").onclick = () => {
+    ringtone.pause();
+    callModal.hide();
+    window.open(data.appointment.meeting_url, "_blank");
+  };
+
+  document.getElementById("rejectCall").onclick = () => {
+    ringtone.pause();
+    callModal.hide();
+    alert("❌ You rejected the call.");
+  };
+});
+
+</script>
 @endsection

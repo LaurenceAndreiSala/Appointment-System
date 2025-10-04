@@ -97,6 +97,23 @@
   </div>
 </div>
 
+<!-- ✅ Call Popup Modal -->
+<div class="modal fade" id="incomingCallModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-3 border-0 shadow-lg">
+      <h5 id="callerName" class="fw-bold mt-2"></h5>
+      <div class="d-flex justify-content-center mt-3 mb-2">
+        <button id="acceptCall" class="btn btn-success me-3 px-4">
+          <i class="fas fa-phone-alt me-1"></i> Accept
+        </button>
+        <button id="rejectCall" class="btn btn-danger px-4">
+          <i class="fas fa-phone-slash me-1"></i> Reject
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const bookBtn = document.getElementById("bookBtn");
@@ -212,4 +229,54 @@ document.getElementById("doctor_id").value = selected.dataset.doctorId;
 
 </script>
 
+<script>
+   const fetchNotificationsUrl = "{{ route('patient.notifications.fetch') }}";
+</script>
+<script src="{{ asset('js/notificationcall.js') }}"></script>
+
+{{-- ✅ Ringing Popup JS --}}
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+<script>
+const userId = "{{ Auth::id() }}";
+
+const pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
+  cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
+  forceTLS: true
+});
+
+const channel = pusher.subscribe("appointments." + userId);
+
+let ringtone;
+
+channel.bind("App\\Events\\CallStarted", function(data) {
+  // create ringtone only once
+  if (!ringtone) {
+    ringtone = new Audio("{{ asset('sounds/ringtone.mp3') }}");
+    ringtone.loop = true;
+  }
+
+  // show modal
+  document.getElementById("callerName").innerText =
+    `📞 Dr. ${data.appointment.doctor.firstname} is calling...`;
+
+  const callModal = new bootstrap.Modal(document.getElementById("incomingCallModal"));
+  callModal.show();
+
+  // play ringtone when modal buttons are clicked
+  ringtone.play().catch(err => console.warn("Autoplay blocked until user interacts"));
+
+  document.getElementById("acceptCall").onclick = () => {
+    ringtone.pause();
+    callModal.hide();
+    window.open(data.appointment.meeting_url, "_blank");
+  };
+
+  document.getElementById("rejectCall").onclick = () => {
+    ringtone.pause();
+    callModal.hide();
+    alert("❌ You rejected the call.");
+  };
+});
+
+</script>
 @endsection

@@ -19,14 +19,11 @@
   </div>
 </nav>
 
-<!-- Sidebar -->
-<div class="col-md-3 col-lg-2 border-end min-vh-100 p-3 bg-primary position-fixed">
-    <!-- Profile Section -->
-  <div class="text-center mb-4 b">
-    <img src="{{ Auth::user()->profile_picture 
-                  ? asset(Auth::user()->profile_picture) 
-                  : asset('img/default.png') }}" 
-         alt="Doctor Profile" 
+<!-- Desktop Sidebar -->
+<div id="sidebar" class="col-md-3 col-lg-2 border-end min-vh-100 p-3 bg-primary d-none d-lg-block position-fixed">
+  <div class="text-center mb-4">
+    <img src="{{ Auth::user()->profile_picture ? asset(Auth::user()->profile_picture) : asset('img/default.png') }}"
+         alt="Doctor Profile"
          class="rounded-circle img-fluid mb-2"
          style="width:80px; height:80px; object-fit:cover;">
     <h6 class="text-white mb-0">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</h6>
@@ -34,58 +31,126 @@
   </div>
 
   <ul class="nav flex-column gap-2">
-
     <li class="nav-item">
-      <a href="{{ route('doctor.doctor-dashboard') }}" 
-         class="nav-link text-white d-flex align-items-center  {{ request()->routeIs('doctor.doctor-dashboard') ? 'active bg-info text-primary rounded' : '' }}">
-        <i data-feather="activity" class="me-2  text-white"></i> Dashboard Overview
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a href="{{ route('doctor.view-appointment') }}" 
-       class="nav-link text-white d-flex align-items-center  {{ request()->routeIs('doctor.view-appointment') ? 'active bg-info text-primary rounded' : '' }}">
-        <i data-feather="calendar" class="me-2 text-success"></i> View Appointments
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a href="{{ route('doctor.view-patients') }}" 
-        class="nav-link text-white d-flex align-items-center {{ request()->routeIs('doctor.view-patients') ? 'active bg-info text-primary rounded' : '' }}">
-        <i data-feather="users" class="me-2 text-danger"></i> View Patients
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a href="{{ route('doctor.chat-call') }}" 
-        class="nav-link text-white d-flex align-items-center  {{ request()->routeIs('doctor.chat-call') ? 'active bg-info text-primary rounded' : '' }}">
-        <i data-feather="message-circle" class="me-2 text-success"></i> Chat / Video Call
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a href="write-prescriptions" 
-         class="nav-link text-white d-flex align-items-center  {{ request()->routeIs('doctor.write-prescriptions') ? 'active bg-info text-primary rounded' : '' }}">
-        <i data-feather="edit" class="me-2 text-secondary"></i> Manage Prescription
-      </a>
-    </li>
-
-     <li class="nav-item">
-          <a href="{{ route('doctor.my-profile') }}"
-                  class="nav-link text-white d-flex align-items-center  {{ request()->routeIs('doctor.my-profile') ? 'active bg-info text-primary rounded' : '' }}">
-            <i data-feather="user" class="me-2 text-secondary"></i> My Profile
-          </a>
-        </li>
-
-      <!-- Logout (mobile offcanvas) -->
-      <li class="nav-item mt-3">
-        <form action="{{ route('logout') }}" method="POST">
-          @csrf
-          <button type="submit" class="btn btn-light d-flex text-primary align-items-center">
-            <i data-feather="log-out" class="me-2"></i> Logout
-          </button>
-        </form>
+            <a href="{{ route('doctor.doctor-dashboard') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.doctor-dashboard') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="activity" class="me-2"></i> Dashboard Overview
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.view-appointment') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.view-appointment') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="calendar" class="me-2"></i> View Appointments
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.view-patients') }}" 
+               class="nav-link  d-flex align-items-center {{ request()->routeIs('doctor.view-patients') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="users" class="me-2"></i> View Patients
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.chat-call') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.chat-call') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="message-circle" class="me-2"></i> Chat / Video Call
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.write-prescriptions') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.write-prescriptions') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="edit" class="me-2"></i> Manage Prescription
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.my-profile') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.my-profile') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="user" class="me-2"></i> My Profile
+            </a>
+          </li>
+          <li class="nav-item mt-3">
+            <form action="{{ route('logout') }}" method="POST">
+              @csrf
+              <button type="submit" class="btn btn-light d-flex align-items-center w-100">
+                <i data-feather="log-out" class="me-2"></i> Logout
+              </button>
+            </form>
     </li>
   </ul>
-</div
+</div>
 
+<!-- ✅ Offcanvas Sidebar (mobile only) -->
+<div class="offcanvas offcanvas-start bg-primary text-white"
+     tabindex="-1"
+     id="doctorSidebar"
+     data-bs-scroll="true"
+     data-bs-backdrop="false"
+     style="top: 57px; height: calc(100vh - 30px);">
+      <div class="offcanvas-body">
+        <div class="text-center mb-4">
+          <img src="{{ Auth::user()->profile_picture 
+                        ? asset(Auth::user()->profile_picture) 
+                        : asset('img/default.png') }}" 
+              alt="Doctor Profile" 
+              class="rounded-circle img-fluid mb-2"
+              style="width:80px; height:80px; object-fit:cover;">
+          <h6 class="text-white mb-0">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</h6>
+          <small class="text-light">Doctor</small>
+        </div>
+
+        <ul class="nav flex-column gap-2">
+          <li class="nav-item">
+            <a href="{{ route('doctor.doctor-dashboard') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.doctor-dashboard') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="activity" class="me-2"></i> Dashboard Overview
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.view-appointment') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.view-appointment') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="calendar" class="me-2"></i> View Appointments
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.view-patients') }}" 
+               class="nav-link  d-flex align-items-center {{ request()->routeIs('doctor.view-patients') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="users" class="me-2"></i> View Patients
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.chat-call') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.chat-call') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="message-circle" class="me-2"></i> Chat / Video Call
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.write-prescriptions') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.write-prescriptions') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="edit" class="me-2"></i> Manage Prescription
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('doctor.my-profile') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.my-profile') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+              <i data-feather="user" class="me-2"></i> My Profile
+            </a>
+          </li>
+          <li class="nav-item mt-3">
+            <form action="{{ route('logout') }}" method="POST">
+              @csrf
+              <button type="submit" class="btn btn-light d-flex align-items-center w-100">
+                <i data-feather="log-out" class="me-2"></i> Logout
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+
+<style>
+  @media (max-width: 576px) {
+    #doctorSidebar {
+      width: 70%;
+    }
+  }
+</style>

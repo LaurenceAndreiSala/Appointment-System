@@ -10,38 +10,48 @@
 
     <!-- ✅ Main Content -->
     <div class="col-12 col-md-9 col-lg-10 p-4 p-md-5">
-      <h2 class="fw-bold">Chat / Video Call</h2>
-      <p class="text-muted">Join your scheduled video consultations with your doctor.</p>
+      <h2 class="fw-bold mb-2">💬 Chat / Video Call</h2>
+      <p class="text-muted mb-4">Join your scheduled video consultations with your doctor.</p>
 
       <div class="card shadow-sm border-0 mb-4 p-4">
-        <h3 class="fw-bold mb-3">My Approved Appointments</h3>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+          <h3 class="fw-bold mb-2 mb-md-0">My Approved Appointments</h3>
+        </div>
 
-        <div class="table-responsive">
-          <table class="table table-bordered table-striped align-middle text-center">
-            <thead class="table-dark">
+        <!-- ✅ Responsive Table Wrapper -->
+        <div class="table-responsive rounded-3 shadow-sm">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark text-center">
               <tr>
                 <th>Doctor</th>
-                <th>Date & Time</th>
+                <th>Date</th>
+                <th>Time</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="text-center">
               @forelse($appointments as $appt)
                 <tr>
-                  <td>Dr. {{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}</td>
+                  <td class="fw-semibold">
+                    Dr. {{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}
+                  </td>
                   <td>
-  {{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}
-  <br>
-  @if($appt->slot)
-    {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }} - 
-    {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
-  @else
-    <em>No slot assigned</em>
-  @endif
-</td>
+                    {{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}
+                  </td>
+                  <td>
+                    @if($appt->slot)
+                      {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }}
+                      -
+                      {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
+                    @else
+                      <em class="text-muted">No slot assigned</em>
+                    @endif
+                  </td>
                 </tr>
               @empty
                 <tr>
-                  <td colspan="3">No approved meetings yet.</td>
+                  <td colspan="3" class="text-muted py-4">
+                    No approved meetings yet.
+                  </td>
                 </tr>
               @endforelse
             </tbody>
@@ -55,16 +65,19 @@
 <!-- ✅ Call Popup Modal -->
 <div class="modal fade" id="incomingCallModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content text-center p-3">
-      <h5 id="callerName"></h5>
-      <div class="d-flex justify-content-center mt-3">
-        <button id="acceptCall" class="btn btn-success me-3">Accept</button>
-        <button id="rejectCall" class="btn btn-danger">Reject</button>
+    <div class="modal-content text-center p-3 border-0 shadow-lg">
+      <h5 id="callerName" class="fw-bold mt-2"></h5>
+      <div class="d-flex justify-content-center mt-3 mb-2">
+        <button id="acceptCall" class="btn btn-success me-3 px-4">
+          <i class="fas fa-phone-alt me-1"></i> Accept
+        </button>
+        <button id="rejectCall" class="btn btn-danger px-4">
+          <i class="fas fa-phone-slash me-1"></i> Reject
+        </button>
       </div>
     </div>
   </div>
 </div>
-
 
 <script>
    const fetchNotificationsUrl = "{{ route('patient.notifications.fetch') }}";

@@ -3,158 +3,92 @@
 
 @section('content')
 @include('includes.doctornavbar')
+@include('includes.doctorsidebar')
 
 
 <div class="container-fluid">
   <div class="row">
 
-    @include('includes.doctorsidebar')
-
-     <!-- ✅ Offcanvas Sidebar (mobile only) -->
-    <div class="offcanvas offcanvas-start bg-primary text-white" tabindex="-1" id="doctorSidebar">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title">Menu</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-      </div>
-      <div class="offcanvas-body">
-        <div class="text-center mb-4">
-          <img src="{{ Auth::user()->profile_picture 
-                        ? asset(Auth::user()->profile_picture) 
-                        : asset('img/default.png') }}" 
-              alt="Doctor Profile" 
-              class="rounded-circle img-fluid mb-2"
-              style="width:80px; height:80px; object-fit:cover;">
-          <h6 class="text-white mb-0">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</h6>
-          <small class="text-light">Doctor</small>
-        </div>
-
-        <ul class="nav flex-column gap-2">
-          <li class="nav-item">
-            <a href="{{ route('doctor.doctor-dashboard') }}" 
-               class="nav-link text-white d-flex align-items-center {{ request()->routeIs('doctor.doctor-dashboard') ? 'active bg-info text-primary rounded' : '' }}">
-              <i data-feather="activity" class="me-2 text-white"></i> Dashboard Overview
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('doctor.view-appointment') }}" 
-               class="nav-link text-white d-flex align-items-center {{ request()->routeIs('doctor.view-appointment') ? 'active bg-info text-primary rounded' : '' }}">
-              <i data-feather="calendar" class="me-2 text-success"></i> View Appointments
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('doctor.view-patients') }}" 
-               class="nav-link text-white d-flex align-items-center {{ request()->routeIs('doctor.view-patients') ? 'active bg-info text-primary rounded' : '' }}">
-              <i data-feather="users" class="me-2 text-danger"></i> View Patients
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('doctor.chat-call') }}" 
-               class="nav-link text-white d-flex align-items-center {{ request()->routeIs('doctor.chat-call') ? 'active bg-info text-primary rounded' : '' }}">
-              <i data-feather="message-circle" class="me-2 text-success"></i> Chat / Video Call
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('doctor.write-prescriptions') }}" 
-               class="nav-link text-white d-flex align-items-center {{ request()->routeIs('doctor.write-prescriptions') ? 'active bg-info text-primary rounded' : '' }}">
-              <i data-feather="edit" class="me-2 text-secondary"></i> Manage Prescription
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('doctor.my-profile') }}" 
-               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.my-profile') ? 'active bg-white text-primary rounded' : 'text-white' }}">
-              <i data-feather="user" class="me-2 text-danger"></i> My Profile
-            </a>
-          </li>
-          <li class="nav-item mt-3">
-            <form action="{{ route('logout') }}" method="POST">
-              @csrf
-              <button type="submit" class="btn btn-light d-flex text-primary align-items-center">
-                <i data-feather="log-out" class="me-2"></i> Logout
-              </button>
-            </form>
-          </li>
-        </ul>
-      </div>
-    </div>
-
 <!-- ✅ Main Content -->
     <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
-      <!-- Stats Cards -->
-      <div class="row g-4 mb-4">
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="card text-center shadow-sm border-0 bg-primary text-white">
+            <a class="navbar-brand d-flex align-items-center mb-3 h1 p-1 rounded shadow-sm" 
+   href="{{ route('admin.admin-dashboard') }}" 
+   style="background-color: #f8f9fa; padding: 5px 5px;">
+  <i data-feather="user" class="text-primary me-2"></i>
+  <span class="fw-bold fs-10 fs-md-10">
+    Welcome Dr. {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}!
+  </span>
+</a>
+    <!-- ✅ Stats Cards -->
+      <div class="row g-4 mb-5">
+        <div class="col-12 col-md-4">
+          <div class="card shadow-sm border-0 text-center bg-primary text-white rounded-4">
             <div class="card-body">
               <i class="fas fa-calendar-check fa-2x mb-2"></i>
-              <h2 class="fw-bold p-4">{{ $appointmentCount }}</h2>
+              <h2 class="fw-bold">{{ $appointmentCount }}</h2>
               <p class="mb-0">Today’s Appointments</p>
             </div>
           </div>
         </div>
-
-        <div class="col-md-4">
-          <div class="card text-center shadow-sm border-0 bg-success text-white">
+        <div class="col-12 col-md-4">
+          <div class="card shadow-sm border-0 text-center bg-success text-white rounded-4">
             <div class="card-body">
-              <i class="fas fa-procedures fa-2x mb-2"></i>
-              <h2 class="fw-bold p-4">{{ $patientCount }}</h2>
+              <i class="fas fa-users fa-2x mb-2"></i>
+              <h2 class="fw-bold">{{ $patientCount }}</h2>
               <p class="mb-0">Total Patients</p>
             </div>
           </div>
         </div>
-
-        <div class="col-md-4">
-          <div class="card text-center shadow-sm border-0 bg-warning text-white">
+        <div class="col-12 col-md-4">
+          <div class="card shadow-sm border-0 text-center bg-warning text-white rounded-4">
             <div class="card-body">
               <i class="fas fa-prescription-bottle-alt fa-2x mb-2"></i>
-              <h2 class="fw-bold p-4">{{ $prescriptionsCount ?? 0 }}</h2>
+              <h2 class="fw-bold">{{ $prescriptionsCount ?? 0 }}</h2>
               <p class="mb-0">Prescriptions Written</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Appointments Table -->
-      <div class="card shadow-sm border-0 mb-4 p-4">
-        <h3 class="fw-bold mb-3">View All Appointments</h3>
-        <div class="table-responsive">
-          <table class="table table-bordered table-striped align-middle text-center">
-            <thead class="table-dark">
+
+      <!-- ✅ Appointments Table -->
+      <div class="card shadow-sm border-0 p-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+          <h3 class="fw-bold mb-2 mb-md-0">View All Appointments</h3>
+        </div>
+
+        <div class="table-responsive rounded-3 shadow-sm">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark text-center">
               <tr>
                 <th>Profile</th>
                 <th>Patient</th>
                 <th>Doctor</th>
-                <th>Date & Time</th>
+                <th>Date</th>
+                <th>Time</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="text-center">
               @forelse($appointments as $appt)
                 <tr>
                   <td>
-                    @if($appt->patient?->profile_picture)
-                      <img src="{{ asset($appt->patient->profile_picture) }}" 
-                           alt="Profile Picture" 
-                           class="rounded-circle"
-                           style="width:50px; height:50px; object-fit:cover;">
-                    @else
-                      <img src="{{ asset('img/default-avatar.png') }}" 
-                           alt="Default" 
-                           class="rounded-circle"
-                           style="width:50px; height:50px; object-fit:cover;">
-                    @endif
+                    <img src="{{ $appt->patient?->profile_picture ? asset($appt->patient->profile_picture) : asset('img/default-avatar.png') }}" 
+                         alt="Profile" class="rounded-circle shadow-sm"
+                         style="width:50px; height:50px; object-fit:cover;">
                   </td>
                   <td>{{ $appt->patient?->firstname }} {{ $appt->patient?->lastname }}</td>
                   <td>{{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}</td>
-<td>
-  {{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}
-  <br>
-  @if($appt->slot)
-    {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }} - 
-    {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
-  @else
-    <em>No slot assigned</em>
-  @endif
-</td>
+                  <td>{{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}</td>
+                  <td>
+                    @if($appt->slot)
+                      {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }} -
+                      {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
+                    @else
+                      <em class="text-muted">No slot</em>
+                    @endif
+                  </td>
                   <td>
                     @if($appt->status == 'pending')
                       <span class="badge bg-warning text-dark">Pending</span>
@@ -172,18 +106,18 @@
                     <div class="d-flex justify-content-center gap-2">
                       <form action="{{ route('doctor.appointments.approve', $appt->id) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                        <button type="submit" class="btn btn-sm btn-outline-success px-3">Approve</button>
                       </form>
                       <form action="{{ route('doctor.view-appointment.deny', $appt->id) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-sm btn-danger">Deny</button>
+                        <button type="submit" class="btn btn-sm btn-outline-danger px-3">Deny</button>
                       </form>
                     </div>
                   </td>
                 </tr>
               @empty
                 <tr>
-                  <td colspan="6">No appointments found.</td>
+                  <td colspan="7" class="text-muted py-4">No appointments found.</td>
                 </tr>
               @endforelse
             </tbody>
@@ -200,41 +134,6 @@
 </script>
 <script src="{{ asset('js/notification.js') }}"></script>
 
-<!-- Sidebar Slide CSS -->
-<style>
- #sidebar {
-  transition: transform 0.3s ease-in-out;
-}
-
-/* Desktop (lg and up) → Sidebar is visible */
-@media (min-width: 992px) {
-  #sidebar {
-    position: sticky;
-    top: 0;
-    width: 220px; /* adjust as needed */
-  }
-  #mainContent {
-    margin-left: 220px; /* push content aside */
-  }
-}
-
-/* Mobile → Sidebar hidden by default, slides in */
-@media (max-width: 991.98px) {
-  #sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 75%;
-    z-index: 1050;
-    transform: translateX(-100%);
-  }
-  #sidebar.active {
-    transform: translateX(0);
-  }
-}
-
-</style>
 
 <!-- JS -->
 <script>

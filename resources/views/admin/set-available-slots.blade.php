@@ -2,33 +2,16 @@
 @section('title', 'Admin Dashboard | MediCare {{ Auth::user()->name }}')
 
 @section('content')
+@include('includes.adminnavbar')
+@include('includes.adminleftnavbar')
 
-<!-- Top Navbar -->
-<nav class="navbar navbar-light bg-white shadow-sm sticky-top">
-  <div class="container-fluid d-flex align-items-center">
-    <!-- Sidebar Toggle (mobile only) + Brand -->
-    <div class="d-flex align-items-center">
-      <!-- Hamburger (mobile only) -->
-      <button class="btn d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#adminSidebar">
-        <i data-feather="menu"></i>
-      </button>
-      <a class="navbar-brand d-flex align-items-center mb-0 h1" href="#">
-        <i data-feather="shield" class="text-primary me-2"></i>
-        <span class="fw-bold fs-6 fs-md-5">Welcome {{ Auth::user()->lastname }}!</span>
-      </a>
-    </div>
-  </div>
-</nav>
 
 
 <div class="container-fluid">
   <div class="row">
-  @include('includes.adminleftnavbar')
-
 
     <!-- Main Content -->
     <main class="col-lg-10 offset-lg-2 p-5">
-  <div class="card shadow-sm border-0 mb-4 p-4">
     <div class="card-body">
         <h3 class="fw-bold mb-3">Set Available Appointment Slot</h3>
       <div class="mycard-content">
@@ -180,6 +163,7 @@
  </table>
   </div>
 </div>
+
 
 <script>
   // Set slot ID in modal

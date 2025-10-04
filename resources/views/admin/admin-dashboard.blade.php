@@ -2,77 +2,68 @@
 @section('title', 'Admin Dashboard | MediCare {{ Auth::user()->name }}')
 
 @section('content')
-
-<!-- Top Navbar -->
-<nav class="navbar navbar-light bg-white shadow-sm sticky-top">
-  <div class="container-fluid d-flex align-items-center">
-    <!-- Sidebar Toggle (mobile only) + Brand -->
-    <div class="d-flex align-items-center">
-      <!-- Hamburger (mobile only) -->
-      <button class="btn d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#adminSidebar">
-        <i data-feather="menu"></i>
-      </button>
-      <a class="navbar-brand d-flex align-items-center mb-0 h1" href="#">
-        <i data-feather="shield" class="text-primary me-2"></i>
-        <span class="fw-bold fs-6 fs-md-5">Welcome {{ Auth::user()->lastname }}!</span>
-      </a>
-    </div>
-  </div>
-</nav>
+@include('includes.adminnavbar')
+@include('includes.adminleftnavbar')
 
 
 <div class="container-fluid">
   <div class="row">
 
-  @include('includes.adminleftnavbar')
+   <!-- ✅ Main Content -->
+    <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
+      <a class="navbar-brand d-flex align-items-center mb-3 h1 p-1 rounded shadow-sm" 
+   href="{{ route('admin.admin-dashboard') }}" 
+   style="background-color: #f8f9fa; padding: 5px 5px;">
+  <i data-feather="user" class="text-primary me-2"></i>
+  <span class="fw-bold fs-10 fs-md-10">
+    Welcome Sec. {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}!
+  </span>
+</a>
 
-    <!-- Main Content -->
-   <main class="col-lg-10 offset-lg-2 p-5">
-  <div class="card shadow-sm border-0 mb-4 p-4">
-    <div class="card-body">
-          <!-- Stats -->
-          <div class="row g-4">
-            <div class="col-md-3">
-              <div class="card text-center shadow-sm border-0 bg-primary text-white">
-                <div class="card-body">
-                  <i class="fas fa-user-md fa-2x mb-2"></i>
-                  <h2 class="fw-bold">{{ $doctorCount }}</h2>
-                  <p class="mb-0">Registered Doctors</p>
-                </div>
-              </div>
-            </div>
+       <!-- ✅ Stats Cards -->
+<div class="row g-4 mb-5">
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="card shadow-sm border-0 text-center bg-primary text-white rounded-4 h-100">
+      <div class="card-body">
+        <i class="fas fa-user-md fa-2x mb-2"></i>
+        <h2 class="fw-bold">{{ $doctorCount }}</h2>
+        <p class="mb-0">Registered Doctors</p>
+      </div>
+    </div>
+  </div>
 
-            <div class="col-md-3">
-              <div class="card text-center shadow-sm border-0 bg-success text-white">
-                <div class="card-body">
-                  <i class="fas fa-user-injured fa-2x mb-2"></i>
-                  <h2 class="fw-bold">{{ $patientCount }}</h2>
-                  <p class="mb-0">Appointment Patients</p>
-                </div>
-              </div>
-            </div>
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="card shadow-sm border-0 text-center bg-success text-white rounded-4 h-100">
+      <div class="card-body">
+        <i class="fas fa-user-injured fa-2x mb-2"></i>
+        <h2 class="fw-bold">{{ $patientCount }}</h2>
+        <p class="mb-0">Appointment Patients</p>
+      </div>
+    </div>
+  </div>
 
-            <div class="col-md-3">
-              <div class="card text-center shadow-sm border-0 bg-warning text-dark">
-                <div class="card-body">
-                  <i class="fas fa-users fa-2x mb-2"></i>
-                  <h2 class="fw-bold">{{ $totaluserCount }}</h2>
-                  <p class="mb-0">All Users</p>
-                </div>
-              </div>
-            </div>
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="card shadow-sm border-0 text-center bg-warning text-white rounded-4 h-100">
+      <div class="card-body">
+        <i class="fas fa-users fa-2x mb-2"></i>
+        <h2 class="fw-bold">{{ $totaluserCount }}</h2>
+        <p class="mb-0">All Users</p>
+      </div>
+    </div>
+  </div>
 
-     <div class="col-md-3">
-  <div class="card text-center shadow-sm border-0 bg-danger text-white">
-    <div class="card-body">
-      <i class="fas fa-money-bill-wave fa-2x mb-2"></i>
-      <h2 class="fw-bold">
-       ₱ {{ $totalPayments }}
-      </h2>
-      <p class="mb-0">Total Payment</p>
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="card shadow-sm border-0 text-center bg-danger text-white rounded-4 h-100">
+      <div class="card-body">
+        <i class="fas fa-money-bill-wave fa-2x mb-2"></i>
+        <h2 class="fw-bold">₱ {{ $totalPayments }}</h2>
+        <p class="mb-0">Total Payment</p>
+      </div>
     </div>
   </div>
 </div>
+
+
 
         <!-- Payment Chart -->
 <div class="card shadow-sm border-2 mt-4">
@@ -83,43 +74,6 @@
     </div>
   </div>
 </div>
-
-<!-- Sidebar (mobile offcanvas) -->
-<div class="offcanvas offcanvas-start bg-primary text-white custom-offcanvas" tabindex="-1" id="adminSidebar">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title">Admin Menu</h5>
-    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-  </div>
-  <div class="offcanvas-body d-flex flex-column">
-    <ul class="nav flex-column gap-2 flex-grow-1">
-      <li class="nav-item"><a href="{{ route('admin.admin-dashboard') }}" class="nav-link text-white"><i data-feather="activity" class="me-2"></i> Dashboard Overview</a></li>
-      <li class="nav-item"><a href="{{ route('admin.set-available-slots') }}" class="nav-link text-white"><i data-feather="clock" class="me-2"></i> Set Available Slot</a></li>
-      <li class="nav-item"><a href="{{ route('admin.view-appointment') }}" class="nav-link text-white"><i data-feather="list" class="me-2"></i> View Appointments</a></li>
-      <li class="nav-item"><a href="{{ route('admin.create-doctors') }}" class="nav-link text-white"><i data-feather="users" class="me-2"></i> Manage Users</a></li>
-      <li class="nav-item"><a href="#" class="nav-link text-white"><i data-feather="bell" class="me-2"></i> Notifications</a></li>
-      <li class="nav-item"><a href="#" class="nav-link text-white"><i data-feather="bar-chart-2" class="me-2"></i> Reports</a></li>
-
-      <!-- Logout (mobile offcanvas) -->
-      <li class="nav-item mt-3">
-        <form action="{{ route('logout') }}" method="POST">
-          @csrf
-          <button type="submit" class="btn btn-light d-flex align-items-center">
-            <i data-feather="log-out" class="me-2"></i> Logout
-          </button>
-        </form>
-      </li>
-    </ul>
-  </div>
-</div>
-
-<!-- Custom CSS -->
-<style>
-  /* Half-width sidebar */
-  .custom-offcanvas {
-    width: 70% !important; /* 👈 half of the screen */
-    max-width: 400px; /* optional: limit sa dako nga screen */
-  }
-</style>
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

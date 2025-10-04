@@ -2,67 +2,68 @@
 @section('title', 'Admin Dashboard | MediCare {{ Auth::user()->name }}')
 
 @section('content')
-
-<!-- Top Navbar -->
-<nav class="navbar navbar-light bg-white shadow-sm sticky-top">
-  <div class="container-fluid d-flex align-items-center">
-    <!-- Sidebar Toggle (mobile only) + Brand -->
-    <div class="d-flex align-items-center">
-      <!-- Hamburger (mobile only) -->
-      <button class="btn d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#adminSidebar">
-        <i data-feather="menu"></i>
-      </button>
-      <a class="navbar-brand d-flex align-items-center mb-0 h1" href="#">
-        <i data-feather="shield" class="text-primary me-2"></i>
-        <span class="fw-bold fs-6 fs-md-5">Welcome {{ Auth::user()->lastname }}!</span>
-      </a>
-    </div>
-  </div>
-</nav>
+@include('includes.adminnavbar')
+@include('includes.adminleftnavbar')
 
 
 <div class="container-fluid">
   <div class="row">
 
-  @include('includes.adminleftnavbar')
-
     <!-- Main Content -->
-    <main class="col-lg-10 offset-lg-2 p-5">
-  <div class="card shadow-sm border-0 mb-4 p-4">
-    <div class="card-body">
-          <!-- Stats -->
-          <div class="row g-4">
-            <div class="card mt-4">
-  <h3>📊 Summary Report</h3>
-  <div class="row text-center p-3">
-    <div class="col-md-3">
-      <div class="stat-card bg-success text-white p-3 rounded shadow-sm">
-        <h4>{{ $completedAppointments }}</h4>
-        <p>Completed Appointments</p>
+   <!-- ✅ Main Content -->
+<div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
+  <!-- ✅ Header with Icon -->
+  <div class="d-flex align-items-center mb-4">
+    <i data-feather="bar-chart-2" class="text-primary me-2" style="width: 28px; height: 28px;"></i>
+    <h4 class="fw-bold mb-0">Summary Report</h4>
+  </div>
+<!-- ✅ Stats Cards -->
+<div class="row g-4 mb-5">
+  <!-- Completed Appointments -->
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="card shadow-sm border-0 text-center bg-success text-white rounded-4 h-100">
+      <div class="card-body">
+        <i class="fas fa-calendar-check fa-2x mb-2"></i>
+        <h2 class="fw-bold">{{ $completedAppointments }}</h2>
+        <p class="mb-0">Completed Appointments</p>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="stat-card bg-warning text-dark p-3 rounded shadow-sm">
-        <h4>{{ $pendingAppointments }}</h4>
-        <p>Pending Appointments</p>
+  </div>
+
+  <!-- Pending Appointments -->
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="card shadow-sm border-0 text-center bg-warning text-white rounded-4 h-100">
+      <div class="card-body">
+        <i class="fas fa-clock fa-2x mb-2"></i>
+        <h2 class="fw-bold">{{ $pendingAppointments }}</h2>
+        <p class="mb-0">Pending Appointments</p>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="stat-card bg-danger text-white p-3 rounded shadow-sm">
-        <h4>{{ $cancelledAppointments }}</h4>
-        <p>Cancelled Appointments</p>
+  </div>
+
+  <!-- Cancelled Appointments -->
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="card shadow-sm border-0 text-center bg-danger text-white rounded-4 h-100">
+      <div class="card-body">
+        <i class="fas fa-times-circle fa-2x mb-2"></i>
+        <h2 class="fw-bold">{{ $cancelledAppointments }}</h2>
+        <p class="mb-0">Cancelled Appointments</p>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="stat-card bg-primary text-white p-3 rounded shadow-sm">
-        <h4>₱{{ number_format($totalPayments, 2) }}</h4>
-        <p>Total Revenue</p>
+  </div>
+
+  <!-- Total Revenue -->
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="card shadow-sm border-0 text-center bg-primary text-white rounded-4 h-100">
+      <div class="card-body">
+        <i class="fas fa-coins fa-2x mb-2"></i>
+        <h2 class="fw-bold">₱{{ number_format($totalPayments, 2) }}</h2>
+        <p class="mb-0">Total Revenue</p>
       </div>
     </div>
   </div>
 </div>
-</div>
-</div>
+
 
         <!-- Payment Chart -->
 <div class="card shadow-sm border-2 mt-4">
@@ -74,12 +75,10 @@
   </div>
 </div>
 
-<div class="col-md-12 mt-4">
-    <div class="mycard">
-        <div class="mycard-header">
-            <h3>Appointments Per Day</h3>
-        </div>
-        <div class="mycard-content" style="height: 350px;">
+<div class="card shadow-sm border-2 mt-4">
+    <div class="card-body">
+    <h3 class="fw-bold mb-3">Total Payment (Monthly)</h3>
+    <div style="height:300px;">
             <canvas id="appointmentsPerDay"></canvas>
         </div>
     </div>
@@ -125,17 +124,6 @@
     <a href="{{ route('admin.report.pdf') }}" class="btn btn-danger mt-2">
       <i class="fas fa-file-pdf"></i> Download PDF
     </a>
-  </div>
-</div>
-
-<!-- Sidebar (mobile offcanvas) -->
-<div class="offcanvas offcanvas-start bg-primary text-white custom-offcanvas" tabindex="-1" id="adminSidebar">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title">Admin Menu</h5>
-    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-  </div>
-  <div class="offcanvas-body d-flex flex-column">
-    
   </div>
 </div>
 
@@ -245,13 +233,5 @@ new Chart(document.getElementById("financialOverview"), {
     location.reload();
   }, 30000); 
  </script>
-<!-- Custom CSS -->
-<style>
-  /* Half-width sidebar */
-  .custom-offcanvas {
-    width: 50% !important; /* 👈 half of the screen */
-    max-width: 100px; /* optional: limit sa dako nga screen */
-  }
-</style>
 
 @endsection

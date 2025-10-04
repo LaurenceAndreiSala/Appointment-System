@@ -2,32 +2,15 @@
 @section('title', 'Admin Dashboard | MediCare {{ Auth::user()->name }}')
 
 @section('content')
-
-<!-- Top Navbar -->
-<nav class="navbar navbar-light bg-white shadow-sm sticky-top">
-  <div class="container-fluid d-flex align-items-center">
-    <!-- Sidebar Toggle (mobile only) + Brand -->
-    <div class="d-flex align-items-center">
-      <!-- Hamburger (mobile only) -->
-      <button class="btn d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#adminSidebar">
-        <i data-feather="menu"></i>
-      </button>
-      <a class="navbar-brand d-flex align-items-center mb-0 h1" href="#">
-        <i data-feather="shield" class="text-primary me-2"></i>
-        <span class="fw-bold fs-6 fs-md-5">Welcome {{ Auth::user()->lastname }}!</span>
-      </a>
-    </div>
-  </div>
-</nav>
+@include('includes.adminnavbar')
+@include('includes.adminleftnavbar')
 
 
 <div class="container-fluid">
   <div class="row">
-      @include('includes.adminleftnavbar')
 
     <!-- Main Content -->
    <main class="col-lg-10 offset-lg-2 p-5">
-  <div class="card shadow-sm border-0 mb-4 p-4">
     <div class="card-body">
          <h3 class="fw-bold mb-3">Create Doctor Account</h3>
 
@@ -88,14 +71,25 @@
           <input type="date" name="birth_date" class="form-control" required>
         </div>
         <div class="col-md-6">
-          <label class="form-label">Gender</label>
-          <select name="gender" class="form-select" required>
-            <option value="">-- Select Gender --</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-        </div>
-      </div>
+  <label class="form-label d-block mb-2 fw-semibold">Gender</label>
+  <div class="d-flex gap-3">
+    <!-- Male Option -->
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="gender" id="male" value="male" required>
+      <label class="form-check-label d-flex align-items-center" for="male">
+        <i class="fas fa-mars text-primary me-1"></i> Male
+      </label>
+    </div>
+
+    <!-- Female Option -->
+    <div class="form-check form-check-inline mb-3">
+      <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+      <label class="form-check-label d-flex align-items-center" for="female">
+        <i class="fas fa-venus text-danger me-1"></i> Female
+      </label>
+    </div>
+  </div>
+
 
       <div class="row mb-3 d-none">
         <div class="col-md-6">
@@ -107,7 +101,7 @@
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary">Create Doctor</button>
+      <button type="submit" class="btn btn-primary mb-5">Create Doctor</button>
     </form>
   </div
   </div>
@@ -181,43 +175,5 @@
 </div>
 </div>
 
-
-
-<!-- Sidebar (mobile offcanvas) -->
-<div class="offcanvas offcanvas-start bg-primary text-white custom-offcanvas" tabindex="-1" id="adminSidebar">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title">Admin Menu</h5>
-    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-  </div>
-  <div class="offcanvas-body d-flex flex-column">
-    <ul class="nav flex-column gap-2 flex-grow-1">
-      <li class="nav-item"><a href="{{ route('admin.admin-dashboard') }}" class="nav-link text-white"><i data-feather="activity" class="me-2"></i> Dashboard Overview</a></li>
-      <li class="nav-item"><a href="{{ route('admin.set-available-slots') }}" class="nav-link text-white"><i data-feather="clock" class="me-2"></i> Set Available Slot</a></li>
-      <li class="nav-item"><a href="{{ route('admin.view-appointment') }}" class="nav-link text-white"><i data-feather="list" class="me-2"></i> View Appointments</a></li>
-      <li class="nav-item"><a href="{{ route('admin.create-doctors') }}" class="nav-link text-white"><i data-feather="users" class="me-2"></i> Manage Users</a></li>
-      <li class="nav-item"><a href="#" class="nav-link text-white"><i data-feather="bell" class="me-2"></i> Notifications</a></li>
-      <li class="nav-item"><a href="#" class="nav-link text-white"><i data-feather="bar-chart-2" class="me-2"></i> Reports</a></li>
-
-      <!-- Logout (mobile offcanvas) -->
-      <li class="nav-item mt-3">
-        <form action="{{ route('logout') }}" method="POST">
-          @csrf
-          <button type="submit" class="btn btn-light d-flex align-items-center">
-            <i data-feather="log-out" class="me-2"></i> Logout
-          </button>
-        </form>
-      </li>
-    </ul>
-  </div>
-</div>
-
-<!-- Custom CSS -->
-<style>
-  /* Half-width sidebar */
-  .custom-offcanvas {
-    width: 70% !important; /* 👈 half of the screen */
-    max-width: 400px; /* optional: limit sa dako nga screen */
-  }
-</style>
 
 @endsection

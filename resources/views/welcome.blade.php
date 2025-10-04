@@ -6,7 +6,7 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
   <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="#">
+    <a class="navbar-brand d-flex align-items-center" style="margin-left: 15px;" href="#">
       <i class="fas fa-heartbeat text-primary me-2"></i>
       <span class="fw-bold fs-4">MediCAL</span>
     </a>

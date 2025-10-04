@@ -7,10 +7,10 @@
       <button class="btn d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#doctorSidebar">
         <i data-feather="menu"></i>
       </button>
-      <a class="navbar-brand d-flex align-items-center mb-0 h1" href="#">
-        <i data-feather="shield" class="text-primary me-2"></i>
-        <span class="fw-bold fs-6 fs-md-5">Welcome Dr. {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}!</span>
-      </a>
+        <a class="navbar-brand d-flex align-items-center" style="margin-left: 15px;" href="#">
+      <i class="fas fa-heartbeat text-primary me-2"></i>
+      <span class="fw-bold fs-4">MediCAL</span>
+    </a>
     </div>
 
     <!-- Notifications -->
