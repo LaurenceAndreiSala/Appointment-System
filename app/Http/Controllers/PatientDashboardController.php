@@ -10,6 +10,7 @@ use App\Models\Appointment;
 use App\Models\Prescription;
 use App\Models\Notification;
 use Illuminate\Support\Str;
+use App\Events\AppointmentBooked;
 
 use Carbon\Carbon;
 
@@ -233,34 +234,33 @@ $meetingUrl = "https://meet.jit.si/appointment-" . uniqid();
         ? $slot->sub_doctor_id
         : $slot->doctor_id;
 
- Appointment::create([
-        'slot_id'          => $slot->id,
-        'doctor_id'        => $doctorId,
-        'patient_id'       => auth()->id(),
-        'status'           => 'pending',
-        'appointment_date' => $slot->date,
-        'meeting_url'      => $meetingUrl,
-        'appointment_time' => $slot->start_time,
-    ]);
+ $appointment = Appointment::create([
+    'slot_id'          => $slot->id,
+    'doctor_id'        => $doctorId,
+    'patient_id'       => auth()->id(),
+    'status'           => 'pending',
+    'appointment_date' => $slot->date,
+    'meeting_url'      => $meetingUrl,
+    'appointment_time' => $slot->start_time,
+]);
 
-    // Notifications
-    Notification::create([
-        'user_id' => $doctorId,
-        'title'   => 'New Appointment Request',
-        'message' => auth()->user()->firstname . " booked an appointment for " . $slot->date . " at " . $slot->start_time,
-    ]);
+// ✅ Create notification for doctor
+Notification::create([
+    'user_id' => $doctorId,
+    'title' => 'New Appointment Today',
+    'message' => "New appointment with " . auth()->user()->firstname . " " . auth()->user()->lastname .
+                 " on " . $slot->date . " at " . $slot->start_time,
+    'is_read' => 0,
+]);
 
-    Notification::create([
-        'user_id' => auth()->id(),
-        'title'   => 'Appointment Booked',
-        'message' => "Your appointment is pending approval for {$slot->date} at {$slot->start_time}.",
-    ]);
+
+// Fire real-time event
+event(new AppointmentBooked($appointment));
 
     $slot->update(['is_taken' => true]);
 
-    return $request->ajax()
-        ? response()->json(['success' => true, 'message' => 'Appointment booked successfully!'])
-        : redirect()->route('patient.book-appointment')->with('success', 'Appointment booked successfully!');
+    return redirect()->route('patient.book-appointment')
+                     ->with('success', '✅ Your appointment has been successfully booked!');
 }
 
 

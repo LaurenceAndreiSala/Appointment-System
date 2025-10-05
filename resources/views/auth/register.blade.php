@@ -14,7 +14,7 @@
 </nav>
 
 <!-- ✅ Register Section -->
-<section class="gradient-bg d-flex align-items-center" style="min-height: 100vh;">
+<section class="gradient-bg text-white py-5" style="min-height: 91vh;">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-md-10 col-lg-6">
@@ -85,17 +85,10 @@
   </div>
 </section>
 
-<!-- ✅ Footer -->
-<footer class="bg-dark text-white py-3 mt-auto">
-  <div class="container text-center small">
-    &copy; 2025 MediCAL. All rights reserved.
-  </div>
-</footer>
-
 <!-- ✅ Styles -->
 <style>
-  .gradient-bg {
-    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+   .gradient-bg {
+    background: linear-gradient(135deg, #007bff, #00c6ff);
   }
   .card-hover {
     transition: all 0.3s ease;
@@ -103,13 +96,6 @@
   .card-hover:hover {
     transform: translateY(-6px);
     box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.15);
-  }
-  label {
-    font-size: 0.95rem;
-  }
-  input.form-control {
-    padding: 10px 14px;
-    font-size: 0.95rem;
   }
 </style>
 

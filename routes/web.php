@@ -112,7 +112,8 @@ Route::prefix('doctor')->group(function () {
     ->name('doctor.write-prescriptions.restore');
 
 Route::get('/doctor/notifications', [DoctorDashboardController::class, 'fetchNotifications'])
-    ->name('doctor.notifications.fetch');
+     ->name('doctor.notifications.fetch');
+
 Route::post('/doctor/notifications/{id}/read', [DoctorDashboardController::class, 'markNotificationRead'])
     ->name('doctor.notifications.read');
 

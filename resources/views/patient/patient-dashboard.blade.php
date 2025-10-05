@@ -3,90 +3,163 @@
 
 @section('content')
 @include('includes.patientNavbar')
-@include('includes.patientsidebar')
 
 <div class="container-fluid">
   <div class="row">
 
-     <!-- ✅ Main Dashboard Content -->
-    <div class="col-12 col-md-9 col-lg-10 p-4 p-md-5">
- <a class="navbar-brand d-flex align-items-center mb-3 h1 p-1 rounded shadow-sm" 
-   href="{{ route('admin.admin-dashboard') }}" 
-   style="background-color: #f8f9fa; padding: 5px 5px;">
-  <i data-feather="user" class="text-primary me-2"></i>
-  <span class="fw-bold fs-10 fs-md-10">
-    Welcome Patient, {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}!
-  </span>
-</a>
-            <div class="card shadow-sm border-0 mb-4 p-4">
-        <h4 class="fw-bold mb-3">My Recent Appointments</h4>
-        @if($appointments->isEmpty())
-          <p class="text-muted">No appointments yet.</p>
-        @else
-          <div class="table-responsive">
-  <table class="table table-striped align-middle">
-    <thead class="table-light">
-      <tr>
-        <th>Date & Time</th>
-        <th>Doctor</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach($appointments as $appt)
-      <tr>
-        <td>
-          {{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}
-          <br>
-          @if($appt->slot)
-            {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }} - 
-            {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
-          @else
-            <em>No slot assigned</em>
-          @endif
-        </td>
-        <td>Dr. {{ $appt->doctor->firstname }} {{ $appt->doctor->lastname }}</td>
-        <td>
-          <span class="badge 
-            @if($appt->status == 'pending') bg-warning 
-            @elseif($appt->status == 'approved') bg-success 
-            @elseif($appt->status == 'denied') bg-danger 
-            @endif">
-            {{ ucfirst($appt->status) }}
-          </span>
-        </td>
-      </tr>
-      @endforeach
-    </tbody>
-  </table>
-</div>
+  @include('includes.patientsidebar')
 
-        @endif
+    <!-- Main Content -->
+<div class="col-12 col-md-9 col-lg-10 offset-lg-2  p-4 p-md-2">
+  <!-- 👋 Welcome Banner -->
+  <div class="d-flex align-items-center justify-content-between flex-wrap bg-light p-3 rounded-4 shadow-sm mb-4">
+    <div class="d-flex align-items-center">
+      <i class="fas fa-user text-success fa-1x me-3"></i>
+      <span class="fw-bold fs-10 fs-md-10">
+        Welcome Dr. {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}! 👋
+      </span>
+    </div>
+    <small class="text-muted mt-2 mt-md-0">Patient Dashboard</small>
+  </div>
+
+  <!-- ✅ Quick Stats -->
+  <div class="row g-4 mb-5">
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center rounded-4 h-100 p-3 bg-primary text-white">
+        <i class="fas fa-calendar-check fa-2x mb-2"></i>
+        <h4 class="fw-bold mb-0">{{ $appointments->count() }}</h4>
+        <small>Appointments</small>
       </div>
-
-      <!-- ✅ Prescription Report -->
-      <div class="card shadow-sm border-0 p-4">
-        <h4 class="fw-bold mb-3">My Recent Prescriptions</h4>
-        @if($prescriptions->isEmpty())
-          <p class="text-muted">No prescriptions yet.</p>
-        @else
-          <ul class="list-group">
-            @foreach($prescriptions as $prescription)
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <strong>{{ $prescription->appointment->appointment_date }}</strong> <br>
-                  Prescribed by: Dr. {{ $prescription->appointment->doctor->firstname }} {{ $prescription->appointment->doctor->lastname }}
-                </div>
-                <a href="{{ route('patient.view-precription') }}" class="btn btn-sm btn-primary">View</a>
-              </li>
-            @endforeach
-          </ul>
-        @endif
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center rounded-4 h-100 p-3 bg-success text-white">
+        <i class="fas fa-file-prescription fa-2x mb-2"></i>
+        <h4 class="fw-bold mb-0">{{ $prescriptions->count() }}</h4>
+        <small>Prescriptions</small>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center rounded-4 h-100 p-3 bg-warning text-white">
+        <i class="fas fa-user-md fa-2x mb-2"></i>
+        <h4 class="fw-bold mb-0">{{ $doctorsCount ?? 0 }}</h4>
+        <small>Doctors</small>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm text-center rounded-4 h-100 p-3 bg-info text-white">
+        <i class="fas fa-bell fa-2x mb-2"></i>
+        <h4 class="fw-bold mb-0">{{ $notificationsCount ?? 0 }}</h4>
+        <small>Notifications</small>
       </div>
     </div>
   </div>
+
+  <!-- ✅ My Appointments -->
+  <div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-body p-4">
+      <h5 class="fw-bold mb-3 text-primary">
+        <i class="fas fa-calendar-alt me-2"></i>My Recent Appointments
+      </h5>
+
+      @if($appointments->isEmpty())
+        <p class="text-muted text-center mb-0">No appointments yet.</p>
+      @else
+        <div class="table-responsive">
+          <table class="table table-hover align-middle text-center mb-0">
+            <thead class="bg-primary text-white">
+              <tr>
+                <th>Date & Time</th>
+                <th>Doctor</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($appointments as $appt)
+                <tr>
+                  <td>
+                    <strong>{{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}</strong><br>
+                    @if($appt->slot)
+                      <small class="text-muted">
+                        {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }} - 
+                        {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
+                      </small>
+                    @else
+                      <em>No slot assigned</em>
+                    @endif
+                  </td>
+                  <td>Dr. {{ $appt->doctor->firstname }} {{ $appt->doctor->lastname }}</td>
+                  <td>
+                    <span class="badge px-3 py-2 rounded-pill
+                      @if($appt->status == 'pending') bg-warning text-dark
+                      @elseif($appt->status == 'approved') bg-success
+                      @elseif($appt->status == 'denied') bg-danger
+                      @else bg-secondary text-dark @endif">
+                      {{ ucfirst($appt->status) }}
+                    </span>
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      @endif
+    </div>
+  </div>
+
+  <!-- ✅ My Prescriptions -->
+  <div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-body p-4">
+      <h5 class="fw-bold mb-3 text-primary">
+        <i class="fas fa-file-medical me-2"></i>My Recent Prescriptions
+      </h5>
+
+      @if($prescriptions->isEmpty())
+        <p class="text-muted text-center mb-0">No prescriptions yet.</p>
+      @else
+        <div class="list-group">
+          @foreach($prescriptions as $prescription)
+            <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap rounded-3 shadow-sm mb-2">
+              <div>
+                <strong>{{ \Carbon\Carbon::parse($prescription->appointment->appointment_date)->format('M d, Y') }}</strong><br>
+                <small>Prescribed by Dr. {{ $prescription->appointment->doctor->firstname }} {{ $prescription->appointment->doctor->lastname }}</small>
+              </div>
+              <a href="{{ route('patient.view-precription') }}" class="btn btn-sm btn-outline-primary rounded-pill shadow-sm">
+                <i class="fas fa-eye me-1"></i> View
+              </a>
+            </div>
+          @endforeach
+        </div>
+      @endif
+    </div>
+  </div>
+
 </div>
-</div>
+
+<!-- ✅ Styles -->
+<style>
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+.badge {
+  font-size: 0.85rem;
+}
+
+.btn {
+  transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+</style>
+
 
 <!-- ✅ Call Popup Modal -->
 <div class="modal fade" id="incomingCallModal" tabindex="-1">
@@ -125,20 +198,15 @@ const channel = pusher.subscribe("appointments." + userId);
 let ringtone;
 
 channel.bind("App\\Events\\CallStarted", function(data) {
-  // create ringtone only once
   if (!ringtone) {
     ringtone = new Audio("{{ asset('sounds/ringtone.mp3') }}");
     ringtone.loop = true;
   }
-
-  // show modal
   document.getElementById("callerName").innerText =
     `📞 Dr. ${data.appointment.doctor.firstname} is calling...`;
 
   const callModal = new bootstrap.Modal(document.getElementById("incomingCallModal"));
   callModal.show();
-
-  // play ringtone when modal buttons are clicked
   ringtone.play().catch(err => console.warn("Autoplay blocked until user interacts"));
 
   document.getElementById("acceptCall").onclick = () => {
@@ -153,6 +221,8 @@ channel.bind("App\\Events\\CallStarted", function(data) {
     alert("❌ You rejected the call.");
   };
 });
-
 </script>
+
+
+
 @endsection

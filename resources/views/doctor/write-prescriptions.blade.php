@@ -8,50 +8,66 @@
 <div class="container-fluid">
   <div class="row">
 
-<!-- Main Content -->
-    <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
-<button type="button" class="btn btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#archivedPrescriptionsModal">
-  <i class="fas fa-archive"></i> View Archived Prescriptions
-</button>
+  <div class="col-12 col-md-9 col-lg-10 offset-lg-2  p-4 p-md-2">
 
-      <h3 class="fw-bold mb-3">Manage Prescriptions</h3>
-
-          <!-- Write Prescription Modal -->
+  <div class="bg-light rounded-4 shadow-sm p-4 mb-4 d-flex align-items-center">
+    <i class="fas fa-prescription-bottle-alt text-primary fa-2x me-3"></i>
+    <h3 class="fw-bold mb-0 text-dark">Manage Prescriptions</h3>
+  </div>
+  <button type="button" class="btn btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#archivedPrescriptionsModal">
+    <i class="fas fa-archive"></i> View Archived Prescriptions
+  </button>
+       <!-- Write Prescription Modal -->
 <div class="modal fade" id="writePrescriptionModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content rounded-3 shadow">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title">Write Prescription</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-lg border-0">
+      
+      <!-- Modal Header -->
+      <div class="modal-header bg-success text-white rounded-top-4">
+        <h5 class="modal-title fw-bold">Write Prescription</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      
+      <!-- Modal Body -->
       <form id="writePrescriptionForm" method="POST" action="{{ route('doctor.prescriptions.store') }}">
-    @csrf
-    <input type="hidden" name="appointment_id" id="prescriptionAppointmentId">
+        @csrf
+        <input type="hidden" name="appointment_id" id="prescriptionAppointmentId">
 
-    <div class="mb-3">
-        <label for="medication" class="form-label">Medication</label>
-        <input type="text" class="form-control" name="medication" id="medication" required>
-    </div>
+        <div class="modal-body">
+          <!-- Medication -->
+          <div class="mb-4">
+            <label for="medication" class="form-label fw-semibold">Medication</label>
+            <input type="text" class="form-control form-control-lg shadow-sm" name="medication" id="medication" placeholder="Enter medication name" required>
+          </div>
 
-    <div class="mb-3">
-        <label for="dosage" class="form-label">Dosage</label>
-        <input type="text" class="form-control" name="dosage" id="dosage" required>
-    </div>
+          <!-- Dosage -->
+          <div class="mb-4">
+            <label for="dosage" class="form-label fw-semibold">Dosage</label>
+            <input type="text" class="form-control form-control-lg shadow-sm" name="dosage" id="dosage" placeholder="e.g., 500mg, 2 times a day" required>
+          </div>
 
-    <div class="mb-3">
-        <label for="notes" class="form-label">Notes</label>
-        <textarea class="form-control" name="notes" id="notes" rows="3"></textarea>
-    </div>
+          <!-- Notes -->
+          <div class="mb-4">
+            <label for="notes" class="form-label fw-semibold">Notes</label>
+            <textarea class="form-control shadow-sm" name="notes" id="notes" rows="3" placeholder="Additional instructions or notes"></textarea>
+          </div>
+        </div>
 
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-success">Save Prescription</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-    </div>
-</form>
+        <!-- Modal Footer -->
+        <div class="modal-footer border-0 pt-0">
+          <button type="submit" class="btn btn-success btn-md px-4 fw-bold">
+            <i class="fas fa-prescription-bottle-alt me-2"></i> Save Prescription
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-lg px-4" data-bs-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+      </form>
 
     </div>
   </div>
 </div>
+
 
 <!-- View Prescription Modal -->
 <div class="modal fade" id="viewPrescriptionModal" tabindex="-1" aria-hidden="true">
@@ -148,105 +164,129 @@
   </div>
 </div>
 
-          <div class="table-responsive rounded-4 shadow-sm">
-    <table class="table table-hover align-middle text-center mb-0">
-      <thead class="table-dark">
-          <tr>
-            <th>Profile</th>
-            <th>Patient</th>
-            <th>Doctor</th>
-            <th>Date & Time</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse($appointments as $appt)
+         <!-- ✅ Appointments Table -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle text-center mb-0">
+          <thead class="bg-primary text-white">
             <tr>
-              <td>
-                    @if($appt->patient?->profile_picture)
-                      <img src="{{ asset($appt->patient->profile_picture) }}" 
-                           alt="Profile Picture" 
-                           class="rounded-circle"
-                           style="width:50px; height:50px; object-fit:cover;">
+              <th>Profile</th>
+              <th>Patient</th>
+              <th>Doctor</th>
+              <th>Date & Time</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @forelse($appointments as $appt)
+              <tr class="align-middle">
+                <td>
+                  <img src="{{ $appt->patient?->profile_picture ? asset($appt->patient->profile_picture) : asset('img/default-avatar.png') }}"
+                       alt="Profile" class="rounded-circle shadow-sm border"
+                       style="width:50px; height:50px; object-fit:cover;">
+                </td>
+                <td>{{ $appt->patient?->firstname }} {{ $appt->patient?->lastname }}</td>
+                <td>{{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}</td>
+                <td>
+                  {{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}
+                  <br>
+                  @if($appt->slot)
+                    {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }} -
+                    {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
+                  @else
+                    <em>No slot assigned</em>
+                  @endif
+                </td>
+                <td>
+                  @if($appt->status == 'pending')
+                    <span class="badge bg-warning text-dark">Pending</span>
+                  @elseif($appt->status == 'approved')
+                    <span class="badge bg-success">Approved</span>
+                  @elseif($appt->status == 'denied')
+                    <span class="badge bg-danger">Denied</span>
+                  @elseif($appt->status == 'cancelled')
+                    <span class="badge bg-secondary">Cancelled</span>
+                  @else
+                    <span class="badge bg-info">{{ ucfirst($appt->status) }}</span>
+                  @endif
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center gap-2 flex-wrap">
+                    <!-- Write Prescription -->
+                    <button type="button" class="btn btn-sm btn-success rounded-pill shadow-sm px-3"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#writePrescriptionModal"
+                            data-id="{{ $appt->id }}">
+                      <i class="fas fa-edit me-1"></i> Write
+                    </button>
+
+                    <!-- Archive Prescription -->
+                    @if($appt->prescription)
+                      <button type="button"
+                              class="btn btn-sm btn-secondary rounded-pill shadow-sm px-3 btn-archive"
+                              data-id="{{ $appt->prescription->id }}">
+                        <i class="fas fa-archive me-1"></i> Archive
+                      </button>
                     @else
-                      <img src="{{ asset('img/default-avatar.png') }}" 
-                           alt="Default" 
-                           class="rounded-circle"
-                           style="width:50px; height:50px; object-fit:cover;">
+                      <button type="button" class="btn btn-sm btn-secondary rounded-pill shadow-sm px-3" disabled title="No prescription to archive">
+                        <i class="fas fa-archive me-1"></i> Archive
+                      </button>
                     @endif
-                  </td>
-              <td>{{ $appt->patient?->firstname }} {{ $appt->patient?->lastname }}</td>
-              <td>{{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}</td>
-<td>
-  {{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}
-  <br>
-  @if($appt->slot)
-    {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }} - 
-    {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
-  @else
-    <em>No slot assigned</em>
-  @endif
-</td>              <td>
-                @if($appt->status == 'pending')
-                  <span class="badge bg-warning text-dark">Pending</span>
-                @elseif($appt->status == 'approved')
-                  <span class="badge bg-success">Approved</span>
-                @elseif($appt->status == 'denied')
-                  <span class="badge bg-danger">Denied</span>
-                @elseif($appt->status == 'cancelled')
-                  <span class="badge bg-secondary">Cancelled</span>
-                @else
-                  <span class="badge bg-info">{{ ucfirst($appt->status) }}</span>
-                @endif
-              </td>
-              <td>
-                <div class="d-flex justify-content-center gap-2">
-              <button type="button" class="btn btn-sm btn-success"
-        data-bs-toggle="modal" 
-        data-bs-target="#writePrescriptionModal"
-        data-id="{{ $appt->id }}">
-    <i class="fas fa-edit"></i> Write Prescript
-</button>
 
-@if($appt->prescription)
-  <button type="button"
-          class="btn btn-sm btn-secondary btn-archive"
-          data-id="{{ $appt->prescription->id }}">
-    <i class="fas fa-archive"></i> Archive
-  </button>
-@else
-  <button type="button" class="btn btn-sm btn-secondary" disabled title="No prescription to archive">
-    <i class="fas fa-archive"></i> Archive
-  </button>
-@endif
-
-
-<button type="button" class="btn btn-sm btn-primary"
-        data-bs-toggle="modal" 
-        data-bs-target="#viewPrescriptionModal"
-        data-medication="{{ $appt->prescription->medication ?? 'N/A' }}"
-        data-dosage="{{ $appt->prescription->dosage ?? 'N/A' }}"
-        data-notes="{{ $appt->prescription->notes ?? 'N/A' }}">
-    <i class="fas fa-eye"></i> View Prescript
-</button>
-
-
-                </div>
-              </td>
-            </tr>
-          @empty
-            <tr>
-              <td colspan="5">No appointments found.</td>
-            </tr>
-          @endforelse
-        </tbody>
-      </table>
+                    <!-- View Prescription -->
+                    <button type="button" class="btn btn-sm btn-primary rounded-pill shadow-sm px-3"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#viewPrescriptionModal"
+                            data-medication="{{ $appt->prescription->medication ?? 'N/A' }}"
+                            data-dosage="{{ $appt->prescription->dosage ?? 'N/A' }}"
+                            data-notes="{{ $appt->prescription->notes ?? 'N/A' }}">
+                      <i class="fas fa-eye me-1"></i> View
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="6" class="text-muted py-5">
+                  <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                  No appointments found.
+                </td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
     </div>
-      <div class="mycard-content">
- </div>
   </div>
-    </div>
+
+</div>
+
+<!-- ✅ Styles -->
+<style>
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+.badge {
+  font-size: 0.85rem;
+}
+
+.btn {
+  transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+</style>
 
 <script>
   const notifUrl = "{{ route('doctor.notifications.fetch') }}";

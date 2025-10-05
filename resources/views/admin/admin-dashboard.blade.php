@@ -11,14 +11,16 @@
 
    <!-- ✅ Main Content -->
     <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
-      <a class="navbar-brand d-flex align-items-center mb-3 h1 p-1 rounded shadow-sm" 
-   href="{{ route('admin.admin-dashboard') }}" 
-   style="background-color: #f8f9fa; padding: 5px 5px;">
-  <i data-feather="user" class="text-primary me-2"></i>
-  <span class="fw-bold fs-10 fs-md-10">
-    Welcome Sec. {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}!
+<!-- 👋 Welcome Banner -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap bg-light p-3 rounded-4 shadow-sm mb-4">
+        <div class="d-flex align-items-center">
+        <i class="fas fa-user-tie text-primary fa-1x me-3"></i>
+          <span class="fw-bold fs-10 fs-md-10">
+    Welcome Dr. {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}!
   </span>
-</a>
+        </div>
+        <small class="text-muted mt-2 mt-md-0">Secretary Dashboard</small>
+      </div>
 
        <!-- ✅ Stats Cards -->
 <div class="row g-4 mb-5">

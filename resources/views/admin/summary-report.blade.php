@@ -10,13 +10,15 @@
   <div class="row">
 
     <!-- Main Content -->
-   <!-- ✅ Main Content -->
-<div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
-  <!-- ✅ Header with Icon -->
-  <div class="d-flex align-items-center mb-4">
-    <i data-feather="bar-chart-2" class="text-primary me-2" style="width: 28px; height: 28px;"></i>
-    <h4 class="fw-bold mb-0">Summary Report</h4>
-  </div>
+        <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
+      <!-- ✅ Page Header -->
+ <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+  <h2 class="fw-bold mb-2 mb-md-0 text-primary">
+    <i class="fas fa-chart-bar me-2"></i>Summary Report
+  </h2>
+</div>
+
+
 <!-- ✅ Stats Cards -->
 <div class="row g-4 mb-5">
   <!-- Completed Appointments -->

@@ -6,7 +6,7 @@
 <!-- ✅ Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
   <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="#">
+    <a class="navbar-brand d-flex align-items-center" style="margin-left: 10px;" href="#">
       <i class="fas fa-heartbeat text-primary me-2"></i>
       <span class="fw-bold fs-4">MediCAL</span>
     </a>
@@ -14,7 +14,7 @@
 </nav>
 
 <!-- ✅ Login Section -->
-<section class="gradient-bg d-flex align-items-center" style="min-height: 100vh;">
+<section class="gradient-bg text-white py-5" style="min-height: 91vh;">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-md-8 col-lg-5">
@@ -76,17 +76,10 @@
   </div>
 </section>
 
-<!-- ✅ Footer -->
-<footer class="bg-dark text-white py-3 mt-auto">
-  <div class="container text-center small">
-    &copy; 2025 MediCAL. All rights reserved.
-  </div>
-</footer>
-
 <!-- ✅ Styles -->
 <style>
-  .gradient-bg {
-    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+   .gradient-bg {
+    background: linear-gradient(135deg, #007bff, #00c6ff);
   }
   .card-hover {
     transition: all 0.3s ease;

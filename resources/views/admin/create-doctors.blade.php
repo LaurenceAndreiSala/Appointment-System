@@ -9,15 +9,20 @@
 <div class="container-fluid">
   <div class="row">
 
-    <!-- Main Content -->
-   <main class="col-lg-10 offset-lg-2 p-5">
-    <div class="card-body">
-         <h3 class="fw-bold mb-3">Create Doctor Account</h3>
-
+   <main class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
+      <!-- ✅ Page Header -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+    <h2 class="fw-bold mb-2 mb-md-0 text-primary">
+      <i class="fas fa-user-md me-2"></i> Create Doctor Account
+    </h2>
+  </div>
+  
     @if(session('success'))
       <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+          <div class="card shadow-sm border-0 rounded-4 mb-3">
+        <div class="card-body p-3 p-md-4">
     <form method="POST" action="{{ route('doctors.store') }}">
       @csrf
 
@@ -71,109 +76,94 @@
           <input type="date" name="birth_date" class="form-control" required>
         </div>
         <div class="col-md-6">
-  <label class="form-label d-block mb-2 fw-semibold">Gender</label>
-  <div class="d-flex gap-3">
-    <!-- Male Option -->
-    <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" name="gender" id="male" value="male" required>
-      <label class="form-check-label d-flex align-items-center" for="male">
-        <i class="fas fa-mars text-primary me-1"></i> Male
-      </label>
-    </div>
-
-    <!-- Female Option -->
-    <div class="form-check form-check-inline mb-3">
-      <input class="form-check-input" type="radio" name="gender" id="female" value="female">
-      <label class="form-check-label d-flex align-items-center" for="female">
-        <i class="fas fa-venus text-danger me-1"></i> Female
-      </label>
-    </div>
-  </div>
-
-
-      <div class="row mb-3 d-none">
-        <div class="col-md-6">
-          <label class="form-label">Status</label>
-          <select name="status" class="form-select" required>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
+          <label class="form-label d-block mb-2 fw-semibold">Gender</label>
+          <div class="d-flex gap-3">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gender" id="male" value="male" required>
+              <label class="form-check-label d-flex align-items-center" for="male">
+                <i class="fas fa-mars text-primary me-1"></i> Male
+              </label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+              <label class="form-check-label d-flex align-items-center" for="female">
+                <i class="fas fa-venus text-danger me-1"></i> Female
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- Hidden Status -->
+      <input type="hidden" name="status" value="active">
+
       <button type="submit" class="btn btn-primary mb-5">Create Doctor</button>
     </form>
-  </div
-  </div>
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped align-middle text-center">
-      <thead class="table-dark">
-        <tr>
-          <th>Profile</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Contact</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @forelse($doctors as $doctor)
+ </div>
+      </div>
+      
+
+  <!-- Doctors Table -->
+  <div class="card shadow-sm border-0 rounded-4 p-4">
+    <h4 class="fw-bold mb-3 text-primary"><i class="fas fa-users me-2"></i>All Doctors</h4>
+    <div class="table-responsive rounded-4 shadow-sm">
+      <table class="table table-hover table-bordered table-striped align-middle text-center mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Profile</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($doctors as $doctor)
           <tr>
             <!-- Profile Picture -->
             <td>
-              @if($doctor->profile_picture)
-                <img src="{{ asset($doctor->profile_picture) }}" 
-                     alt="Doctor Picture" 
-                     class="rounded-circle"
-                     style="width:50px; height:50px; object-fit:cover;">
-              @else
-                <img src="{{ asset('img/default-avatar.png') }}" 
-                     alt="Default" 
-                     class="rounded-circle"
-                     style="width:50px; height:50px; object-fit:cover;">
-              @endif
+              <img src="{{ $doctor->profile_picture ? asset($doctor->profile_picture) : asset('img/default-avatar.png') }}" 
+                   alt="Doctor Picture" 
+                   class="rounded-circle" 
+                   style="width:50px; height:50px; object-fit:cover;">
             </td>
-
-            <!-- Doctor Info -->
             <td>{{ $doctor->firstname }} {{ $doctor->lastname }}</td>
             <td>{{ $doctor->email }}</td>
             <td>{{ $doctor->contact_no }}</td>
             <td>
-              @if($doctor->status == 'active')
-                <span class="badge bg-success">Active</span>
-              @else
-                <span class="badge bg-secondary">Inactive</span>
-              @endif
+              <span class="badge {{ $doctor->status == 'active' ? 'bg-success' : 'bg-secondary' }}">
+                {{ ucfirst($doctor->status) }}
+              </span>
             </td>
-
             <td>
-  <!-- Toggle absence form -->
-  <form action="{{ route('doctors.toggleAbsence', $doctor->id) }}" method="POST" style="display:inline;">
-    @csrf
-    @method('PATCH')
-    @if($doctor->is_absent)
-      <button type="submit" class="btn btn-sm btn-warning">Mark Present</button>
-    @else
-<button type="submit" class="btn btn-sm btn-outline-warning">
-  <i class="fas fa-exclamation-triangle"></i> Mark Absent
-</button>
-    @endif
-  </form>
-</td>
-
-          <!-- Actions -->
-</tr>
-        @empty
-          <tr>
-            <td colspan="6">No doctors found.</td>
+              <form action="{{ route('doctors.toggleAbsence', $doctor->id) }}" method="POST" style="display:inline;">
+                @csrf
+                @method('PATCH')
+                @if($doctor->is_absent)
+                  <button type="submit" class="btn btn-sm btn-warning">Mark Present</button>
+                @else
+                  <button type="submit" class="btn btn-sm btn-outline-warning">
+                    <i class="fas fa-exclamation-triangle"></i> Mark Absent
+                  </button>
+                @endif
+              </form>
+            </td>
           </tr>
-        @endforelse
-      </tbody>
-    </table>
+          @empty
+          <tr>
+            <td colspan="6" class="text-muted py-4">
+              <i class="fas fa-inbox fa-2x mb-2"></i><br>No doctors found.
+            </td>
+          </tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
-</div>
+
+</main>
+
 
 
 @endsection

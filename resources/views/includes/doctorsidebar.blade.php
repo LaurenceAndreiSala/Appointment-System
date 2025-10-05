@@ -67,14 +67,15 @@
               <i data-feather="user" class="me-2"></i> My Profile
             </a>
           </li>
-          <li class="nav-item mt-3">
-            <form action="{{ route('logout') }}" method="POST">
-              @csrf
-              <button type="submit" class="btn btn-light d-flex align-items-center w-100">
-                <i data-feather="log-out" class="me-2"></i> Logout
-              </button>
-            </form>
-    </li>
+         <!-- Logout -->
+      <li class="nav-item mt-3">
+        <form action="{{ route('logout') }}" method="POST">
+          @csrf
+          <button type="submit" class="nav-link d-flex align-items-center 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+            <i data-feather="log-out" class="me-2"></i> Logout
+          </button>
+        </form>
+      </li>
   </ul>
 </div>
 
@@ -134,14 +135,13 @@
               <i data-feather="user" class="me-2"></i> My Profile
             </a>
           </li>
-          <li class="nav-item mt-3">
-            <form action="{{ route('logout') }}" method="POST">
-              @csrf
-              <button type="submit" class="btn btn-light d-flex align-items-center w-100">
-                <i data-feather="log-out" class="me-2"></i> Logout
-              </button>
-            </form>
-          </li>
+           <li class="nav-item mt-3">
+        <form action="{{ route('logout') }}" method="POST">
+          @csrf
+          <button type="submit" class="nav-link d-flex align-items-center 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+            <i data-feather="log-out" class="me-2"></i> Logout
+          </button>
+        </form>
         </ul>
       </div>
     </div>
@@ -154,3 +154,34 @@
     }
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const offcanvasEl = document.getElementById('doctorSidebar');
+    const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+
+    // 1️⃣ Close offcanvas if window is resized to desktop
+    function handleResize() {
+      if (window.innerWidth >= 992) { // lg breakpoint
+        bsOffcanvas.hide();
+      }
+    }
+    window.addEventListener('resize', handleResize);
+
+    // 2️⃣ Close offcanvas when clicking outside (mobile only)
+    document.addEventListener('click', function (e) {
+      if (window.innerWidth < 992) {
+        if (!offcanvasEl.contains(e.target) && !e.target.closest('[data-bs-toggle="offcanvas"]')) {
+          bsOffcanvas.hide();
+        }
+      }
+    });
+
+    // Optional: close offcanvas when a link inside is clicked
+    offcanvasEl.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 992) bsOffcanvas.hide();
+      });
+    });
+  });
+</script>

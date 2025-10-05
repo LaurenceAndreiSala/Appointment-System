@@ -8,92 +8,178 @@
 <div class="container-fluid">
   <div class="row">
 
-<!-- Main Content -->
-    <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
-        <h3 class="fw-bold mb-3">View All Patients</h3>
-  <div class="table-responsive rounded-4 shadow-sm">
-    <table class="table table-hover align-middle text-center mb-0">
-      <thead class="table-dark">
-              <tr>
-                <th>Profile</th>
-                <th>Patient</th>
-                <th>Email</th>
-                <th>Date & Time</th>
-                <th>Status</th>
+  <!-- ✅ Main Content -->
+<div class="col-12 col-md-9 col-lg-10 offset-lg-2  p-4 p-md-2">
+  <div class="bg-light rounded-4 shadow-sm p-4 mb-4 d-flex align-items-center">
+    <i class="fas fa-users text-primary fa-2x me-3"></i>
+    <h3 class="fw-bold mb-0 text-dark">View All Patients</h3>
+  </div>
+
+  <p class="text-muted mb-4">Review patient appointments and statuses.</p>
+
+  <!-- ✅ Filter & Search Controls -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
+    <div class="d-flex gap-2">
+      <input type="text" id="searchInput" class="form-control" placeholder="Search by patient name...">
+      <select id="statusFilter" class="form-select">
+        <option value="">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="denied">Denied</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ✅ Patients Table -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 text-center">
+          <thead class="bg-primary text-white">
+            <tr>
+              <th>Profile</th>
+              <th>Patient</th>
+              <th>Email</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="appointmentsTable">
+            @forelse($patients as $patient)
+              @php
+                $latestAppt = $patient->appointments()
+                                ->where('doctor_id', auth()->id())
+                                ->with('slot')
+                                ->orderBy('appointment_date', 'desc')
+                                ->orderBy('appointment_time', 'desc')
+                                ->first();
+              @endphp
+              <tr class="align-middle patient-row">
+                <!-- Profile -->
+                <td>
+                  <img src="{{ $patient->profile_picture ? asset($patient->profile_picture) : asset('img/default-avatar.png') }}"
+                       alt="Profile"
+                       class="rounded-circle shadow-sm border"
+                       style="width:50px; height:50px; object-fit:cover;">
+                </td>
+
+                <!-- Patient -->
+                <td class="fw-semibold patient-name">{{ $patient->firstname }} {{ $patient->lastname }}</td>
+
+                <!-- Email -->
+                <td>{{ $patient->email }}</td>
+
+                <!-- Date & Time -->
+                <td>
+                  @if($latestAppt)
+                    {{ \Carbon\Carbon::parse($latestAppt->appointment_date)->format('M d, Y') }}<br>
+                    @if($latestAppt->slot)
+                    @else
+                      {{ \Carbon\Carbon::parse($latestAppt->appointment_time)->format('h:i A') }}
+                    @endif
+                  @else
+                    <em class="text-muted">No appointment</em>
+                  @endif
+                </td>
+<td>
+                  @if($latestAppt)
+                    @if($latestAppt->slot)
+                      {{ \Carbon\Carbon::parse($latestAppt->slot->start_time)->format('h:i A') }} - 
+                      {{ \Carbon\Carbon::parse($latestAppt->slot->end_time)->format('h:i A') }}
+                    @else
+                      {{ \Carbon\Carbon::parse($latestAppt->appointment_time)->format('h:i A') }}
+                    @endif
+                  @else
+                    <em class="text-muted">No appointment</em>
+                  @endif
+                </td>
+                <!-- Status -->
+                <td class="status-cell">
+                  @if($latestAppt)
+                    @php $status = $latestAppt->status; @endphp
+                    <span class="badge px-3 py-2 rounded-pill text-capitalize
+                      {{ $status == 'pending' ? 'bg-warning text-dark' : '' }}
+                      {{ $status == 'approved' ? 'bg-success' : '' }}
+                      {{ $status == 'denied' ? 'bg-danger' : '' }}
+                      {{ $status == 'cancelled' ? 'bg-secondary' : '' }}
+                    ">
+                      {{ ucfirst($status) }}
+                    </span>
+                  @else
+                    <span class="badge bg-light text-muted">No Status</span>
+                  @endif
+                </td>
               </tr>
-            </thead>
-            <tbody>
-  @forelse($patients as $patient)
-  <tr>
-    <td>
-      @if($patient->profile_picture)
-        <img src="{{ asset($patient->profile_picture) }}" 
-             class="rounded-circle" 
-             style="width:50px; height:50px; object-fit:cover;">
-      @else
-        <img src="{{ asset('img/default-avatar.png') }}" 
-             class="rounded-circle" 
-             style="width:50px; height:50px; object-fit:cover;">
-      @endif
-    </td>
-    <td>{{ $patient->firstname }} {{ $patient->lastname }}</td>
-    <td>{{ $patient->email }}</td>
-   <td>
-  {{-- show latest appointment date & status --}}
-  @php
-    $latestAppt = $patient->appointments()
-                    ->where('doctor_id', auth()->id())
-                    ->with('slot') // ✅ eager load slot
-                    ->orderBy('appointment_date', 'desc')
-                    ->orderBy('appointment_time', 'desc')
-                    ->first();
-  @endphp
-
-  @if($latestAppt)
-    {{ \Carbon\Carbon::parse($latestAppt->appointment_date)->format('M d, Y') }}
-    <br>
-    @if($latestAppt->slot)
-      {{ \Carbon\Carbon::parse($latestAppt->slot->start_time)->format('h:i A') }} - 
-      {{ \Carbon\Carbon::parse($latestAppt->slot->end_time)->format('h:i A') }}
-    @else
-      {{ \Carbon\Carbon::parse($latestAppt->appointment_time)->format('h:i A') }}
-    @endif
-  @else
-    <em>No appointment</em>
-  @endif
-</td>
-
-    <td>
-      @if($latestAppt)
-        @if($latestAppt->status == 'pending')
-          <span class="badge bg-warning text-dark">Pending</span>
-        @elseif($latestAppt->status == 'approved')
-          <span class="badge bg-success">Approved</span>
-        @elseif($latestAppt->status == 'denied')
-          <span class="badge bg-danger">Denied</span>
-        @elseif($latestAppt->status == 'cancelled')
-          <span class="badge bg-secondary">Cancelled</span>
-        @else
-          <span class="badge bg-info">{{ ucfirst($latestAppt->status) }}</span>
-        @endif
-      @else
-        <span class="badge bg-light text-muted">No Status</span>
-      @endif
-    </td>
-  </tr>
-  @empty
-  <tr>
-    <td colspan="5">No patients found.</td>
-  </tr>
-  @endforelse
-</tbody>
-          </table>
-        </div>
+            @empty
+              <tr>
+                <td colspan="5" class="text-muted py-5">
+                  <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                  No patients found.
+                </td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
       </div>
     </div>
-
   </div>
+
 </div>
+
+<!-- ✅ Styles -->
+<style>
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+.badge {
+  font-size: 0.85rem;
+}
+
+.btn {
+  transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+</style>
+
+<!-- ✅ JS Search & Status Filter -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const searchInput = document.getElementById("searchInput");
+  const statusFilter = document.getElementById("statusFilter");
+  const rows = Array.from(document.querySelectorAll(".patient-row"));
+
+  function filterTable() {
+    const searchValue = searchInput.value.toLowerCase();
+    const statusValue = statusFilter.value.toLowerCase();
+
+    rows.forEach(row => {
+      const patientName = row.querySelector(".patient-name")?.textContent.toLowerCase() || "";
+      const statusText = row.querySelector(".status-cell span")?.textContent.toLowerCase() || "";
+
+      const matchesSearch = patientName.includes(searchValue);
+      const matchesStatus = statusValue === "" || statusText === statusValue;
+
+      row.style.display = (matchesSearch && matchesStatus) ? "" : "none";
+    });
+  }
+
+  searchInput.addEventListener("input", filterTable);
+  statusFilter.addEventListener("change", filterTable);
+});
+</script>
+
 
 <!-- JS -->
 <script>

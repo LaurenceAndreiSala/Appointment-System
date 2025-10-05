@@ -296,9 +296,34 @@ public function chatcall()
         return view('doctor.chat-call', compact('notificationCount','notifications','appointments'));
 }
 
-  public function viewappointment()
+  public function viewappointment(Request $request)
 {
-    $notificationCount = Appointment::where('patient_id', auth()->id())
+    $status = $request->query('status'); // get status filter from query string, e.g., ?status=pending
+
+    $doctorId = auth()->id();
+
+    $appointmentsQuery = Appointment::with(['patient', 'doctor'])
+        ->where('doctor_id', $doctorId)
+        ->whereNotNull('patient_id');
+
+    if ($status && in_array($status, ['pending', 'approved', 'denied', 'cancelled'])) {
+        $appointmentsQuery->where('status', $status);
+    }
+
+    // Optional: sort by status order (Pending → Approved → Denied → Cancelled)
+    $statusOrder = ['pending', 'approved', 'denied', 'cancelled'];
+    $appointmentsQuery->orderByRaw("FIELD(status, '" . implode("','", $statusOrder) . "')");
+
+    $appointments = $appointmentsQuery->get();
+
+    $patients = User::where('role_id', 3)
+        ->whereHas('appointments', function ($q) use ($doctorId) {
+            $q->where('doctor_id', $doctorId)
+              ->whereNotNull('patient_id');
+        })
+        ->get();
+
+    $notificationCount = Appointment::where('patient_id', $doctorId)
         ->whereIn('status', ['pending', 'approved'])
         ->count();
 
@@ -307,25 +332,7 @@ public function chatcall()
         ->take(10)
         ->get();
 
-         $appointments = Appointment::with(['patient','doctor'])
-    ->where('doctor_id', auth()->id())   // only this doctor
-    ->whereNotNull('patient_id')         // only if patient assigned
-    ->get();
-
-$appointments = Appointment::with(['patient','doctor'])
-    ->where('doctor_id', auth()->id())   // ✅ only logged-in doctor
-    ->whereNotNull('patient_id')
-    ->get();
-
-$patients = User::where('role_id', 3)
-    ->whereHas('appointments', function ($q) {
-        $q->where('doctor_id', auth()->id())
-          ->whereNotNull('patient_id');
-    })
-    ->get();
-
-
-    return view('doctor.view-appointment', compact('appointments','patients','notificationCount','notifications'));
+    return view('doctor.view-appointment', compact('appointments', 'patients', 'notificationCount', 'notifications'));
 }
 
 
@@ -356,21 +363,26 @@ public function setSlot()
 
 public function storeSlot(Request $request)
 {
-    $request->validate([
-        'doctor_id'   => 'required|exists:users,id',
-        'date'        => 'required|date',
-        'start_time'  => 'required',
-        'end_time'    => 'required|after:start_time',
-    ]);
+    // Get first two doctors
+    $doctors = User::where('role_id', 2)->orderBy('id')->take(2)->get();
+    $mainDoctor = $doctors->first();
+    $subDoctor  = $doctors->skip(1)->first();
+
+    // Automatically assign doctor
+    $assignedDoctorId = $mainDoctor->is_absent && $subDoctor
+                        ? $subDoctor->id
+                        : $mainDoctor->id;
 
     AvailableSlot::create([
-        'doctor_id'    => $request->doctor_id, // ✅ comes from dropdown now
-        'date'         => $request->date,
-        'start_time'   => $request->start_time,
-        'end_time'     => $request->end_time,
+        'doctor_id'    => $assignedDoctorId,
+        'sub_doctor_id'=> $subDoctor ? $subDoctor->id : null,
+        'date'         => Carbon::parse($request->date)->format('Y-m-d'),
+        'start_time'   => Carbon::parse($request->start_time)->format('H:i:s'),
+        'end_time'     => Carbon::parse($request->end_time)->format('H:i:s'),
     ]);
 
-    return redirect()->route('doctor.available-slots')->with('success', 'Slot added successfully!');
+    return redirect()->route('admin.set-available-slots')
+                     ->with('success', 'Slot added successfully!');
 }
 
 
@@ -388,36 +400,48 @@ public function storeSlot(Request $request)
 
 public function fetchNotifications()
 {
+    
      $notifications = Notification::where('user_id', auth()->id())
+        ->whereDate('created_at', Carbon::today()) // today only
         ->latest()
         ->take(10)
         ->get();
 
+     $today = \Carbon\Carbon::today();
+
     $notifications = Appointment::with('patient')
         ->where('doctor_id', auth()->id())
+        ->whereDate('appointment_date', $today) // ✅ only today
         ->whereIn('status', ['pending', 'approved'])
-        ->orderBy('created_at', 'desc')
+        ->orderBy('appointment_date', 'asc')
         ->take(10)
         ->get()
-        ->map(function ($notif) {
+        ->map(function ($appt) {
             return [
-                'id' => $notif->id,
-                'status' => $notif->status,
-                'appointment_date' => $notif->appointment_date,
-                'appointment_time' => $notif->appointment_time,
+                'id' => $appt->id,
+                'appointment_date' => \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y'),
+                'appointment_time' => $appt->slot ? \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') : 'N/A',
                 'patient' => [
-                    'firstname' => $notif->patient->firstname ?? '',
-                    'lastname' => $notif->patient->lastname ?? '',
-                    'profile_picture' => $notif->patient->profile_picture 
-                        ? asset($notif->patient->profile_picture) 
+                    'firstname' => $appt->patient->firstname ?? '',
+                    'lastname'  => $appt->patient->lastname ?? '',
+                    'profile_picture' => $appt->patient->profile_picture 
+                        ? asset($appt->patient->profile_picture) 
                         : asset('img/default-avatar.png'),
                 ],
             ];
         });
 
-    return response()->json([
-        'count' => $notifications->count(),
-        'notifications' => $notifications,
+  return response()->json([
+        'count' => $notifications->where('is_read', 0)->count(),
+        'notifications' => $notifications->map(function($notif) {
+            return [
+                'id' => $notif->id,
+                'title' => $notif->title,
+                'message' => $notif->message,
+                'is_read' => $notif->is_read,
+                'created_at' => $notif->created_at->format('M d, Y h:i A'),
+            ];
+        }),
     ]);
 }
 

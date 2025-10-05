@@ -8,59 +8,81 @@
   <div class="row">
     @include('includes.patientsidebar')
 
-    <!-- ✅ Main Content -->
-    <div class="col-12 col-md-9 col-lg-10 p-4 p-md-5">
-      <h2 class="fw-bold mb-2">💬 Chat / Video Call</h2>
+        <!-- ✅ Main Content -->
+<div class="col-12 col-md-9 col-lg-10 offset-lg-2  p-4 p-md-2">
+      <div class="bg-light rounded-4 shadow-sm p-4 mb-4 d-flex align-items-center">
+    <i class="fas fa-video text-primary fa-2x me-3"></i>
+        <h3 class="fw-bold mb-0 text-dark">Chat / Video Call</h3>
+      </div>
+
       <p class="text-muted mb-4">Join your scheduled video consultations with your doctor.</p>
 
-      <div class="card shadow-sm border-0 mb-4 p-4">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
-          <h3 class="fw-bold mb-2 mb-md-0">My Approved Appointments</h3>
-        </div>
+     <div class="card shadow-sm border-0 rounded-4 mb-4 p-4">
+  <!-- Header -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+<span class="fw-bold mb-2 mb-md-0 text-primary" style="font-size: 1.15rem;">
+      <i class="fas fa-calendar-check me-2"></i>My Approved Appointments
+    </span>
+  </div>
 
-        <!-- ✅ Responsive Table Wrapper -->
-        <div class="table-responsive rounded-3 shadow-sm">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-dark text-center">
-              <tr>
-                <th>Doctor</th>
-                <th>Date</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody class="text-center">
-              @forelse($appointments as $appt)
-                <tr>
-                  <td class="fw-semibold">
-                    Dr. {{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}
-                  </td>
-                  <td>
-                    {{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}
-                  </td>
-                  <td>
-                    @if($appt->slot)
-                      {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }}
-                      -
-                      {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
-                    @else
-                      <em class="text-muted">No slot assigned</em>
-                    @endif
-                  </td>
-                </tr>
-              @empty
-                <tr>
-                  <td colspan="3" class="text-muted py-4">
-                    No approved meetings yet.
-                  </td>
-                </tr>
-              @endforelse
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+  <!-- Responsive Table -->
+  <div class="table-responsive rounded-4 shadow-sm">
+    <table class="table table-hover align-middle text-center mb-0">
+      <thead class="bg-primary text-white">
+        <tr>
+          <th>Doctor</th>
+          <th>Date</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        @forelse($appointments as $appt)
+          <tr>
+            <td class="fw-semibold">
+              Dr. {{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}
+            </td>
+            <td>
+              {{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}
+            </td>
+            <td>
+              @if($appt->slot)
+                {{ \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') }} -
+                {{ \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') }}
+              @else
+                <em class="text-muted">No slot assigned</em>
+              @endif
+            </td>
+          </tr>
+        @empty
+          <tr>
+            <td colspan="3" class="text-muted py-5">
+              <i class="fas fa-inbox fa-2x mb-2"></i><br>
+              No approved meetings yet.
+            </td>
+          </tr>
+        @endforelse
+      </tbody>
+    </table>
   </div>
 </div>
+
+<!-- ✅ Styles (reuse from other sections) -->
+<style>
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+.badge {
+  font-size: 0.85rem;
+}
+</style>
+
 
 <!-- ✅ Call Popup Modal -->
 <div class="modal fade" id="incomingCallModal" tabindex="-1">

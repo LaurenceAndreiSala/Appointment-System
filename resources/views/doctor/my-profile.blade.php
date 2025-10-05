@@ -9,9 +9,14 @@
 <div class="container-fluid">
   <div class="row">
 
-    <!-- ✅ Main Content -->
-    <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2 p-4">
-       <h2 class="fw-bold mb-4">My Doctor Profile</h2>
+  <!-- ✅ Main Content -->
+<div class="col-12 col-md-9 col-lg-10 offset-lg-2  p-4 p-md-2">
+  <div class="bg-light rounded-4 shadow-sm p-4 mb-4 d-flex align-items-center">
+    <i class="fas fa-user-circle text-primary fa-2x me-3"></i>
+    <h3 class="fw-bold mb-0 text-dark">My Doctor Profile</h3>
+  </div>
+
+  <p class="text-muted mb-4">Manage your personal information and update your profile settings.</p>
 
   @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>

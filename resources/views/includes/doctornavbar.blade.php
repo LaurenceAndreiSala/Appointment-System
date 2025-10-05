@@ -7,13 +7,12 @@
       <button class="btn d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#doctorSidebar">
         <i data-feather="menu"></i>
       </button>
-        <a class="navbar-brand d-flex align-items-center" style="margin-left: 15px;" href="#">
+        <a class="navbar-brand d-flex align-items-center" style="margin-left: 10px;" href="#">
       <i class="fas fa-heartbeat text-primary me-2"></i>
       <span class="fw-bold fs-4">MediCAL</span>
     </a>
     </div>
-
-    <!-- Notifications -->
+<!-- Notifications -->
     <ul class="navbar-nav ms-auto align-items-lg-center">
   <li class="nav-item me-3 position-relative">
     <a href="javascript:void(0)" class="nav-link" id="notifBell">
@@ -35,3 +34,46 @@
     <li class="list-group-item text-muted small">Loading...</li>
   </ul>
 </div>
+
+
+<script>
+  function updateNotifBadge(count) {
+    const notifCount = document.getElementById("notifCount");
+    if (count > 0) {
+        notifCount.textContent = count;
+        notifCount.style.display = "inline-block";
+    } else {
+        notifCount.textContent = "";
+        notifCount.style.display = "none";
+    }
+}
+
+const notifUrl = "{{ route('doctor.notifications.fetch') }}";
+
+    async function fetchNotifications() {
+        try {
+            const response = await fetch(notifUrl);
+            const data = await response.json();
+            notifCount.textContent = data.count || "";
+
+            notifList.innerHTML = "";
+            if (data.notifications.length > 0) {
+                data.notifications.forEach((notif) => {
+                    let li = document.createElement("li");
+                    li.classList.add("list-group-item", "small");
+                    li.innerHTML = `<strong>${notif.title}</strong><br>
+                                    <span class="text-muted">${notif.message}</span><br>
+                                    <small>${notif.created_at}</small>`;
+                    notifList.appendChild(li);
+                });
+            } else {
+                notifList.innerHTML = `<li class="list-group-item text-muted small">No new appointments</li>`;
+            }
+        } catch (error) {
+            console.error("Error fetching notifications:", error);
+        }
+    }
+
+    fetchNotifications();
+    setInterval(fetchNotifications, 10000);
+</script>
