@@ -10,10 +10,10 @@
       </button>
 
       <!-- Brand Logo & Name -->
-      <a class="navbar-brand d-flex align-items-center" style="margin-left: 10px;" href="#">
-        <i class="fas fa-heartbeat text-primary me-2"></i>
-        <span class="fw-bold fs-4">MediCAL</span>
-      </a>
+       <a class="navbar-brand d-flex align-items-center" style="margin-left: 10px;" href="#">
+      <img class="clinic-logo" src="{{ asset('img/clinic-logo.png') }}" style="width: 30px; height: 30px; margin-right: 5px;"></i>
+      <span class="fw-bold fs-4">MediCAL</span>
+    </a>
     </div>
 
     <!-- RIGHT SECTION (Notification Bell) -->
