@@ -42,7 +42,13 @@ public function index()
         ->take(5)
         ->get();
         
-    return view('patient.patient-dashboard', compact('appointments', 'prescriptions'));
+    $notificationCount = Appointment::where('patient_id', auth()->id())
+        ->whereIn('status', ['pending', 'approved'])
+        ->count();
+
+    $doctorCount = User::where('role_id', 2)->count();
+
+    return view('patient.patient-dashboard', compact('appointments', 'prescriptions','notificationCount','doctorCount'));
 }
 
 

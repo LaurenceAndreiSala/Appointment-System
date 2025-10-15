@@ -35,20 +35,12 @@
   </ul>
 </div>
 
-
 <script>
-  function updateNotifBadge(count) {
+document.addEventListener("DOMContentLoaded", function() {
+    const notifUrl = "{{ route('doctor.notifications.fetch') }}";
+    const notifList = document.getElementById("notifList");
+    const notifBell = document.getElementById("notifBell");
     const notifCount = document.getElementById("notifCount");
-    if (count > 0) {
-        notifCount.textContent = count;
-        notifCount.style.display = "inline-block";
-    } else {
-        notifCount.textContent = "";
-        notifCount.style.display = "none";
-    }
-}
-
-const notifUrl = "{{ route('doctor.notifications.fetch') }}";
 
     async function fetchNotifications() {
         try {
@@ -76,4 +68,21 @@ const notifUrl = "{{ route('doctor.notifications.fetch') }}";
 
     fetchNotifications();
     setInterval(fetchNotifications, 10000);
+
+    // ✅ Wait until Echo is ready
+    const waitForEcho = setInterval(() => {
+        if (window.Echo) {
+            clearInterval(waitForEcho);
+            window.Echo.private(`doctor.{{ auth()->id() }}`)
+                .listen("AppointmentBooked", (event) => {
+                    console.log("📅 New Appointment Received:", event);
+                    fetchNotifications();
+                    notifBell.classList.add("text-warning");
+                    setTimeout(() => notifBell.classList.remove("text-warning"), 3000);
+                });
+        } else {
+            console.warn("⏳ Waiting for Echo to load...");
+        }
+    }, 500);
+});
 </script>

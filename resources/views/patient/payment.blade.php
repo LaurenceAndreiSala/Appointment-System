@@ -19,8 +19,8 @@
           <select name="payment_method" class="form-control" required>
             <option value="">-- Select Method --</option>
             <option value="gcash">GCash-0923</option>
-            <option value="paypal">PayPal</option>
-            <option value="credit_card">Credit Card</option>
+            <!-- <option value="paypal">PayPal</option>
+            <option value="credit_card">Credit Card</option> -->
           </select>
         </div>
 

@@ -18,7 +18,7 @@
       <li class="nav-item"><a href="{{ route('patient.book-appointment') }}" class="nav-link {{ request()->routeIs('patient.book-appointment') ? 'active bg-white text-primary rounded' : 'text-white' }}"><i data-feather="calendar" class="me-2"></i> Book Appointment</a></li>
       <li class="nav-item"><a href="{{ route('patient.view-appointment') }}" class="nav-link {{ request()->routeIs('patient.view-appointment') ? 'active bg-white text-primary rounded' : 'text-white' }}"><i data-feather="list" class="me-2"></i> My Appointments</a></li>
       <li class="nav-item"><a href="{{ route('patient.view-precription') }}" class="nav-link {{ request()->routeIs('patient.view-precription') ? 'active bg-white text-primary rounded' : 'text-white' }}"><i data-feather="file-text" class="me-2"></i> Prescriptions</a></li>
-      <li class="nav-item"><a href="{{ route('patient.video-call') }}" class="nav-link {{ request()->routeIs('patient.video-call') ? 'active bg-white text-primary rounded' : 'text-white' }}"><i data-feather="message-circle" class="me-2"></i> Chat / Video Call</a></li>
+      <li class="nav-item"><a href="{{ route('patient.video-call') }}" class="nav-link {{ request()->routeIs('patient.video-call') ? 'active bg-white text-primary rounded' : 'text-white' }}"><i data-feather="message-circle" class="me-2"></i> Chat </a></li>
       <li class="nav-item"><a href="{{ route('patient.my-profile') }}" class="nav-link {{ request()->routeIs('patient.my-profile') ? 'active bg-white text-primary rounded' : 'text-white' }}"><i data-feather="user" class="me-2"></i> My Profile</a></li>
   
 

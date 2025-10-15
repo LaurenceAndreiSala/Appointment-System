@@ -19,12 +19,19 @@
 
       <p class="text-muted mb-4">Below are the prescriptions given by your doctors.</p>
 
+  <!-- ✅ Filter & Search Controls -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
+  <div class="d-flex gap-2">
+      <input type="text" id="searchInput" class="form-control" placeholder="🔍 Search...">
+  </div>
+</div>
+
   <div class="card shadow-sm border-0 p-4">
     @if($prescriptions->isEmpty())
       <p class="text-center text-muted">No prescriptions found.</p>
     @else
       <div class="table-responsive">
-        <table class="table table-bordered table-striped align-middle text-center mb-0">
+        <table id="callsTable" class="table table-bordered table-striped align-middle text-center mb-0">
           <thead class="table-dark">
             <tr>
               <th>Date</th>
@@ -34,7 +41,7 @@
               <th>Notes</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="appointmentsTable">
             @foreach($prescriptions as $prescription)
               <tr>
                 <td data-label="Date">{{ $prescription->created_at->format('M d, Y h:i A') }}</td>
@@ -153,5 +160,44 @@ channel.bind("App\\Events\\CallStarted", function(data) {
   };
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("searchInput");
+    const tableBody = document.querySelector("#callsTable tbody");
+
+    function filterTable() {
+        const searchValue = searchInput.value.toLowerCase();
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            // Skip "No meetings found" row
+            if (row.classList.contains("no-data-row")) return;
+
+            const patientCell = row.cells[0]; // 1st column: Patient
+            const dateCell = row.cells[1];    // 2nd column: Date & Time (adjust if different)
+
+            if (!patientCell || !dateCell) return;
+
+            const patientName = patientCell.textContent.toLowerCase();
+            const meetingDate = dateCell.textContent.toLowerCase();
+
+            const matchesSearch =
+                patientName.includes(searchValue) ||
+                meetingDate.includes(searchValue);
+
+            row.style.display = matchesSearch ? "" : "none";
+
+            if (matchesSearch) visibleCount++;
+        });
+
+        // Show/hide "No meetings found" row
+        const noDataRow = tableBody.querySelector(".no-data-row");
+        if (noDataRow) {
+            noDataRow.style.display = visibleCount === 0 ? "" : "none";
+        }
+    }
+
+    searchInput.addEventListener("input", filterTable);
+});
 </script>
 @endsection

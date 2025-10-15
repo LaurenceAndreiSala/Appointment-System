@@ -51,13 +51,6 @@
   </div>
 </section>
 
-<!-- ✅ Footer -->
-<footer class="bg-dark text-white py-3 mt-auto">
-  <div class="container text-center small">
-    &copy; 2025 MediCAL. All rights reserved.
-  </div>
-</footer>
-
 <!-- Custom Responsive Styling -->
 <style>
   .gradient-bg {

@@ -15,6 +15,8 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\MessageController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -196,14 +198,38 @@ Route::post('/patient/payment/{id}/gcash/mock/pay', function($id) {
         ->with('success', 'Mock GCash payment successful!');
 })->name('gcash.mock.pay');
 
-Route::post('/messages/send', [MessageController::class, 'send'])->name('messages.send');
-Route::get('/messages/fetch/{userId}', [MessageController::class, 'fetch'])->name('messages.fetch');
+    Route::get('/messages/fetch/{receiver_id}', [MessageController::class, 'fetch']);
+    Route::post('/messages/send', [MessageController::class, 'send'])->name('messages.send');
+    Route::post('/messages/mark-read/{sender_id}', [MessageController::class, 'markRead']);
+    Route::get('/messages/unread-counts', [MessageController::class, 'unreadCounts']);
+
+Route::get('/messages/unread-counts', function () {
+    $counts = \App\Models\Message::select('sender_id')
+        ->where('receiver_id', auth()->id())
+        ->where('is_read', false)
+        ->get()
+        ->groupBy('sender_id')
+        ->map->count();
+    return response()->json($counts);
+});
+
+Route::post('/messages/mark-read/{senderId}', function ($senderId) {
+    \App\Models\Message::where('sender_id', $senderId)
+        ->where('receiver_id', auth()->id())
+        ->update(['is_read' => true]);
+    return response()->json(['status' => 'ok']);
+});
 
 Route::get('/meeting/{uuid}', [PatientDashboardController::class, 'join'])->name('meeting.join');
 
-Route::post('/doctor/start-call/{id}', [DoctorDashboardController::class, 'startCall'])
-     ->name('doctor.start-call');
+Route::post('/doctor/start-call/{id}', [DoctorDashboardController::class, 'startCall'])->name('doctor.startCall');
 
 Route::get('/patient/notifications/fetch', [NotificationController::class, 'fetch'])
     ->name('patient.notifications.fetch');
+
+Route::post('/admin/update-patient-info', [AdminDashboardController::class, 'updatePatientInfo'])
+    ->name('admin.updatePatientInfo');
+
+Route::get('/doctor/chat/{receiver_id}', [ChatController::class, 'index'])->name('chat.index');
+Route::post('/doctor/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
 

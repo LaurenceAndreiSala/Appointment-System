@@ -18,11 +18,18 @@
 <small class="text-muted">Set the Available Appointment Slot for the Doctor.</small>
   </div>
 
+        <!-- ✅ Filter & Search Controls -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
+  <div class="d-flex gap-2">
+      <input type="text" id="searchInput" class="form-control" placeholder="🔍 Search...">
+  </div>
+</div>
+
       <!-- Notifications Table Card -->
       <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body p-3 p-md-4">
           <div class="table-responsive">
-            <table class="table table-hover align-middle text-center mb-0">
+            <table id="notificationsTable" class="table table-hover align-middle text-center mb-0">
               <thead class="bg-primary text-white rounded-top">
                 <tr>
                   <th scope="col">#</th>
@@ -100,5 +107,49 @@
   margin: 2px;
 }
 </style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("searchInput");
+    const tableBody = document.querySelector("#notificationsTable tbody");
 
+    function filterTable() {
+        const searchValue = searchInput.value.toLowerCase();
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            // Skip "No notifications found" row
+            if (row.classList.contains("no-data-row")) return;
+
+            const userCell = row.cells[1];     // 2nd column: User
+            const messageCell = row.cells[2];  // 3rd column: Message
+            const dateCell = row.cells[3];     // 4th column: Date (optional, if available)
+
+            if (!userCell || !messageCell) return;
+
+            const userText = userCell.textContent.toLowerCase();
+            const messageText = messageCell.textContent.toLowerCase();
+            const dateText = dateCell ? dateCell.textContent.toLowerCase() : "";
+
+            // ✅ Match if any of these contain the search text
+            const matchesSearch =
+                userText.includes(searchValue) ||
+                messageText.includes(searchValue) ||
+                dateText.includes(searchValue);
+
+            row.style.display = matchesSearch ? "" : "none";
+
+            if (matchesSearch) visibleCount++;
+        });
+
+        // ✅ Toggle "No notifications found" row visibility
+        const noDataRow = tableBody.querySelector(".no-data-row");
+        if (noDataRow) {
+            noDataRow.style.display = visibleCount === 0 ? "" : "none";
+        }
+    }
+
+    searchInput.addEventListener("input", filterTable);
+});
+</script>
 @endsection

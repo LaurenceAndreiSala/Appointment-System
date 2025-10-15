@@ -20,14 +20,7 @@
   <!-- ✅ Filter & Search Controls -->
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
     <div class="d-flex gap-2">
-      <input type="text" id="searchInput" class="form-control" placeholder="Search by patient name...">
-      <select id="statusFilter" class="form-select">
-        <option value="">All Status</option>
-        <option value="pending">Pending</option>
-        <option value="approved">Approved</option>
-        <option value="denied">Denied</option>
-        <option value="cancelled">Cancelled</option>
-      </select>
+      <input type="text" id="searchInput" class="form-control" placeholder="🔍 Search...">
     </div>
   </div>
 
@@ -41,9 +34,8 @@
               <th>Profile</th>
               <th>Patient</th>
               <th>Email</th>
+              <th>Phone #</th>
               <th>Date</th>
-              <th>Time</th>
-              <th>Status</th>
             </tr>
           </thead>
           <tbody id="appointmentsTable">
@@ -73,6 +65,9 @@
 
                 <!-- Date & Time -->
                 <td>
+                 {{ $patient->contact_no }}
+                </td>
+<td>
                   @if($latestAppt)
                     {{ \Carbon\Carbon::parse($latestAppt->appointment_date)->format('M d, Y') }}<br>
                     @if($latestAppt->slot)
@@ -83,20 +78,8 @@
                     <em class="text-muted">No appointment</em>
                   @endif
                 </td>
-<td>
-                  @if($latestAppt)
-                    @if($latestAppt->slot)
-                      {{ \Carbon\Carbon::parse($latestAppt->slot->start_time)->format('h:i A') }} - 
-                      {{ \Carbon\Carbon::parse($latestAppt->slot->end_time)->format('h:i A') }}
-                    @else
-                      {{ \Carbon\Carbon::parse($latestAppt->appointment_time)->format('h:i A') }}
-                    @endif
-                  @else
-                    <em class="text-muted">No appointment</em>
-                  @endif
-                </td>
                 <!-- Status -->
-                <td class="status-cell">
+                <!-- <td class="status-cell">
                   @if($latestAppt)
                     @php $status = $latestAppt->status; @endphp
                     <span class="badge px-3 py-2 rounded-pill text-capitalize
@@ -110,7 +93,7 @@
                   @else
                     <span class="badge bg-light text-muted">No Status</span>
                   @endif
-                </td>
+                </td> -->
               </tr>
             @empty
               <tr>
@@ -152,6 +135,30 @@
   transform: translateY(-2px);
 }
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("searchInput");
+    const table = document.getElementById("appointmentsTable");
+
+    function filterTable() {
+        const searchValue = searchInput.value.toLowerCase();
+        const rows = Array.from(table.querySelectorAll("tr"));
+
+        rows.forEach(row => {
+            // Skip "no patients" row
+            if (row.querySelector("td[colspan='5']")) return;
+
+            const patientCell = row.cells[1]; // 2nd column: Patient
+            const patientName = patientCell.textContent.toLowerCase();
+
+            row.style.display = patientName.includes(searchValue) ? "" : "none";
+        });
+    }
+
+    searchInput.addEventListener("input", filterTable);
+});
+</script>
 
 <!-- ✅ JS Search & Status Filter -->
 <script>

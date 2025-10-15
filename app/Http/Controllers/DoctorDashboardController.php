@@ -156,10 +156,13 @@ public function writeprescripts()
     ->orderBy('appointment_date', 'desc')
     ->take(10)
     ->get();
-    
- $appointments = Appointment::with(['patient','doctor'])
-    ->where('doctor_id', auth()->id())   // ✅ only logged-in doctor
+
+    $doctors = User::where('role_id', 2)->get();
+    $appointments = Appointment::with(['patient','doctor'])
+    ->where('doctor_id', auth()->id())  
     ->whereNotNull('patient_id')
+    ->orderBy('appointment_date', 'asc')
+    ->orderBy('appointment_time', 'asc')
     ->get();
 
 $patients = User::where('role_id', 3)
@@ -174,7 +177,7 @@ $patients = User::where('role_id', 3)
 
 
     $archivedPrescriptions = Prescription::where('is_archived', 1)->get();
-    return view('doctor.write-prescriptions', compact('appointments','patients','notificationCount','notifications', 'archivedPrescriptions'));
+    return view('doctor.write-prescriptions', compact('appointments','patients','doctors','notificationCount','notifications', 'archivedPrescriptions'));
 }
 
 public function storePrescription(Request $request)
@@ -478,7 +481,7 @@ public function startCall($id, Request $request)
         $appointment = Appointment::with(['patient', 'doctor'])->findOrFail($id);
 
         if (!$appointment->patient) {
-            return response()->json(['error' => 'Patient not found'], 404);
+            return response()->json(['success' => false, 'error' => 'Patient not found'], 404);
         }
 
         // Generate meeting URL if missing
@@ -487,15 +490,16 @@ public function startCall($id, Request $request)
             $appointment->save();
         }
 
-        // Save notification
+        // Save notification with meeting URL in the 'data' field
         Notification::create([
             'user_id' => $appointment->patient->id,
             'title'   => 'Incoming Call',
             'message' => 'Doctor is calling you for your appointment!',
+            'data'    => json_encode(['meeting_url' => $appointment->meeting_url]),
             'is_read' => 0,
         ]);
 
-        // ✅ Pass Appointment model instead of array
+        // Broadcast the call event
         broadcast(new \App\Events\CallStarted($appointment));
 
         return response()->json([
@@ -504,7 +508,6 @@ public function startCall($id, Request $request)
         ]);
 
     } catch (\Throwable $e) {
-        // Debug output
         \Log::error("StartCall Error: " . $e->getMessage(), [
             'trace' => $e->getTraceAsString()
         ]);
@@ -516,7 +519,6 @@ public function startCall($id, Request $request)
     }
 }
 }
-
     // public function chatcall($id)
     // {
     //     $patient = User::findOrFail($id);

@@ -138,22 +138,34 @@
 
       <!-- Actions -->
       <td>
-        <div class="d-flex justify-content-center gap-2 flex-wrap">
-          <form action="{{ route('doctor.appointments.approve', $appt->id) }}" method="POST">
-            @csrf
-            <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm">
-              <i class="fas fa-check me-1"></i> Approve
-            </button>
-          </form>
+  <div class="d-flex justify-content-center gap-2 flex-wrap">
+    @if($appt->prescriptions && $appt->prescriptions->count() > 0)
+      <!-- ✅ Enable Approve if prescription written -->
+      <form action="{{ route('doctor.appointments.approve', $appt->id) }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm">
+          <i class="fas fa-check me-1"></i> Approve
+        </button>
+      </form>
+    @else
+      <!-- 🚫 Disable Approve if no prescription -->
+      <button type="button" 
+              class="btn btn-sm btn-secondary rounded-pill px-3 shadow-sm" 
+              disabled 
+              title="Write a prescription first before approving.">
+        <i class="fas fa-check me-1"></i> Approve
+      </button>
+    @endif
 
-          <form action="{{ route('doctor.view-appointment.deny', $appt->id) }}" method="POST">
-            @csrf
-            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm">
-              <i class="fas fa-times me-1"></i> Deny
-            </button>
-          </form>
-        </div>
-      </td>
+    <!-- ❌ Deny button still always available -->
+    <form action="{{ route('doctor.view-appointment.deny', $appt->id) }}" method="POST">
+      @csrf
+      <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm">
+        <i class="fas fa-times me-1"></i> Deny
+      </button>
+    </form>
+  </div>
+</td>
     </tr>
   @empty
     <tr>
@@ -196,6 +208,62 @@
     transform: translateY(-2px);
   }
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const tableBody = document.getElementById("appointmentsTable");
+
+    function filterTable() {
+        const searchValue = searchInput.value.toLowerCase();
+        const statusValue = statusFilter.value.toLowerCase();
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            // Skip "No appointments found" row
+            if (row.classList.contains("no-data-row")) return;
+
+            const patientCell = row.cells[1]; // 2nd column: Patient
+            const emailCell = row.cells[2];   // 3rd column: Email
+            const dateCell = row.cells[3];    // 4th column: Date & Time
+            const statusCell = row.cells[4];  // 5th column: Status
+
+            if (!patientCell || !emailCell || !dateCell || !statusCell) return;
+
+            const patientName = patientCell.textContent.toLowerCase();
+            const emailText = emailCell.textContent.toLowerCase();
+            const appointmentDate = dateCell.textContent.toLowerCase();
+            const statusText = statusCell.textContent.toLowerCase();
+
+            // ✅ Search match (name, email, or date)
+            const matchesSearch =
+                patientName.includes(searchValue) ||
+                emailText.includes(searchValue) ||
+                appointmentDate.includes(searchValue);
+
+            // ✅ Status filter match
+            const matchesStatus =
+                statusValue === "" || statusText.includes(statusValue);
+
+            const isVisible = matchesSearch && matchesStatus;
+            row.style.display = isVisible ? "" : "none";
+
+            if (isVisible) visibleCount++;
+        });
+
+        // ✅ Toggle "No appointments found" visibility
+        const noDataRow = tableBody.querySelector(".no-data-row");
+        if (noDataRow) {
+            noDataRow.style.display = visibleCount === 0 ? "" : "none";
+        }
+    }
+
+    searchInput.addEventListener("input", filterTable);
+    statusFilter.addEventListener("change", filterTable);
+});
+</script>
 
 <script src="{{ asset('js/notification.js') }}"></script>
 

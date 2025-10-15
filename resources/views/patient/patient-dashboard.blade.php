@@ -16,7 +16,7 @@
     <div class="d-flex align-items-center">
       <i class="fas fa-user text-success fa-1x me-3"></i>
       <span class="fw-bold fs-10 fs-md-10">
-        Welcome Dr. {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}! 👋
+        Welcome, {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}! 👋
       </span>
     </div>
     <small class="text-muted mt-2 mt-md-0">Patient Dashboard</small>
@@ -41,14 +41,14 @@
     <div class="col-6 col-md-3">
       <div class="card border-0 shadow-sm text-center rounded-4 h-100 p-3 bg-warning text-white">
         <i class="fas fa-user-md fa-2x mb-2"></i>
-        <h4 class="fw-bold mb-0">{{ $doctorsCount ?? 0 }}</h4>
+        <h4 class="fw-bold mb-0">{{ $doctorCount ?? 0 }}</h4>
         <small>Doctors</small>
       </div>
     </div>
     <div class="col-6 col-md-3">
       <div class="card border-0 shadow-sm text-center rounded-4 h-100 p-3 bg-info text-white">
         <i class="fas fa-bell fa-2x mb-2"></i>
-        <h4 class="fw-bold mb-0">{{ $notificationsCount ?? 0 }}</h4>
+        <h4 class="fw-bold mb-0">{{ $notificationCount ?? 0 }}</h4>
         <small>Notifications</small>
       </div>
     </div>
@@ -60,6 +60,21 @@
       <h5 class="fw-bold mb-3 text-primary">
         <i class="fas fa-calendar-alt me-2"></i>My Recent Appointments
       </h5>
+
+       <!-- ✅ Filter & Search Controls -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
+        <div class="d-flex gap-2">
+          <input type="text" id="searchInput" class="form-control" placeholder="🔍 Search by doctor or date...">
+          <select id="statusFilter" class="form-select">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="denied">Denied</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+
 
       @if($appointments->isEmpty())
         <p class="text-muted text-center mb-0">No appointments yet.</p>
@@ -73,7 +88,7 @@
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody>
+           <tbody id="appointmentsTable">
               @foreach($appointments as $appt)
                 <tr>
                   <td>
@@ -220,6 +235,53 @@ channel.bind("App\\Events\\CallStarted", function(data) {
     callModal.hide();
     alert("❌ You rejected the call.");
   };
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  const searchInput = document.getElementById("searchInput");
+  const statusFilter = document.getElementById("statusFilter");
+  const table = document.getElementById("appointmentsTable");
+
+  function filterTable() {
+    const searchValue = searchInput.value.toLowerCase();
+    const statusValue = statusFilter.value.toLowerCase();
+    const rows = Array.from(table.querySelectorAll("tr"));
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      if (row.classList.contains("no-data-row")) return;
+
+      const dateCell = row.cells[0];
+      const doctorCell = row.cells[1];
+      const statusCell = row.cells[2];
+
+      if (!dateCell || !doctorCell || !statusCell) return;
+
+      const dateText = dateCell.textContent.toLowerCase();
+      const doctorText = doctorCell.textContent.toLowerCase();
+      const statusText = statusCell.textContent.toLowerCase();
+
+      const matchesSearch = 
+        dateText.includes(searchValue) ||
+        doctorText.includes(searchValue);
+
+      const matchesStatus =
+        statusValue === "" || statusText.includes(statusValue);
+
+      const isVisible = matchesSearch && matchesStatus;
+      row.style.display = isVisible ? "" : "none";
+
+      if (isVisible) visibleCount++;
+    });
+
+    const noDataRow = table.querySelector(".no-data-row");
+    if (noDataRow) {
+      noDataRow.style.display = visibleCount === 0 ? "" : "none";
+    }
+  }
+
+  searchInput.addEventListener("input", filterTable);
+  statusFilter.addEventListener("change", filterTable);
 });
 </script>
 

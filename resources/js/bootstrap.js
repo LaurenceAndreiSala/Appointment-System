@@ -1,4 +1,16 @@
-import _ from 'lodash';
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
+
+window.Pusher = Pusher;
+
+window.Echo = new Echo({
+    broadcaster: "pusher",
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    forceTLS: true,
+});
+
+import _ from "lodash";
 window._ = _;
 
 /**
@@ -7,10 +19,10 @@ window._ = _;
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-import axios from 'axios';
+import axios from "axios";
 window.axios = axios;
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

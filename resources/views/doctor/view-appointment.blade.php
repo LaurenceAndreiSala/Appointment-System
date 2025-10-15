@@ -20,7 +20,7 @@
       <!-- ✅ Filter & Search Controls -->
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
   <div class="d-flex gap-2">
-    <input type="text" id="searchInput" class="form-control" placeholder="Search by patient name...">
+      <input type="text" id="searchInput" class="form-control" placeholder="🔍 Search...">
     <select id="statusFilter" class="form-select">
       <option value="">All Status</option>
       <option value="pending">Pending</option>
@@ -93,22 +93,24 @@
 
       <!-- Actions -->
       <td>
-        <div class="d-flex justify-content-center gap-2 flex-wrap">
-          <form action="{{ route('doctor.appointments.approve', $appt->id) }}" method="POST">
-            @csrf
-            <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm">
-              <i class="fas fa-check me-1"></i> Approve
-            </button>
-          </form>
+  <div class="d-flex justify-content-center gap-2 flex-wrap">
+      <!-- ✅ Enable Approve if prescription written -->
+      <form action="{{ route('doctor.appointments.approve', $appt->id) }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm">
+          <i class="fas fa-check me-1"></i> Approve
+        </button>
+      </form>
 
-          <form action="{{ route('doctor.view-appointment.deny', $appt->id) }}" method="POST">
-            @csrf
-            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm">
-              <i class="fas fa-times me-1"></i> Deny
-            </button>
-          </form>
-        </div>
-      </td>
+    <!-- ❌ Deny button still always available -->
+    <form action="{{ route('doctor.view-appointment.deny', $appt->id) }}" method="POST">
+      @csrf
+      <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm">
+        <i class="fas fa-times me-1"></i> Deny
+      </button>
+    </form>
+  </div>
+</td>
     </tr>
   @empty
     <tr>
@@ -132,31 +134,55 @@
 document.addEventListener("DOMContentLoaded", function() {
     const searchInput = document.getElementById("searchInput");
     const statusFilter = document.getElementById("statusFilter");
-    const table = document.getElementById("appointmentsTable");
+    const tableBody = document.getElementById("appointmentsTable");
 
     function filterTable() {
         const searchValue = searchInput.value.toLowerCase();
         const statusValue = statusFilter.value.toLowerCase();
-        const rows = Array.from(table.querySelectorAll("tr"));
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
+        let visibleCount = 0;
 
         rows.forEach(row => {
             // Skip "no appointments" row
-            if (row.querySelector("td[colspan='7']")) return;
+            if (row.classList.contains("no-data-row")) return;
 
-            const patientName = row.querySelector(".patient-name")?.textContent.toLowerCase() || "";
-            const statusText = row.querySelector(".status-cell span")?.textContent.toLowerCase() || "";
+            const patientCell = row.cells[1]; // 2nd column: Patient
+            const dateCell = row.cells[3];    // 4th column: Date & Time
+            const statusCell = row.cells[4];  // 5th column: Status
 
-            const matchesSearch = patientName.includes(searchValue);
-            const matchesStatus = statusValue === "" || statusText === statusValue;
+            if (!patientCell || !dateCell || !statusCell) return;
 
-            row.style.display = (matchesSearch && matchesStatus) ? "" : "none";
+            const patientName = patientCell.textContent.toLowerCase();
+            const appointmentDate = dateCell.textContent.toLowerCase();
+            const statusText = statusCell.textContent.toLowerCase();
+
+            // ✅ Match if search includes patient name or appointment date
+            const matchesSearch = 
+                patientName.includes(searchValue) ||
+                appointmentDate.includes(searchValue);
+
+            // ✅ Match if selected status matches or "All"
+            const matchesStatus = 
+                statusValue === "" || statusText.includes(statusValue);
+
+            const isVisible = matchesSearch && matchesStatus;
+            row.style.display = isVisible ? "" : "none";
+
+            if (isVisible) visibleCount++;
         });
+
+        // ✅ Show "No appointments found" only when nothing is visible
+        const noDataRow = tableBody.querySelector(".no-data-row");
+        if (noDataRow) {
+            noDataRow.style.display = visibleCount === 0 ? "" : "none";
+        }
     }
 
     searchInput.addEventListener("input", filterTable);
     statusFilter.addEventListener("change", filterTable);
 });
 </script>
+
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {

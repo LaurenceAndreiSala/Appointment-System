@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Payment;
 use App\Models\Appointment;
 use App\Models\AvailableSlot;
+use App\Models\Prescription;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SummaryExport;
@@ -108,13 +109,37 @@ public function restoreSlot($id)
     return back()->with('success', 'Slot restored successfully!');
 }
 
+public function updatePatientInfo(Request $request)
+{
+    $request->validate([
+        'appointment_id' => 'required|exists:appointments,id',
+        'height' => 'required|string|max:10',
+        'weight' => 'required|string|max:10',
+        'bmi' => 'nullable|string|max:10',
+        'blood_type' => 'nullable|string|max:10',
+        'advice' => 'nullable|string|max:500',
+    ]);
+
+    $appointment = Appointment::findOrFail($request->appointment_id);
+
+    $appointment->height = $request->height;
+    $appointment->weight = $request->weight;
+    $appointment->bmi = $request->bmi;
+    $appointment->blood_type = $request->blood_type;
+    $appointment->advice = $request->advice;
+    $appointment->save();
+
+    return redirect()->back()->with('success', '✅ Patient information updated successfully!');
+}
+
 
    public function viewallappointments()
 {
-    $appointments = Appointment::with(['patient','doctor'])->get();
+    $appointments = Appointment::with(['patient','doctor','prescription'])->get();
     $patients = User::where('role_id', 3)->get(); // all patients
-
-    return view('admin.view-appointment', compact('appointments','patients'));
+    $doctors = User::where('role_id', 2)->get();  
+    $prescription = Prescription::all();
+    return view('admin.view-appointment', compact('appointments','patients','prescription','doctors'));
 }
 
 public function storeSlot(Request $request)

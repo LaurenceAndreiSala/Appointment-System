@@ -19,6 +19,19 @@
 
       <p class="text-muted mb-4">Here are view all your appointments.</p>
 
+       <!-- ✅ Filter & Search Controls -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
+        <div class="d-flex gap-2">
+          <input type="text" id="searchInput" class="form-control" placeholder="🔍 Search by doctor or date...">
+          <select id="statusFilter" class="form-select">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="denied">Denied</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
 
       @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -26,38 +39,7 @@
 
       <div class="card shadow-sm border-0">
         <div class="card-body">
-          <style>
-/* 🟩 Responsive table-to-card design */
-@media (max-width: 768px) {
-  table thead {
-    display: none;
-  }
-  table tbody tr {
-    display: block;
-    background: #fff;
-    margin-bottom: 1rem;
-    border-radius: 0.75rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-  table tbody td {
-    display: flex;
-    justify-content: space-between;
-    text-align: left;
-    padding: 0.75rem 1rem;
-    border: none;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  table tbody td:last-child {
-    border-bottom: none;
-  }
-  table tbody td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #333;
-  }
-}
-</style>
+
 
 <div class="table-responsive">
   <table class="table table-bordered table-striped align-middle text-center mb-0">
@@ -69,7 +51,7 @@
         <th>Action</th>
       </tr>
     </thead>
-    <tbody>
+     <tbody id="appointmentsTable">
       @forelse($appointments as $appt)
         <tr>
           <td data-label="Doctor">
@@ -199,7 +181,7 @@
                     <img src="{{ asset('img/gcash.png') }}" class="me-2" style="width:30px; height:24px;"> GCash
                   </a>
                 </li>
-                <li>
+                <!-- <li>
                   <a class="dropdown-item d-flex align-items-center payment-option" href="#" data-value="paypal" data-text="PayPal">
                     <img src="{{ asset('img/paypal.png') }}" class="me-2" style="width:30px; height:24px;"> PayPal
                   </a>
@@ -208,7 +190,7 @@
                   <a class="dropdown-item d-flex align-items-center payment-option" href="#" data-value="credit_card" data-text="Credit Card">
                     <img src="{{ asset('img/credit-card.png') }}" class="me-2" style="width:30px; height:24px;"> Credit Card
                   </a>
-                </li>
+                </li> -->
               </ul>
             </div>
 
@@ -274,6 +256,39 @@
     </div>
   </div>
 </div>
+
+ <style>
+/* 🟩 Responsive table-to-card design */
+@media (max-width: 768px) {
+  table thead {
+    display: none;
+  }
+  table tbody tr {
+    display: block;
+    background: #fff;
+    margin-bottom: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  table tbody td {
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  table tbody td:last-child {
+    border-bottom: none;
+  }
+  table tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #333;
+  }
+}
+</style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -410,5 +425,52 @@ channel.bind("App\\Events\\CallStarted", function(data) {
   };
 });
 
+
+document.addEventListener("DOMContentLoaded", function() {
+  const searchInput = document.getElementById("searchInput");
+  const statusFilter = document.getElementById("statusFilter");
+  const table = document.getElementById("appointmentsTable");
+
+  function filterTable() {
+    const searchValue = searchInput.value.toLowerCase();
+    const statusValue = statusFilter.value.toLowerCase();
+    const rows = Array.from(table.querySelectorAll("tr"));
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      if (row.classList.contains("no-data-row")) return;
+
+      const dateCell = row.cells[0];
+      const doctorCell = row.cells[1];
+      const statusCell = row.cells[2];
+
+      if (!dateCell || !doctorCell || !statusCell) return;
+
+      const dateText = dateCell.textContent.toLowerCase();
+      const doctorText = doctorCell.textContent.toLowerCase();
+      const statusText = statusCell.textContent.toLowerCase();
+
+      const matchesSearch = 
+        dateText.includes(searchValue) ||
+        doctorText.includes(searchValue);
+
+      const matchesStatus =
+        statusValue === "" || statusText.includes(statusValue);
+
+      const isVisible = matchesSearch && matchesStatus;
+      row.style.display = isVisible ? "" : "none";
+
+      if (isVisible) visibleCount++;
+    });
+
+    const noDataRow = table.querySelector(".no-data-row");
+    if (noDataRow) {
+      noDataRow.style.display = visibleCount === 0 ? "" : "none";
+    }
+  }
+
+  searchInput.addEventListener("input", filterTable);
+  statusFilter.addEventListener("change", filterTable);
+});
 </script>
 @endsection
