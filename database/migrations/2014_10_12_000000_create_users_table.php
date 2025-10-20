@@ -24,6 +24,8 @@ return new class extends Migration
                 $table->timestamp('birth_date')->nullable();
                 $table->timestamp('gender');
                 $table->string('contact');
+                $table->string('age');
+                $table->string('specialization');
                 $table->foreignId('role_id');
                 $table->timestamps();
 

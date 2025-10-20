@@ -27,7 +27,7 @@
     @csrf
 
     <div class="text-center mb-4">
-      <img src="{{ asset(Auth::user()->profile_picture ?? 'img/default.png') }}" 
+      <img src="{{ asset(Auth::user()->profile_picture ?? 'img/default-profile.png') }}" 
            alt="Profile Picture" 
            class="rounded-circle mb-2"
            style="width:100px; height:100px; object-fit:cover;">

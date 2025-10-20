@@ -230,6 +230,14 @@ Route::get('/patient/notifications/fetch', [NotificationController::class, 'fetc
 Route::post('/admin/update-patient-info', [AdminDashboardController::class, 'updatePatientInfo'])
     ->name('admin.updatePatientInfo');
 
+Route::get('/doctor/notifications/fetch', [NotificationController::class, 'fetchdocnotif'])
+    ->name('doctor.notifications.fetch');
+
+
 Route::get('/doctor/chat/{receiver_id}', [ChatController::class, 'index'])->name('chat.index');
 Route::post('/doctor/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
 
+Route::get('/patient/prescriptions/download/{id}', [PrescriptionController::class, 'downloadPrescription'])->name('patient.prescriptions.download');
+
+Route::get('doctor/signature', [DoctorDashboardController::class, 'editSignature'])->name('doctor.signature.edit');
+Route::post('doctor/myprofile', [DoctorDashboardController::class, 'updateSignature'])->name('doctor.signature.update');

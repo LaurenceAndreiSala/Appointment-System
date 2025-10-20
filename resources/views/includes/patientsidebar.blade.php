@@ -5,7 +5,7 @@
   <div class="text-center mb-4">
     <img src="{{ Auth::user()->profile_picture 
                   ? asset(Auth::user()->profile_picture) 
-                  : asset('img/default.png') }}" 
+                  : asset('img/default-profile.png') }}" 
         alt="Patient Profile" 
         class="rounded-circle img-fluid mb-2"
         style="width:80px; height:80px; object-fit:cover;">
@@ -45,7 +45,7 @@
         <div class="text-center mb-4">
           <img src="{{ Auth::user()->profile_picture 
                         ? asset(Auth::user()->profile_picture) 
-                        : asset('img/default.png') }}" 
+                        : asset('img/default-profile.png') }}" 
               alt="Patient Profile" 
               class="rounded-circle img-fluid mb-2"
               style="width:80px; height:80px; object-fit:cover;">

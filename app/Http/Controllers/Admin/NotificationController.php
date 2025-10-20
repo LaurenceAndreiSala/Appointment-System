@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
+use App\Models\AppointmentBooked;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller
@@ -49,4 +50,19 @@ class NotificationController extends Controller
 
         return response()->json($notifications);
     }
+
+    public function fetchdocnotif()
+{
+    $notifications = \App\Models\Notification::where('user_id', auth()->id())
+        ->orderBy('created_at', 'desc')
+        ->take(10)
+        ->get(['id', 'title', 'message', 'created_at']); // only needed fields
+
+    return response()->json([
+        'count' => $notifications->count(),
+        'notifications' => $notifications,
+    ]);
+}
+
+
 }

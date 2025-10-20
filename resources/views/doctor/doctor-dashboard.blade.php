@@ -136,26 +136,16 @@
         </span>
       </td>
 
-      <!-- Actions -->
+       <!-- Actions -->
       <td>
   <div class="d-flex justify-content-center gap-2 flex-wrap">
-    @if($appt->prescriptions && $appt->prescriptions->count() > 0)
       <!-- ✅ Enable Approve if prescription written -->
-      <form action="{{ route('doctor.appointments.approve', $appt->id) }}" method="POST">
+      <form action="{{ secure_url(route('doctor.appointments.approve', $appt->id, [], false)) }}" method="POST" autocomplete="on" class="mb-4">
         @csrf
         <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm">
           <i class="fas fa-check me-1"></i> Approve
         </button>
       </form>
-    @else
-      <!-- 🚫 Disable Approve if no prescription -->
-      <button type="button" 
-              class="btn btn-sm btn-secondary rounded-pill px-3 shadow-sm" 
-              disabled 
-              title="Write a prescription first before approving.">
-        <i class="fas fa-check me-1"></i> Approve
-      </button>
-    @endif
 
     <!-- ❌ Deny button still always available -->
     <form action="{{ route('doctor.view-appointment.deny', $appt->id) }}" method="POST">
@@ -264,8 +254,6 @@ document.addEventListener("DOMContentLoaded", function() {
     statusFilter.addEventListener("change", filterTable);
 });
 </script>
-
-<script src="{{ asset('js/notification.js') }}"></script>
 
 @endsection
 

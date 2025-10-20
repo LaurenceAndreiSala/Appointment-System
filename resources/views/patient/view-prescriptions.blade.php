@@ -36,9 +36,12 @@
             <tr>
               <th>Date</th>
               <th>Doctor</th>
+              <th>License No.</th>
+              <th>Specialization</th>
               <th>Medication</th>
               <th>Dosage</th>
               <th>Notes</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody id="appointmentsTable">
@@ -49,9 +52,17 @@
                   {{ $prescription->appointment->doctor->firstname ?? '' }}
                   {{ $prescription->appointment->doctor->lastname ?? '' }}
                 </td>
+                <td data-label="Licence #">{{ $prescription->appointment->doctor->license_no ?? '' }}</td>
+                <td data-label="Specialization">{{ $prescription->appointment->doctor->specialization ?? '' }}</td>
                 <td data-label="Medication">{{ $prescription->medication }}</td>
                 <td data-label="Dosage">{{ $prescription->dosage }}</td>
                 <td data-label="Notes">{{ $prescription->notes ?? '-' }}</td>
+                <td>
+  <a href="{{ route('patient.prescriptions.download', $prescription->id) }}" 
+     class="btn btn-outline-primary btn-sm">
+     <i class="fas fa-download me-1"></i> Download
+  </a>
+</td>
               </tr>
             @endforeach
           </tbody>

@@ -2,6 +2,7 @@
 // DoctorDashboardController.php
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Payment;
@@ -201,17 +202,18 @@ public function storePrescription(Request $request)
 
  public function myprofile()
     {
+        $doctor = auth()->user()->doctor; // adjust if your auth relationship differs
         $notificationCount = Appointment::where('patient_id', auth()->id())
         ->whereIn('status', ['pending', 'approved'])
         ->count();
-
+       
         $notifications = Appointment::with('patient')
         ->orderBy('appointment_date', 'desc')
         ->take(10)
         ->get();
        
         
-        return view('doctor.my-profile', compact('notificationCount', 'notifications'));
+        return view('doctor.my-profile', compact('notificationCount', 'notifications','doctor'));
     }
 
     public function updateProfile(Request $request)
@@ -518,6 +520,34 @@ public function startCall($id, Request $request)
         ], 500);
     }
 }
+
+public function editSignature()
+{
+    $doctor = auth()->user(); // ✅ direct user record
+    return view('doctor.signature_edit', compact('doctor'));
+}
+
+public function updateSignature(Request $request)
+{
+    $request->validate([
+          'signature' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+    ]);
+
+    $doctor = auth()->user(); // ✅ direct user record
+
+    // delete old signature if exists
+    if ($doctor->signature && Storage::disk('public')->exists($doctor->signature)) {
+        Storage::disk('public')->delete($doctor->signature);
+    }
+
+    // upload new
+    $path = $request->file('signature')->store('signatures', 'public');
+    $doctor->signature = $path;
+    $doctor->save();
+
+    return back()->with('success', 'Signature uploaded.');
+}
+
 }
     // public function chatcall($id)
     // {

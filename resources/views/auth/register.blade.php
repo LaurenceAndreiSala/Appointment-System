@@ -29,11 +29,18 @@
 
               <div class="row g-3">
                 <!-- Full Name -->
-                <div class="col-md-12">
-                  <label for="name" class="form-label fw-semibold">Full Name</label>
-                  <input type="text" name="name" id="name" 
+                <div class="col-md-6">
+                  <label for="firstname" class="form-label fw-semibold">First Name</label>
+                  <input type="text" name="firstname" id="firstname" 
                          class="form-control rounded-3 shadow-sm" 
-                         placeholder="Enter your full name" required>
+                         placeholder="Enter your First name" required>
+                </div>
+
+                 <div class="col-md-6">
+                  <label for="lastname" class="form-label fw-semibold">Last Name</label>
+                  <input type="text" name="lastname" id="lastname" 
+                         class="form-control rounded-3 shadow-sm" 
+                         placeholder="Enter your Last name" required>
                 </div>
 
                 <!-- Email -->
@@ -44,13 +51,39 @@
                          placeholder="Enter your email" required>
                 </div>
 
+                <!-- Address -->
+                <div class="col-md-6">
+                  <label for="address" class="form-label fw-semibold">Address</label>
+                  <input type="text" name="address" id="address" 
+                         class="form-control rounded-3 shadow-sm" 
+                         placeholder="Enter your Address" required>
+                </div>
+
                 <!-- Phone -->
                 <div class="col-md-6">
-                  <label for="phone" class="form-label fw-semibold">Phone Number</label>
-                  <input type="text" name="phone" id="phone" 
+                  <label for="cotact_no" class="form-label fw-semibold">Phone Number</label>
+                  <input type="text" name="contact_no" id="contact_no" 
                          class="form-control rounded-3 shadow-sm" 
                          placeholder="Enter your phone number">
                 </div>
+                  <!-- Gender -->
+                  <div class="col-md-6">
+                    <label for="gender" class="form-label fw-semibold">Gender</label>
+                    <select name="gender" id="gender" class="form-control rounded-3 shadow-sm" required>
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  <!-- Birthday -->
+                  <div class="col-md-6">
+                    <label for="birth_date" class="form-label fw-semibold">Birthday</label>
+                    <input type="date" name="birth_date" id="birth_date"
+                          class="form-control rounded-3 shadow-sm"
+                          required>
+                  </div>
 
                 <!-- Password -->
                 <div class="col-md-6">

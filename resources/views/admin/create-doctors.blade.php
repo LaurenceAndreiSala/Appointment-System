@@ -29,51 +29,63 @@
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="form-label">First Name</label>
-          <input type="text" name="firstname" class="form-control" required>
+          <input type="text" name="firstname" class="form-control" placeholder="Enter Firstname" required>
         </div>
         <div class="col-md-6">
           <label class="form-label">Last Name</label>
-          <input type="text" name="lastname" class="form-control" required>
+          <input type="text" name="lastname" class="form-control" placeholder="Enter Lastname" required>
         </div>
       </div>
 
       <div class="row mb-3">
+             <div class="row mb-3">
         <div class="col-md-6">
-          <label class="form-label">Username</label>
-          <input type="text" name="username" class="form-control" required>
+          <label class="form-label">License Number</label>
+          <input type="text" name="license_no" class="form-control" placeholder="Enter License No."required>
         </div>
         <div class="col-md-6">
           <label class="form-label">Email</label>
-          <input type="email" name="email" class="form-control" required>
+          <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
         </div>
       </div>
 
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="form-label">Password</label>
-          <input type="password" name="password" class="form-control" required>
+          <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
         </div>
         <div class="col-md-6">
           <label class="form-label">Confirm Password</label>
-          <input type="password" name="password_confirmation" class="form-control" required>
+          <input type="password" name="password_confirmation" class="form-control" placeholder="Enter Confirm Password"required>
         </div>
       </div>
 
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="form-label">Contact Number</label>
-          <input type="text" name="contact_no" class="form-control" required>
+          <input type="text" name="contact_no" class="form-control" placeholder="Enter Contact No." required>
         </div>
         <div class="col-md-6">
           <label class="form-label">Address</label>
-          <input type="text" name="address" class="form-control" required>
+          <input type="text" name="address" class="form-control" placeholder="Enter Address" required>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Doctor Age</label>
+          <input type="text" name="age" class="form-control" placeholder="Enter Age" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Specialization</label>
+          <input type="text" name="specialization" class="form-control" placeholder="e.g. Cardiologist" required>
         </div>
       </div>
 
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="form-label">Birth Date</label>
-          <input type="date" name="birth_date" class="form-control" required>
+          <input type="date" name="birth_date" class="form-control" placeholder="Enter Birth Date" required>
         </div>
         <div class="col-md-6">
           <label class="form-label d-block mb-2 fw-semibold">Gender</label>
@@ -93,7 +105,7 @@
           </div>
         </div>
       </div>
-
+  </div>
       <!-- Hidden Status -->
       <input type="hidden" name="status" value="active">
 
@@ -123,7 +135,7 @@
           <tr>
             <!-- Profile Picture -->
             <td>
-              <img src="{{ $doctor->profile_picture ? asset($doctor->profile_picture) : asset('img/default-avatar.png') }}" 
+              <img src="{{ $doctor->profile_picture ? asset($doctor->profile_picture) : asset('img/default-profile.png') }}" 
                    alt="Doctor Picture" 
                    class="rounded-circle" 
                    style="width:50px; height:50px; object-fit:cover;">

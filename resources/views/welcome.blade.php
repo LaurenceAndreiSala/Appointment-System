@@ -30,11 +30,11 @@
 </nav>
 
 <!-- Hero Section -->
-<section class="gradient-bg text-white py-5" style="min-height: 90vh;">
+<section class="gradient-bg text-white py-4" style="min-height: 80vh;">
   <div class="container">
     <div class="row align-items-center text-center text-md-start">
       <!-- Left Content -->
-      <div class="col-md-6 mb-4" data-aos="fade-right" style="margin-top: -25px;">
+      <div class="col-md-6 mb-4" data-aos="fade-right" style="margin-top: 25px;">
         <h1 class="display-4 fw-bold">
           Find & Book Appointment With Your Trusted Doctor
         </h1>
@@ -47,7 +47,7 @@
       <div class="col" data-aos="fade-left">
         <img src="{{ asset('/img/doctor.png') }}"
              class="img-fluid rounded-4 shadow-lg border"
-             alt="Doctor" style="width: 70%; height: 25%; margin-top: -30px">
+             alt="Doctor" style="width: 70%; height: 590px; margin-top: 30px">
       </div>
     </div>
   </div>
