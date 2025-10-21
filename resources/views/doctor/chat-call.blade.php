@@ -62,7 +62,7 @@
                       <i class="fas fa-phone-alt me-1"></i> Call
                     </button>
 
-                    <!-- ✅ Chat Button -->
+                <!-- ✅ Chat Button -->
                  <button type="button"
   class="btn btn-primary chat-btn rounded-pill shadow-sm px-3 py-1 position-relative"
   data-receiver-id="{{ $appt->patient_id ?? $appt->doctor_id }}"
@@ -72,7 +72,6 @@
   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
         id="chatBadge{{ $appt->patient_id ?? $appt->doctor_id }}">0</span>
 </button>
-
                   </div>
                 </td>
               </tr>
@@ -93,7 +92,7 @@
 
 
 <!-- ✅ Chat Box -->
-<div id="chatSection" class="card shadow-lg position-fixed bottom-0 end-0 m-4 d-none" style="width: 350px; z-index:1050;">
+<div id="chatSection" class="card shadow-lg position-fixed bottom-0 end-0 m-4 d-none" style="width: 350px; z-index:0;">
   <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
     <span id="chatWithName">Chat</span>
     <button class="btn-close btn-close-white" id="closeChatBtn"></button>
@@ -164,7 +163,7 @@ document.addEventListener("click", async (e) => {
   btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Starting...';
 
   try {
-    const response = await fetch(`/doctor/start-call/${appointmentId}`, {
+    const response = await fetch(`{{ secure_url('doctor/start-call') }}/${appointmentId}`, {
       method: "POST",
       headers: {
         "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
@@ -212,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Load unread message counts initially
   async function loadUnreadCounts() {
     try {
-      const res = await fetch("/messages/unread-counts");
+      const res = await fetch(`{{ secure_url('messages/unread-counts') }}`);
       const data = await res.json();
       Object.entries(data).forEach(([senderId, count]) => {
         const badge = document.getElementById("chatBadge" + senderId);
@@ -254,13 +253,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (badge) badge.classList.add("d-none");
 
     // 🔹 Mark as read
-    fetch(`/messages/mark-read/${receiverId}`, {
+    fetch(`{{ secure_url('messages/mark-read') }}/${receiverId}`, {
       method: "POST",
       headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
     });
 
     // 🔹 Fetch old messages
-    const res = await fetch(`/messages/fetch/${receiverId}`);
+    const res = await fetch(`{{ secure_url('messages/fetch') }}/${receiverId}`);
     const messages = await res.json();
 
     messages.forEach(msg => {
@@ -293,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const receiverId = receiverInput.value;
     if (!message) return;
 
-    await fetch(`{{ route('messages.send') }}`, {
+    await fetch(`{{ secure_url(route('messages.send', [], false)) }}`, {
       method: "POST",
       headers: {
         "X-CSRF-TOKEN": "{{ csrf_token() }}",
@@ -335,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
       chatBox.scrollTop = chatBox.scrollHeight;
 
       // Mark as read
-      fetch(`/messages/mark-read/${senderId}`, {
+      fetch(`{{ secure_url('messages/mark-read') }}/${receiverId}`, {
         method: "POST",
         headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" },
       });

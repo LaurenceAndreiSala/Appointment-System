@@ -56,15 +56,14 @@
                     <td>
                       <div class="d-flex justify-content-center gap-2 flex-wrap">
                         @if(!$notif->read)
-                          <form action="{{ route('admin.notifications.read', $notif->id) }}" method="POST" class="d-inline">
+                            <form method="POST" action="{{ secure_url(route('admin.notifications.read', $notif->id, [], false)) }}" class="d-inline">
                             @csrf
                             <button class="btn btn-outline-primary btn-sm px-3 shadow-sm">
                               <i class="fas fa-envelope-open me-1"></i> Mark Read
                             </button>
                           </form>
                         @endif
-
-                        <form action="{{ route('admin.notifications.delete', $notif->id) }}" method="POST" class="d-inline">
+                        <form method="POST" action="{{ secure_url(route('admin.notifications.delete', $notif->id, [], false)) }}" class="d-inline">
                           @csrf
                           @method('DELETE')
                           <button class="btn btn-outline-danger btn-sm px-3 shadow-sm">

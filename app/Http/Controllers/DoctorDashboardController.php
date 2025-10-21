@@ -190,17 +190,23 @@ public function storePrescription(Request $request)
         'notes'          => 'nullable|string',
     ]);
 
+    $doctor = auth()->user();
+
+    // Get doctor's saved signature path (if any)
+    $signaturePath = $doctor->signature ? $doctor->signature : null;
+
     Prescription::create([
         'appointment_id' => $request->appointment_id,
         'medication'     => $request->medication,
         'dosage'         => $request->dosage,
         'notes'          => $request->notes,
+        'signature_path' => $signaturePath, // ✅ store doctor signature path
     ]);
 
-    return back()->with('success', 'Prescription saved successfully!');
+    return back()->with('success', 'Prescription saved with electronic signature!');
 }
 
- public function myprofile()
+public function myprofile()
     {
         $doctor = auth()->user()->doctor; // adjust if your auth relationship differs
         $notificationCount = Appointment::where('patient_id', auth()->id())

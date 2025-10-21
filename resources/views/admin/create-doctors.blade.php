@@ -23,7 +23,7 @@
 
           <div class="card shadow-sm border-0 rounded-4 mb-3">
         <div class="card-body p-3 p-md-4">
-    <form method="POST" action="{{ route('doctors.store') }}">
+    <form method="POST" action="{{ secure_url(route('doctors.store', [], false)) }}">
       @csrf
 
       <div class="row mb-3">
@@ -149,7 +149,7 @@
               </span>
             </td>
             <td>
-              <form action="{{ route('doctors.toggleAbsence', $doctor->id) }}" method="POST" style="display:inline;">
+             <form method="POST" action="{{ secure_url(route('doctors.toggleAbsence', $doctor->id, [], false)) }}" style="display:inline;">
                 @csrf
                 @method('PATCH')
                 @if($doctor->is_absent)

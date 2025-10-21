@@ -24,7 +24,7 @@
           <div class="card-body p-5">
             <h3 class="fw-bold text-center mb-4 text-primary">Create an Account</h3>
 
-            <form action="{{ route('register') }}" method="POST">
+         <form action="{{ secure_url(route('register', [], false)) }}" method="POST">
               @csrf
 
               <div class="row g-3">
@@ -86,21 +86,31 @@
                   </div>
 
                 <!-- Password -->
-                <div class="col-md-6">
-                  <label for="password" class="form-label fw-semibold">Password</label>
-                  <input type="password" name="password" id="password" 
-                         class="form-control rounded-3 shadow-sm" 
-                         placeholder="Enter your password" required>
-                </div>
+                  <div class="mb-3 position-relative">
+             <label for="password" class="form-label fw-semibold">Password</label>
+  
+              <input type="password" name="password" id="password"
+                class="form-control rounded-3 shadow-sm pe-5"
+                placeholder="Enter your password" required>
+  
+             <span class="toggle-password position-absolute top-50 end-0 translate-middle-y me-3"
+              onclick="togglePassword(this)" style="cursor: pointer; margin-top: 17px;">
+              <i class="fas fa-eye"></i>
+              </span>
+            </div>
 
-                <!-- Confirm Password -->
-                <div class="col-md-6">
+            <!-- Confirm Password -->
+                <div class="mb-3 position-relative">
                   <label for="password_confirmation" class="form-label fw-semibold">Confirm Password</label>
-                  <input type="password" name="password_confirmation" id="password_confirmation" 
-                         class="form-control rounded-3 shadow-sm" 
-                         placeholder="Re-enter your password" required>
+                  <input type="password" name="password_confirmation" id="password_confirmation"
+                         class="form-control rounded-3 shadow-sm pe-5"
+                         placeholder="Confirm your password" required>
+                  <span class="toggle-password position-absolute top-50 end-0 translate-middle-y me-3"
+                        onclick="toggleConfirmPassword(this)" style="cursor: pointer; margin-top: 17px;">
+                    <i class="fas fa-eye"></i>
+                  </span>
                 </div>
-              </div>
+      
 
               <!-- Submit -->
               <button type="submit" class="btn btn-primary w-100 rounded-3 shadow-sm mt-4 fw-semibold">
@@ -120,8 +130,43 @@
   </div>
 </section>
 
-<!-- ✅ Styles -->
+<script>
+  function togglePassword(iconWrapper) {
+      const input = document.getElementById("password");
+      const icon = iconWrapper.querySelector("i");
+
+      if (input.type === "password") {
+          input.type = "text";
+          icon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+          input.type = "password";
+          icon.classList.replace("fa-eye-slash", "fa-eye");
+      }
+  }
+
+  function toggleConfirmPassword(iconWrapper) {
+      const input = document.getElementById("password_confirmation");
+      const icon = iconWrapper.querySelector("i");
+
+      if (input.type === "password") {
+          input.type = "text";
+          icon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+          input.type = "password";
+          icon.classList.replace("fa-eye-slash", "fa-eye");
+      }
+  }
+</script>
+
 <style>
+    toggle-password i {
+    color: #6c757d;
+    font-size: 1rem;
+  }
+  .toggle-password:hover i {
+    color: #0d6efd;
+  }
+
    .gradient-bg {
     background: linear-gradient(135deg, #007bff, #00c6ff);
   }

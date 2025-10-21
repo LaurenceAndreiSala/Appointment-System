@@ -58,7 +58,7 @@
           <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
             <h5 class="fw-bold text-primary mb-3"><i class="fas fa-clock me-2"></i>Select Time</h5>
 
-<form id="appointmentForm" action="{{ route('patient.appointments.store') }}" method="POST">
+          <form id="appointmentForm" action="{{ secure_url(route('patient.appointments.store', [], false)) }}" method="POST">
     @csrf
     <input type="hidden" name="doctor_id" id="doctor_id">
     <input type="hidden" name="slot_id" id="slot_id">

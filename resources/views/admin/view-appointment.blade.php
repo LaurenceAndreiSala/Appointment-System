@@ -184,7 +184,7 @@
       </div>
       
       <!-- Modal Body -->
-    <form id="editPatientInfoForm" method="POST" action="{{ route('admin.updatePatientInfo') }}">
+       <form method="POST" id="editPatientInfoForm" action="{{ secure_url(route('admin.updatePatientInfo', [], false)) }}">
   @csrf
   <input type="hidden" name="appointment_id" id="editpatientInfoId">
 

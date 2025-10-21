@@ -56,6 +56,5 @@
   <div class="footer">
     <p>“Take medicines as prescribed. For any adverse reaction, contact your doctor immediately.”</p>
   </div>
-
 </body>
 </html>

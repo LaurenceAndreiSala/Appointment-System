@@ -24,7 +24,8 @@
           <div class="card-body p-5">
             <h3 class="fw-bold text-center mb-4 text-primary">Log In to MediCAL</h3>
 
-            <form action="{{ route('login') }}" method="POST">
+        <!-- <form action="{{ secure_url(route('login', [], false)) }}" method="POST"> -->
+        <form action="{{ secure_url(route('login', [], false)) }}" method="POST">
               @csrf
 
               <!-- Email -->
@@ -39,15 +40,22 @@
               </div>
 
               <!-- Password -->
-              <div class="mb-3">
-                <label for="password" class="form-label fw-semibold">Password</label>
-                <input type="password" name="password" id="password" 
-                       class="form-control rounded-3 shadow-sm" 
-                       placeholder="Enter your password" required>
-                @error('password')
-                  <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
-              </div>
+              <div class="mb-3 position-relative">
+             <label for="password" class="form-label fw-semibold">Password</label>
+  
+              <input type="password" name="password" id="password"
+                class="form-control rounded-3 shadow-sm pe-5"
+                placeholder="Enter your password" required>
+  
+             <span class="toggle-password position-absolute top-50 end-0 translate-middle-y me-3"
+              onclick="togglePassword(this)" style="cursor: pointer; margin-top: 17px;">
+              <i class="fas fa-eye"></i>
+              </span>
+
+              @error('password')
+                <div class="text-danger small mt-1">{{ $message }}</div>
+              @enderror
+            </div>
 
               <!-- Remember Me & Forgot Password -->
               <div class="d-flex justify-content-between align-items-center mb-4">
@@ -55,7 +63,6 @@
                   <input class="form-check-input" type="checkbox" name="remember" id="remember">
                   <label class="form-check-label small" for="remember">Remember Me</label>
                 </div>
-                <a href="#" class="small text-primary text-decoration-none">Forgot Password?</a>
               </div>
 
               <!-- Submit Button -->
@@ -78,8 +85,30 @@
   </div>
 </section>
 
-<!-- ✅ Styles -->
+<script>
+  function togglePassword(iconWrapper) {
+      const input = document.getElementById("password");
+      const icon = iconWrapper.querySelector("i");
+
+      if (input.type === "password") {
+          input.type = "text";
+          icon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+          input.type = "password";
+          icon.classList.replace("fa-eye-slash", "fa-eye");
+      }
+  }
+</script>
+
 <style>
+  toggle-password i {
+  color: #6c757d;
+  font-size: 1rem;
+}
+.toggle-password:hover i {
+  color: #0d6efd;
+}
+   
    .gradient-bg {
     background: linear-gradient(135deg, #007bff, #00c6ff);
   }

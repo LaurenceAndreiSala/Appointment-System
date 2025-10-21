@@ -22,7 +22,7 @@
     <div class="alert alert-success">{{ session('success') }}</div>
   @endif
 
-   <form action="{{ route('doctor.update-profile') }}" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
+           <form action="{{ secure_url(route('doctor.update-profile', [], false)) }}" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
     @csrf
 
     <div class="text-center mb-4">
@@ -67,7 +67,7 @@
 
     <button type="submit" class="btn btn-primary">Update Profile</button>
   </form>
-   <form action="{{ route('doctor.signature.update') }}" method="POST" enctype="multipart/form-data">
+  <form action="{{ secure_url(route('doctor.signature.update', [], false)) }}"method="POST" enctype="multipart/form-data">
     @csrf
     <div class="mb-3">
       <label class="form-label">Signature (PNG / JPG)</label>

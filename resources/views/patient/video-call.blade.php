@@ -80,7 +80,7 @@
 </div>
 
 <!-- ✅ Chat Box -->
-<div id="chatSection" class="card shadow-lg position-fixed bottom-0 end-0 m-4 d-none" style="width: 350px; z-index:1050;">
+<div id="chatSection" class="card shadow-lg position-fixed bottom-0 end-0 m-4 d-none" style="width: 350px; z-index:0;">
   <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
     <span id="chatWithName">Chat</span>
     <button class="btn-close btn-close-white" id="closeChatBtn"></button>
@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ✅ Load unread counts
   async function loadUnreadCounts() {
     try {
-      const res = await fetch("/messages/unread-counts");
+      const res = await fetch(`{{ secure_url('messages/unread-counts') }}`);
       const data = await res.json();
       Object.entries(data).forEach(([senderId, count]) => {
         const badge = document.getElementById("chatBadge" + senderId);
@@ -247,13 +247,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (badge) badge.classList.add("d-none");
 
     // Mark messages as read
-    fetch(`/messages/mark-read/${receiverId}`, {
+    fetch(`{{ secure_url('messages/mark-read') }}/${receiverId}`, {
       method: "POST",
       headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" },
     });
 
     // ✅ Load chat conversation
-    const res = await fetch(`/messages/fetch/${receiverId}`);
+    const res = await fetch(`{{ secure_url('messages/fetch') }}/${receiverId}`);
     const messages = await res.json();
 
     messages.forEach(msg => {
@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const receiverId = receiverInput.value;
     if (!message) return;
 
-    await fetch(`{{ route('messages.send') }}`, {
+    await fetch(`{{ secure_url(route('messages.send', [], false)) }}`, {
       method: "POST",
       headers: {
         "X-CSRF-TOKEN": "{{ csrf_token() }}",
@@ -327,7 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
       chatBox.scrollTop = chatBox.scrollHeight;
 
       // Mark message as read
-      fetch(`/messages/mark-read/${senderId}`, {
+      fetch(`{{ secure_url('messages/mark-read') }}/${senderId}`, {
         method: "POST",
         headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" },
       });

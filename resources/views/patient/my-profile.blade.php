@@ -22,8 +22,7 @@
   @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
   @endif
-
-  <form action="{{ route('patient.update-profile') }}" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
+   <form action="{{ secure_url(route('patient.update-profile', [], false)) }}" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
     @csrf
 
     <div class="text-center mb-4">

@@ -43,7 +43,7 @@
       </div>
       
       <!-- Modal Body -->
-      <form id="writePrescriptionForm" method="POST" action="{{ route('doctor.prescriptions.store') }}">
+          <form id="writePrescriptionForm" action="{{ secure_url(route('doctor.prescriptions.store', [], false)) }}" method="POST">
         @csrf
         <input type="hidden" name="appointment_id" id="prescriptionAppointmentId">
 
@@ -66,6 +66,19 @@
             <textarea class="form-control shadow-sm" name="notes" id="notes" rows="3" placeholder="Additional instructions or notes"></textarea>
           </div>
         </div>
+
+        <!-- Doctor's Signature Preview -->
+<div class="text-center mb-4">
+  <h6 class="fw-semibold text-muted mb-2">Your Electronic Signature</h6>
+  @if(auth()->user()->signature)
+    <img src="{{ asset('storage/' . auth()->user()->signature) }}" 
+         alt="Doctor Signature"
+         style="max-width: 200px; max-height: 100px; object-fit: contain;">
+  @else
+    <p class="text-danger">⚠️ No signature uploaded yet. Please upload in your profile.</p>
+  @endif
+</div>
+
 
         <!-- Modal Footer -->
         <div class="modal-footer border-0 pt-0">
@@ -134,7 +147,16 @@
         <p><strong>Notes:</strong> <span id="viewNotes"></span></p>
 
         <p><strong>Doctor:</strong> <span>{{ $doctors->first()->firstname ?? 'N/A' }} {{ $doctors->first()->lastname ?? 'N/A' }}</span></p>
-        
+        <hr class="my-3">
+<h6 class="section-title text-muted">Doctor’s Signature</h6>
+@if(isset($prescription) && $prescription->signature_path)
+  <img src="{{ asset('storage/' . $prescription->signature_path) }}" 
+       alt="Doctor Signature"
+       style="max-width: 200px; max-height: 100px; object-fit: contain;">
+@else
+  <p class="text-muted">No signature available.</p>
+@endif
+
       </div>
     </div>
   </div>

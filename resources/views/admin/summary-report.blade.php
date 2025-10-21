@@ -123,7 +123,7 @@
     <!-- You can add more formats here if needed -->
   </select>
   <div id="downloadIcon" style="display: none;">
-    <a href="{{ route('admin.report.pdf') }}" class="btn btn-danger mt-2">
+    <a href="{{ secure_url(route('admin.report.pdf', false)) }}" class="btn btn-danger mt-2">
       <i class="fas fa-file-pdf"></i> Download PDF
     </a>
   </div>
