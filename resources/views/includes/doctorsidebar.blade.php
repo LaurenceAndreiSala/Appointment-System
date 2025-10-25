@@ -37,12 +37,18 @@
               <i data-feather="activity" class="me-2"></i> Dashboard Overview
             </a>
           </li>
-          <li class="nav-item">
+             <li class="nav-item">
+            <a href="{{ route('doctor.write-prescriptions') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.write-prescriptions') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+               <i data-feather="calendar" class="me-2"></i> View Appointment
+            </a>
+          </li>
+          <!-- <li class="nav-item">
             <a href="{{ route('doctor.view-appointment') }}" 
                class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.view-appointment') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
               <i data-feather="calendar" class="me-2"></i> View Appointments
             </a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a href="{{ route('doctor.view-patients') }}" 
                class="nav-link  d-flex align-items-center {{ request()->routeIs('doctor.view-patients') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
@@ -53,12 +59,6 @@
             <a href="{{ route('doctor.chat-call') }}" 
                class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.chat-call') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
               <i data-feather="message-circle" class="me-2"></i> Chat / Video Call
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('doctor.write-prescriptions') }}" 
-               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.write-prescriptions') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
-              <i data-feather="edit" class="me-2"></i> Manage Prescription
             </a>
           </li>
           <li class="nav-item">
@@ -105,10 +105,10 @@
               <i data-feather="activity" class="me-2"></i> Dashboard Overview
             </a>
           </li>
-          <li class="nav-item">
-            <a href="{{ route('doctor.view-appointment') }}" 
-               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.view-appointment') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
-              <i data-feather="calendar" class="me-2"></i> View Appointments
+           <li class="nav-item">
+            <a href="{{ route('doctor.write-prescriptions') }}" 
+               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.write-prescriptions') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
+               <i data-feather="calendar" class="me-2"></i> View Appointment
             </a>
           </li>
           <li class="nav-item">
@@ -121,12 +121,6 @@
             <a href="{{ route('doctor.chat-call') }}" 
                class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.chat-call') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
               <i data-feather="message-circle" class="me-2"></i> Chat / Video Call
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('doctor.write-prescriptions') }}" 
-               class="nav-link d-flex align-items-center {{ request()->routeIs('doctor.write-prescriptions') ? 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
-              <i data-feather="edit" class="me-2"></i> Manage Prescription
             </a>
           </li>
           <li class="nav-item">

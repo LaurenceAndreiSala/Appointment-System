@@ -12,7 +12,7 @@
 
   <div class="bg-light rounded-4 shadow-sm p-4 mb-4 d-flex align-items-center">
     <i class="fas fa-prescription-bottle-alt text-primary fa-2x me-3"></i>
-    <h3 class="fw-bold mb-0 text-dark">Manage Prescriptions</h3>
+    <h3 class="fw-bold mb-0 text-dark">View Appointments</h3>
   </div>
   <button type="button" class="btn btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#archivedPrescriptionsModal">
     <i class="fas fa-archive"></i> View Archived Prescriptions
@@ -244,7 +244,7 @@
               <th>Doctor</th>
               <th>Date & Time</th>
               <th>Status</th>
-              <th>Action</th>
+              <th><i data-feather="edit" class="me-2"></i> Manage Prescriptions</th>
             </tr>
           </thead>
      <tbody id="appointmentsTable" class="text-center">

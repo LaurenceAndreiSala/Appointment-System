@@ -78,7 +78,8 @@
           <td data-label="Action">
             <div class="d-flex flex-column gap-2">
               @if($appt->status == 'pending')
-                <form action="{{ route('patient.cancel', $appt->id) }}" method="POST">
+              
+                <form action="{{ secure_url(route('patient.cancel', $appt->id, false)) }}" method="POST">
                   @csrf
                   <button type="submit" class="btn btn-sm btn-secondary w-100">Cancel</button>
                 </form>
@@ -103,7 +104,7 @@
                         class="btn btn-sm btn-outline-info mt-1 receiptBtn w-100" 
                         data-bs-toggle="modal" 
                         data-bs-target="#receiptModal"
-                        data-url="{{ route('patient.payment.receipt', $appt->payment->id) }}">
+                        data-url="{{ secure_url(route('patient.payment.receipt', $appt->payment->id, false)) }}">
                   <i class="fas fa-download"></i> Receipt
                 </button>
               @endif

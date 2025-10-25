@@ -16,7 +16,7 @@
         <div class="d-flex align-items-center">
         <i class="fas fa-user-tie text-primary fa-1x me-3"></i>
           <span class="fw-bold fs-10 fs-md-10">
-    Welcome Dr. {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}!
+    Welcome Sec. {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}!
   </span>
         </div>
         <small class="text-muted mt-2 mt-md-0">Secretary Dashboard</small>

@@ -28,7 +28,7 @@
     @endif
 
     <!-- Add Slot Form -->
-    <form action="{{ route('doctor.store-slot') }}" method="POST" class="mb-4">
+    <form action="{{ secure_url(route('doctor.store-slot', [], false)) }}" method="POST" class="mb-4">
       @csrf
 
       @php
@@ -79,7 +79,7 @@
   <div class="d-flex gap-2">
     <input type="text" id="searchInput" class="form-control" placeholder="🔍 Search by date or time...">
     <select id="statusFilter" class="form-select">
-      <option value="">All Statuses</option>
+      <option value="">All Status</option>
       <option value="available">Available</option>
       <option value="booked">Booked</option>
     </select>
@@ -158,7 +158,7 @@
                   <td>{{ \Carbon\Carbon::parse($slot->start_time)->format('g:i A') }}</td>
                   <td>{{ \Carbon\Carbon::parse($slot->end_time)->format('g:i A') }}</td>
                   <td>
-                    <form action="{{ route('admin.slots.restore', $slot->id) }}" method="POST">
+                    <form action="{{ secure_url(route('admin.slots.restore', $slot->id, [], false)) }}" method="POST">
                       @csrf
                       @method('PUT')
                       <button type="submit" class="btn btn-sm btn-success">
@@ -191,8 +191,9 @@
         <div class="modal-body text-center">
           Are you sure you want to archive this slot?
         </div>
-        <div class="modal-footer justify-content-center">
-          <form id="archiveForm" method="POST" action="{{ route('admin.slots.archive') }}">
+        <div class="modal-footer justify-content-center">                
+
+          <form id="archiveForm" method="POST" action="{{ secure_url(route('admin.slots.archive', [], false)) }}">
             @csrf
             <input type="hidden" name="slot_id" id="archiveSlotId">
             <button type="submit" class="btn btn-secondary">Yes, Archive</button>

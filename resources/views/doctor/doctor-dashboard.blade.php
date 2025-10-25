@@ -136,11 +136,11 @@
         </span>
       </td>
 
-       <!-- Actions -->
+          <!-- Actions -->
       <td>
   <div class="d-flex justify-content-center gap-2 flex-wrap">
       <!-- ✅ Enable Approve if prescription written -->
-      <form action="{{ secure_url(route('doctor.appointments.approve', $appt->id, [], false)) }}" method="POST" autocomplete="on" class="mb-4">
+         <form action="{{ secure_url(route('doctor.appointments.approve', $appt->id, [], false)) }}" method="POST">
         @csrf
         <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm">
           <i class="fas fa-check me-1"></i> Approve
@@ -148,14 +148,14 @@
       </form>
 
     <!-- ❌ Deny button still always available -->
-           <form action="{{ secure_url(route('doctor.view-appointment.deny', $appt->id, [], false)) }}" method="POST">
+    <form action="{{ secure_url(route('doctor.view-appointment.deny', $appt->id, [], false)) }}" method="POST">
       @csrf
       <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm">
         <i class="fas fa-times me-1"></i> Deny
       </button>
     </form>
   </div>
-</td>
+</td> 
     </tr>
   @empty
     <tr>

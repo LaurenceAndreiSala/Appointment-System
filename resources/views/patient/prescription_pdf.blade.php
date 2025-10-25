@@ -13,7 +13,7 @@
     .details { margin: 18px 0; line-height: 1.6; font-size: 13px;}
     .signature { margin-top: 28px; text-align: right; }
     .signature-line { border-top: 1px solid #000; width: 240px; margin-left: auto; height: 1px; }
-    .signature-img { max-width: 220px; height: auto; display: block; margin-left: auto; }
+    .signature-img { max-width: 200px; height: 110px; display: block; margin-left: auto; }
     .footer { border-top: 1px solid #000; text-align: center; font-size: 11px; margin-top: 26px; padding-top: 8px; }
   </style>
 </head>
@@ -32,7 +32,7 @@
     <strong>License No:</strong> {{ $prescription->appointment->doctor->license_no ?? '—' }}<br>
     <strong>Specialization:</strong> {{ $prescription->appointment->doctor->specialization ?? '—' }}<br><br>
     <strong>Patient:</strong> {{ $prescription->appointment->patient->firstname }} {{ $prescription->appointment->patient->lastname }}<br>
-    <strong>Date:</strong> {{ $prescription->created_at->format('M d, Y h:i A') }}
+    <strong>Date:</strong>{{ now()->setTimezone('Asia/Manila')->format('M d, Y h:i A') }} <strong style="margin-left: 100px;">Age:</strong> {{ $prescription->appointment->patient->age}} <strong>Gender:</strong> {{ $prescription->appointment->patient->gender}}
   </div>
 
   <div class="rx">Rx</div>

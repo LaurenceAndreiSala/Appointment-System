@@ -85,6 +85,14 @@
                           required>
                   </div>
 
+                    <!-- Age -->
+                  <div class="col-md-6">
+                    <label for="age" class="form-label fw-semibold">Age</label>
+                    <input type="text" name="age" id="age" placeholder="Enter Age"
+                          class="form-control rounded-3 shadow-sm"
+                          required>
+                  </div>
+
                 <!-- Password -->
                   <div class="mb-3 position-relative">
              <label for="password" class="form-label fw-semibold">Password</label>
