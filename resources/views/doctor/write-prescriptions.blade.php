@@ -161,16 +161,6 @@
         <p><strong>Notes:</strong> <span id="viewNotes"></span></p>
 
         <p><strong>Doctor:</strong> <span>{{ $doctors->first()->firstname ?? 'N/A' }} {{ $doctors->first()->lastname ?? 'N/A' }}</span></p>
-        <hr class="my-3">
-<h6 class="section-title text-muted">Doctor’s Signature</h6>
-@if(isset($prescription) && $prescription->signature_path)
-  <img src="{{ asset('storage/' . $prescription->signature_path) }}" 
-       alt="Doctor Signature"
-       style="max-width: 200px; max-height: 100px; object-fit: contain;">
-@else
-  <p class="text-muted">No signature available.</p>
-@endif
-
       </div>
     </div>
   </div>

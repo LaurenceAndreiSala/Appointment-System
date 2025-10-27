@@ -125,7 +125,7 @@
   <!-- ✅ Prescription -->
   <div class="prescription-content">
     @foreach($prescription->medications ?? [$prescription] as $index => $med)
-      {{ $loop->iteration }}.) {{ $med->medication ?? '' }} {{ $med->dosage ?? '' }} #{{ $med->quantity ?? '1' }}<br>
+      {{ $loop->iteration }}.) {{ $med->medication ?? '' }} {{ $med->dosage ?? '' }} #{{ $med->quantity ?? '' }}<br>
       <strong>Sig:</strong> {{ $med->instructions ?? $prescription->notes ?? 'Take as directed by physician.' }}<br><br>
     @endforeach
   </div>

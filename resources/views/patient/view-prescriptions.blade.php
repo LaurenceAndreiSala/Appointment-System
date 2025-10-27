@@ -54,7 +54,7 @@
                 </td>
                 <td data-label="Licence #">{{ $prescription->appointment->doctor->license_no ?? '' }}</td>
                 <td data-label="Specialization">{{ $prescription->appointment->doctor->specialization ?? '' }}</td>
-                <td data-label="Medication">{{ $prescription->medication }}</td>
+                <td data-label="Medication">{{ $prescription->medication }} ({{ $prescription->quantity }})</td>
                 <td data-label="Dosage">{{ $prescription->dosage }}</td>
                 <td data-label="Notes">{{ $prescription->notes ?? '-' }}</td>
                 <td>
