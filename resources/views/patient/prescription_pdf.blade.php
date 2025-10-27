@@ -4,57 +4,146 @@
   <meta charset="UTF-8">
   <title>Prescription</title>
   <style>
-    body { font-family: 'Arial', sans-serif; color: #000; margin: 30px; }
-    .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; }
-    .clinic-logo { width: 40px; height: 40px; vertical-align: middle; margin-right: 8px; }
-    .clinic-title { font-weight: bold; font-size: 20px; vertical-align: middle; }
-    .info { margin-top: 12px; font-size: 13px; }
-    .rx { font-size: 54px; font-weight: bold; color: #007bff; margin-top: 8px; }
-    .details { margin: 18px 0; line-height: 1.6; font-size: 13px;}
-    .signature { margin-top: 28px; text-align: right; }
-    .signature-line { border-top: 1px solid #000; width: 240px; margin-left: auto; height: 1px; }
-    .signature-img { max-width: 200px; height: 110px; display: block; margin-left: auto; }
-    .footer { border-top: 1px solid #000; text-align: center; font-size: 11px; margin-top: 26px; padding-top: 8px; }
+    body {
+      font-family: Arial, sans-serif;
+      color: #000;
+      margin: 30px;
+      font-size: 13px;
+    }
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #000;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .clinic-logo {
+      position: absolute;
+      left: 0;
+      margin-bottom: 10px;
+      width: 80px;
+      height: 80px;
+    }
+    .header img{
+      width: 60px;
+      height: 60px;
+      margin-top: -15px;
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .sub-header {
+      font-size: 11px;
+    }
+    .schedule {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .rx-icon {
+      width: 50px;
+      margin-top: 50px;
+    }
+    .patient-info {
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .line {
+      border-bottom: 1px solid #000;
+      display: inline-block;
+      text-align: center;
+      padding: 0 5px;
+      min-width: 70px;
+    }
+    .prescription-content {
+      margin-top: 20px;
+      margin-left: 35px;
+      font-family: 'Segoe Script', cursive;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .signature-section {
+      text-align: right;
+      margin-top: 50px;
+    }
+    .signature-img {
+      max-width: 150px;
+      height: auto;
+      margin-bottom: -5px;
+    }
+    .footer {
+      border-top: 1px solid #000;
+      margin-top: 10px;
+      padding-top: 5px;
+      font-size: 11px;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
 
+  <!-- ✅ Header Section -->
   <div class="header">
-    @if(!empty($logoData) && !empty($logoMime))
-      <img class="clinic-logo" src="data:{{ $logoMime }};base64,{{ $logoData }}" alt="Clinic Logo">
+    @if(!empty($clinicLogoData) && !empty($clinicLogoMime))
+      <img class="clinic-logo" src="data:{{ $clinicLogoMime }};base64,{{ $clinicLogoData }}" alt="Clinic Logo">
     @endif
-    <span class="clinic-title">MediCAL CLINIC</span>
-    <p>123 Health Mahayahay Avenue, Iligan City • Tel: (02) 9876-5432</p>
+
+    <h2>Dr. {{ $prescription->appointment->doctor->firstname }} {{ $prescription->appointment->doctor->lastname }}, MD</h2>
+    <div class="sub-header">
+      {{ $prescription->appointment->doctor->clinic_address ?? 'Pagamutan ng Dasmariñas, Cavite' }}<br>
+      Tel No.: {{ $prescription->appointment->doctor->contact_number ?? '(046) 435-0180' }}
+    </div>
   </div>
 
-  <div class="info">
-    <strong>Doctor:</strong> Dr. {{ $prescription->appointment->doctor->firstname }} {{ $prescription->appointment->doctor->lastname }}<br>
-    <strong>License No:</strong> {{ $prescription->appointment->doctor->license_no ?? '—' }}<br>
-    <strong>Specialization:</strong> {{ $prescription->appointment->doctor->specialization ?? '—' }}<br><br>
-    <strong>Patient:</strong> {{ $prescription->appointment->patient->firstname }} {{ $prescription->appointment->patient->lastname }}<br>
-    <strong>Date:</strong>{{ now()->setTimezone('Asia/Manila')->format('M d, Y h:i A') }} <strong style="margin-left: 100px;">Age:</strong> {{ $prescription->appointment->patient->age}} <strong>Gender:</strong> {{ $prescription->appointment->patient->gender}}
+  <!-- ✅ Date + RX Icon -->
+  <div class="schedule">
+    <table style="width:100%;">
+      <tr>
+        <td style="width:50%; font-size: 30px;">
+          @if(!empty($rxIconData) && !empty($rxIconMime))
+            <img class="rx-icon" src="data:{{ $rxIconMime }};base64,{{ $rxIconData }}" alt="Rx Icon">
+          @endif
+        </td>
+        <td style="text-align:right;">
+          <span>Date:</span> <span class="line" style="width:60px;">{{ now()->format('m/d/Y') }}</span>
+        </td>
+      </tr>
+    </table>
   </div>
 
-  <div class="rx">Rx</div>
-
-  <div class="details">
-    <strong>Medication:</strong> {{ $prescription->medication }}<br>
-    <strong>Dosage:</strong> {{ $prescription->dosage }}<br>
-    <strong>Notes:</strong> {{ $prescription->notes ?? '—' }}
+  <!-- ✅ Patient Info -->
+  <div class="patient-info">
+    <div>
+      <span>Patient:</span> <span class="line">{{ $prescription->appointment->patient->firstname }} {{ $prescription->appointment->patient->lastname }}</span>
+    </div>
+    <div>
+      <span>Age:</span> <span class="line" style="width: 25px;">{{ $prescription->appointment->patient->age ?? '—' }}</span>
+      <span style="margin-left: 25px;">Sex:</span> <span class="line" style="width: 25px;">{{ $prescription->appointment->patient->gender ?? '—' }}</span>
+    </div>
   </div>
 
-  <div class="signature">
+  <!-- ✅ Prescription -->
+  <div class="prescription-content">
+    @foreach($prescription->medications ?? [$prescription] as $index => $med)
+      {{ $loop->iteration }}.) {{ $med->medication ?? '' }} {{ $med->dosage ?? '' }} #{{ $med->quantity ?? '1' }}<br>
+      <strong>Sig:</strong> {{ $med->instructions ?? $prescription->notes ?? 'Take as directed by physician.' }}<br><br>
+    @endforeach
+  </div>
+
+  <!-- ✅ Signature -->
+  <div class="signature-section">
     @if(!empty($signatureData) && !empty($signatureMime))
-      <img class="signature-img" src="data:{{ $signatureMime }};base64,{{ $signatureData }}" alt="Doctor signature">
-      <p>Dr. {{ $prescription->appointment->doctor->firstname }} {{ $prescription->appointment->doctor->lastname }}</p>
-    @else
-      <div class="signature-line"></div>
-      <p>Dr. {{ $prescription->appointment->doctor->firstname }} {{ $prescription->appointment->doctor->lastname }}</p>
+      <img class="signature-img" src="data:{{ $signatureMime }};base64,{{ $signatureData }}" alt="Signature"><br>
     @endif
+    Dr. {{ $prescription->appointment->doctor->firstname }} {{ $prescription->appointment->doctor->lastname }}, MD
   </div>
 
+  <!-- ✅ Footer -->
   <div class="footer">
-    <p>“Take medicines as prescribed. For any adverse reaction, contact your doctor immediately.”</p>
+    License No.: {{ $prescription->appointment->doctor->license_no ?? '_________' }}<br>
+    PTR No.: {{ $prescription->appointment->doctor->ptr_no ?? '_________' }}<br>
+    S2 No.: {{ $prescription->appointment->doctor->s2_no ?? '_________' }}
   </div>
+
 </body>
 </html>

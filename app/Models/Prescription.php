@@ -10,6 +10,7 @@ class Prescription extends Model
         'appointment_id',
         'medication',
         'dosage',
+        'quantity',
         'notes',
     ];
 

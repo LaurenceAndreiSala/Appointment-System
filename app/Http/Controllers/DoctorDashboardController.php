@@ -180,30 +180,50 @@ $patients = User::where('role_id', 3)
     $archivedPrescriptions = Prescription::where('is_archived', 1)->get();
     return view('doctor.write-prescriptions', compact('appointments','patients','doctors','notificationCount','notifications', 'archivedPrescriptions'));
 }
-
 public function storePrescription(Request $request)
 {
     $request->validate([
         'appointment_id' => 'required|exists:appointments,id',
         'medication'     => 'required|string|max:255',
         'dosage'         => 'required|string|max:255',
+        'quantity'       => 'required|integer|min:1',
         'notes'          => 'nullable|string',
     ]);
 
     $doctor = auth()->user();
-
-    // Get doctor's saved signature path (if any)
     $signaturePath = $doctor->signature ? $doctor->signature : null;
 
     Prescription::create([
         'appointment_id' => $request->appointment_id,
         'medication'     => $request->medication,
         'dosage'         => $request->dosage,
+        'quantity'       => $request->quantity,
         'notes'          => $request->notes,
-        'signature_path' => $signaturePath, // ✅ store doctor signature path
+        'signature_path' => $signaturePath,
     ]);
 
     return back()->with('success', 'Prescription saved with electronic signature!');
+}
+
+public function update(Request $request)
+{
+    $request->validate([
+        'prescription_id' => 'required|exists:prescriptions,id',
+        'medication' => 'required|string|max:255',
+        'dosage' => 'required|string|max:255',
+        'quantity' => 'required|integer|min:1',
+        'notes' => 'nullable|string',
+    ]);
+
+    $prescription = Prescription::findOrFail($request->prescription_id);
+    $prescription->update([
+        'medication' => $request->medication,
+        'dosage' => $request->dosage,
+        'quantity' => $request->quantity,
+        'notes' => $request->notes,
+    ]);
+
+    return redirect()->back()->with('success', '✅ Prescription updated successfully!');
 }
 
 public function myprofile()

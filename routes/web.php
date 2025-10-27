@@ -97,7 +97,8 @@ Route::prefix('doctor')->group(function () {
     Route::get('/view-appointment', [DoctorDashboardController::class, 'viewappointment'])->name('doctor.view-appointment');
     Route::get('/view-patients', [DoctorDashboardController::class, 'viewpatients'])->name('doctor.view-patients');
     Route::get('/write-prescriptions', [DoctorDashboardController::class, 'writeprescripts'])->name('doctor.write-prescriptions');
-    
+    Route::put('/doctor/prescriptions/update', [DoctorDashboardController::class, 'update'])->name('doctor.prescriptions.update');
+
     
     Route::get('/chat-call', [DoctorDashboardController::class, 'chatcall'])->name('doctor.chat-call');
     Route::post('/appointments/{id}/approve', [DoctorDashboardController::class, 'approveAppointment'])->name('doctor.appointments.approve');

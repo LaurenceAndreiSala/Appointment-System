@@ -14,6 +14,13 @@
     <i class="fas fa-prescription-bottle-alt text-primary fa-2x me-3"></i>
     <h3 class="fw-bold mb-0 text-dark">View Appointments</h3>
   </div>
+  @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
   <button type="button" class="btn btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#archivedPrescriptionsModal">
     <i class="fas fa-archive"></i> View Archived Prescriptions
   </button>
@@ -59,6 +66,13 @@
             <label for="dosage" class="form-label fw-semibold">Dosage</label>
             <input type="text" class="form-control form-control-lg shadow-sm" name="dosage" id="dosage" placeholder="e.g., 500mg, 2 times a day" required>
           </div>
+
+          <!-- Quantity -->
+        <div class="mb-4">
+          <label for="quantity" class="form-label fw-semibold">Quantity</label>
+          <input type="number" class="form-control form-control-lg shadow-sm" 
+                name="quantity" id="quantity" placeholder="e.g., 10" required min="1">
+        </div>
 
           <!-- Notes -->
           <div class="mb-4">
@@ -211,6 +225,54 @@
   </div>
 </div>
 
+<!-- Edit Prescription Modal -->
+<div class="modal fade" id="editPrescriptionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-lg border-0">
+      
+      <div class="modal-header bg-warning text-dark rounded-top-4">
+        <h5 class="modal-title fw-bold">Edit Prescription</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+ 
+      <form id="editPrescriptionForm" method="POST" action="{{ secure_url(route('doctor.prescriptions.update', [], false)) }}">
+        @csrf
+        @method('PUT')
+        <input type="hidden" name="prescription_id" id="editPrescriptionId">
+
+        <div class="modal-body">
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Medication</label>
+            <input type="text" class="form-control form-control-lg shadow-sm" name="medication" id="editMedication" required>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Dosage</label>
+            <input type="text" class="form-control form-control-lg shadow-sm" name="dosage" id="editDosage" required>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Quantity</label>
+            <input type="number" class="form-control form-control-lg shadow-sm" name="quantity" id="editQuantity" min="1" required>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Notes</label>
+            <textarea class="form-control shadow-sm" name="notes" id="editNotes" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0 pt-0">
+          <button type="submit" class="btn btn-warning fw-bold px-4">
+            <i class="fas fa-save me-1"></i> Update Prescription
+          </button>
+          <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 <!-- Archive Confirmation Modal -->
 <div class="modal fade" id="archiveModal" tabindex="-1" aria-hidden="true">
@@ -283,15 +345,26 @@
                 <td>
                   <div class="d-flex justify-content-center gap-2 flex-wrap">
                     <!-- Write Prescription -->
-                    @if($appt->height || $appt->weight || $appt->bmi || $appt->blood_type || $appt->advice)
-  <!-- ✅ Enable button if patient info is written -->
-  <button type="button" 
-          class="btn btn-sm btn-primary rounded-pill shadow-sm px-3"
-          data-bs-toggle="modal" 
-          data-bs-target="#writePrescriptionModal"
-          data-id="{{ $appt->id }}">
-    <i class="fas fa-prescription me-1"></i> Write Prescription
-  </button>
+                   <!-- Write Prescription -->
+@if($appt->height || $appt->weight || $appt->bmi || $appt->blood_type || $appt->advice)
+  @if($appt->prescription)
+    <!-- 🟢 Already has prescription -->
+    <button type="button" 
+            class="btn btn-sm btn-success rounded-pill shadow-sm px-3"
+            disabled
+            title="Prescription already written">
+      <i class="fas fa-check-circle me-1"></i> Prescription Written
+    </button>
+  @else
+    <!-- ✏️ Write new prescription -->
+    <button type="button" 
+            class="btn btn-sm btn-primary rounded-pill shadow-sm px-3"
+            data-bs-toggle="modal" 
+            data-bs-target="#writePrescriptionModal"
+            data-id="{{ $appt->id }}">
+      <i class="fas fa-prescription me-1"></i> Write Prescription
+    </button>
+  @endif
 @else
   <!-- 🚫 Disable if no patient info yet -->
   <button type="button" 
@@ -301,7 +374,6 @@
     <i class="fas fa-prescription me-1"></i> Write Prescription
   </button>
 @endif
-
 
                     <!-- Archive Prescription -->
                     @if($appt->prescription)
@@ -332,6 +404,20 @@
         data-doctor="{{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}">
         <i class="fas fa-eye me-1"></i> View
 </button>
+@if($appt->prescription)
+  <button type="button" 
+          class="btn btn-sm btn-warning rounded-pill shadow-sm px-3"
+          data-bs-toggle="modal" 
+          data-bs-target="#editPrescriptionModal"
+          data-id="{{ $appt->prescription->id }}"
+          data-medication="{{ $appt->prescription->medication }}"
+          data-dosage="{{ $appt->prescription->dosage }}"
+          data-quantity="{{ $appt->prescription->quantity }}"
+          data-notes="{{ $appt->prescription->notes }}">
+    <i class="fas fa-edit me-1"></i> Edit
+  </button>
+@endif
+
                   </div>
                 </td>
               </tr>
@@ -521,6 +607,7 @@ if (viewModal) {
       document.getElementById("viewMedication").innerText = button.getAttribute("data-medication");
       document.getElementById("viewDosage").innerText = button.getAttribute("data-dosage");
       document.getElementById("viewNotes").innerText = button.getAttribute("data-notes");
+      document.getElementById("viewQuantity").innerText = button.getAttribute("data-quantity");
       document.getElementById("viewAppointmentDateTime").innerText = button.getAttribute("data-appointment-datetime");
       document.getElementById("vHeight").innerText = button.getAttribute("data-height");
       document.getElementById("vWeight").innerText = button.getAttribute("data-weight");
@@ -531,6 +618,20 @@ if (viewModal) {
   });
 }
 });
+
+// 🟡 Edit Prescription Modal Autofill
+const editModal = document.getElementById("editPrescriptionModal");
+if (editModal) {
+  editModal.addEventListener("show.bs.modal", function (event) {
+    const button = event.relatedTarget;
+    document.getElementById("editPrescriptionId").value = button.getAttribute("data-id");
+    document.getElementById("editMedication").value = button.getAttribute("data-medication");
+    document.getElementById("editDosage").value = button.getAttribute("data-dosage");
+    document.getElementById("editQuantity").value = button.getAttribute("data-quantity");
+    document.getElementById("editNotes").value = button.getAttribute("data-notes");
+  });
+}
+
 
 // Restore prescription
 document.addEventListener('click', function (e) {
