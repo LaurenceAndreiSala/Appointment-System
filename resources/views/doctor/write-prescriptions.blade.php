@@ -134,9 +134,7 @@
             <p><strong>Address:</strong> <span>{{ $patients->first()->address ?? 'N/A' }}</span></p>
           </div>
           <div class="col-md-6">
-            <p><strong>Date & Time:</strong> 
-              <span id="viewAppointmentDateTime"></span></p>
-            </p>
+            <p><strong>Date & Time:</strong> <span id="viewAppointmentDateTime"></span></p>
             <p><strong>Height:</strong> <span id="vHeight">N/A</span></p>
             <p><strong>Weight:</strong> <span id="vWeight">N/A</span></p>
             <p><strong>BMI:</strong> <span id="vBmi">N/A</span></p>
@@ -158,13 +156,15 @@
         </div>
         <p><strong>Medication:</strong> <span id="viewMedication"></span></p>
         <p><strong>Dosage:</strong> <span id="viewDosage"></span></p>
+        <p><strong>Quantity:</strong> <span id="viewQuantity">N/A</span></p>
         <p><strong>Notes:</strong> <span id="viewNotes"></span></p>
 
-        <p><strong>Doctor:</strong> <span>{{ $doctors->first()->firstname ?? 'N/A' }} {{ $doctors->first()->lastname ?? 'N/A' }}</span></p>
+        <p><strong>Doctor:</strong> <span id="vDoctor">{{ $doctors->first()->firstname ?? 'N/A' }} {{ $doctors->first()->lastname ?? 'N/A' }}</span></p>
       </div>
     </div>
   </div>
 </div>
+
 
 
 <!-- Archived Prescriptions Modal -->
