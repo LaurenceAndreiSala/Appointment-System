@@ -109,13 +109,12 @@
   </div>
 </div>
 
-
-<!-- View Prescription Modal -->
+<!-- ✅ View Patient Info Modal -->
 <div class="modal fade" id="viewPrescriptionModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content rounded-3 shadow">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title fw-bold">View Prescription</h5>
+        <h5 class="modal-title fw-bold">View Patient Info</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
@@ -128,13 +127,13 @@
         </div>
         <div class="row">
           <div class="col-md-6">
-            <p><strong>Name:</strong> <span>{{ $patients->first()->firstname ?? 'N/A' }} {{ $patients->first()->lastname ?? 'N/A' }}</span></p>
-            <p><strong>Age:</strong> <span>{{ $patients->first()->age ?? 'N/A' }}</span></p>
-            <p><strong>Gender:</strong> <span>{{ $patients->first()->gender ?? 'N/A' }}</span></p>
-            <p><strong>Address:</strong> <span>{{ $patients->first()->address ?? 'N/A' }}</span></p>
+            <p><strong>Name:</strong> <span id="vName">N/A</span></p>
+            <p><strong>Age:</strong> <span id="vAge">N/A</span></p>
+            <p><strong>Gender:</strong> <span id="vGender">N/A</span></p>
+            <p><strong>Address:</strong> <span id="vAddress">N/A</span></p>
           </div>
           <div class="col-md-6">
-            <p><strong>Date & Time:</strong> <span id="viewAppointmentDateTime"></span></p>
+            <p><strong>Date & Time:</strong> <span id="viewAppointmentDateTime">N/A</span></p>
             <p><strong>Height:</strong> <span id="vHeight">N/A</span></p>
             <p><strong>Weight:</strong> <span id="vWeight">N/A</span></p>
             <p><strong>BMI:</strong> <span id="vBmi">N/A</span></p>
@@ -143,7 +142,7 @@
         </div>
 
         <!-- Consultation Section -->
-        <div class="section-header">
+        <div class="section-header mt-3">
           <h6 class="section-title text-muted">Consultation/Advice</h6>
         </div>
         <p><strong>Advice / Consultation:</strong> <span id="vAdvice">N/A</span></p>
@@ -154,17 +153,15 @@
         <div class="section-header">
           <h6 class="section-title text-muted">Prescription (RX)</h6>
         </div>
-        <p><strong>Medication:</strong> <span id="viewMedication"></span></p>
-        <p><strong>Dosage:</strong> <span id="viewDosage"></span></p>
+        <p><strong>Medication:</strong> <span id="viewMedication">N/A</span></p>
+        <p><strong>Dosage:</strong> <span id="viewDosage">N/A</span></p>
         <p><strong>Quantity:</strong> <span id="viewQuantity">N/A</span></p>
-        <p><strong>Notes:</strong> <span id="viewNotes"></span></p>
-
-        <p><strong>Doctor:</strong> <span id="vDoctor">{{ $doctors->first()->firstname ?? 'N/A' }} {{ $doctors->first()->lastname ?? 'N/A' }}</span></p>
+        <p><strong>Notes:</strong> <span id="viewNotes">N/A</span></p>
+        <p><strong>Doctor:</strong> <span id="vDoctor">N/A</span></p>
       </div>
     </div>
   </div>
 </div>
-
 
 
 <!-- Archived Prescriptions Modal -->
@@ -379,21 +376,29 @@
                     @endif
 
                     <!-- View Prescription -->
-<button type="button" class="btn btn-sm btn-primary rounded-pill shadow-sm px-3"
-        data-bs-toggle="modal" 
-        data-bs-target="#viewPrescriptionModal"
-        data-medication="{{ $appt->prescription->medication ?? 'N/A' }}"
-        data-dosage="{{ $appt->prescription->dosage ?? 'N/A' }}"
-        data-notes="{{ $appt->prescription->notes ?? 'N/A' }}"
-        data-appointment-datetime="{{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}{{ $appt->slot ? ' | ' . \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') . ' - ' . \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') : '' }}"
-        data-height="{{ $appt->height ?? 'N/A' }}"
-        data-weight="{{ $appt->weight ?? 'N/A' }}"
-        data-bmi="{{ $appt->bmi ?? 'N/A' }}"
-        data-blood="{{ $appt->blood_type ?? 'N/A' }}"
-        data-advice="{{ $appt->advice ?? 'N/A' }}"
-        data-doctor="{{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}">
-        <i class="fas fa-eye me-1"></i> View
+<!-- ✅ Fixed View Prescription -->
+<button type="button" 
+  class="btn btn-sm btn-primary rounded-pill shadow-sm px-3"
+  data-bs-toggle="modal" 
+  data-bs-target="#viewPrescriptionModal"
+  data-name="{{ $appt->patient?->firstname ?? 'N/A' }} {{ $appt->patient?->lastname ?? '' }}"
+  data-age="{{ $appt->patient?->age && $appt->patient->age > 0 ? $appt->patient->age : 'N/A' }}"
+  data-gender="{{ $appt->patient?->gender ?? 'N/A' }}"
+  data-address="{{ $appt->patient?->address && trim($appt->patient->address) != '' ? $appt->patient->address : 'N/A' }}"
+  data-medication="{{ $appt->prescription?->medication ?? 'N/A' }}"
+  data-dosage="{{ $appt->prescription?->dosage ?? 'N/A' }}"
+  data-notes="{{ $appt->prescription?->notes ?? 'N/A' }}"
+  data-quantity="{{ $appt->prescription?->quantity ?? 'N/A' }}"
+  data-appointment-datetime="{{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}{{ $appt->slot ? ' | ' . \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') . ' - ' . \Carbon\Carbon::parse($appt->slot->end_time)->format('h:i A') : '' }}"
+  data-height="{{ $appt->height ?? 'N/A' }}"
+  data-weight="{{ $appt->weight ?? 'N/A' }}"
+  data-bmi="{{ $appt->bmi ?? 'N/A' }}"
+  data-blood="{{ $appt->blood_type ?? 'N/A' }}"
+  data-advice="{{ $appt->advice ?? 'N/A' }}"
+  data-doctor="{{ $appt->doctor?->firstname ?? 'N/A' }} {{ $appt->doctor?->lastname ?? '' }}">
+  <i class="fas fa-eye me-1"></i> View
 </button>
+
 @if($appt->prescription)
   <button type="button" 
           class="btn btn-sm btn-warning rounded-pill shadow-sm px-3"
@@ -590,23 +595,27 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // View Prescription Modal (keep as you had)
-const viewModal = document.getElementById("viewPrescriptionModal");
-if (viewModal) {
+// ✅ Modal dynamic fill
+  const viewModal = document.getElementById("viewPrescriptionModal");
   viewModal.addEventListener("show.bs.modal", function (event) {
-      let button = event.relatedTarget;
-      document.getElementById("viewMedication").innerText = button.getAttribute("data-medication");
-      document.getElementById("viewDosage").innerText = button.getAttribute("data-dosage");
-      document.getElementById("viewNotes").innerText = button.getAttribute("data-notes");
-      document.getElementById("viewQuantity").innerText = button.getAttribute("data-quantity");
-      document.getElementById("viewAppointmentDateTime").innerText = button.getAttribute("data-appointment-datetime");
-      document.getElementById("vHeight").innerText = button.getAttribute("data-height");
-      document.getElementById("vWeight").innerText = button.getAttribute("data-weight");
-      document.getElementById("vBmi").innerText = button.getAttribute("data-bmi");
-      document.getElementById("vBlood").innerText = button.getAttribute("data-blood");
-      document.getElementById("vAdvice").innerText = button.getAttribute("data-advice");
-      document.getElementById("vDoctor").innerText = button.getAttribute("data-doctor");
+    const button = event.relatedTarget;
+
+    document.getElementById("vName").innerText = button.getAttribute("data-name");
+    document.getElementById("vAge").innerText = button.getAttribute("data-age");
+    document.getElementById("vGender").innerText = button.getAttribute("data-gender");
+    document.getElementById("vAddress").innerText = button.getAttribute("data-address");
+    document.getElementById("viewMedication").innerText = button.getAttribute("data-medication");
+    document.getElementById("viewDosage").innerText = button.getAttribute("data-dosage");
+    document.getElementById("viewNotes").innerText = button.getAttribute("data-notes");
+    document.getElementById("viewQuantity").innerText = button.getAttribute("data-quantity");
+    document.getElementById("viewAppointmentDateTime").innerText = button.getAttribute("data-appointment-datetime");
+    document.getElementById("vHeight").innerText = button.getAttribute("data-height");
+    document.getElementById("vWeight").innerText = button.getAttribute("data-weight");
+    document.getElementById("vBmi").innerText = button.getAttribute("data-bmi");
+    document.getElementById("vBlood").innerText = button.getAttribute("data-blood");
+    document.getElementById("vAdvice").innerText = button.getAttribute("data-advice");
+    document.getElementById("vDoctor").innerText = button.getAttribute("data-doctor");
   });
-}
 });
 
 // 🟡 Edit Prescription Modal Autofill

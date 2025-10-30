@@ -36,6 +36,7 @@
               <th>Email</th>
               <th>Phone #</th>
               <th>Date</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody id="appointmentsTable">
@@ -43,7 +44,7 @@
               @php
                 $latestAppt = $patient->appointments()
                                 ->where('doctor_id', auth()->id())
-                                ->with('slot')
+                                ->with(['slot', 'prescription', 'doctor'])
                                 ->orderBy('appointment_date', 'desc')
                                 ->orderBy('appointment_time', 'desc')
                                 ->first();
@@ -63,14 +64,16 @@
                 <!-- Email -->
                 <td>{{ $patient->email }}</td>
 
-                <!-- Date & Time -->
+                <!-- Phone -->
+                <td>{{ $patient->contact_no }}</td>
+
+                <!-- Date -->
                 <td>
-                 {{ $patient->contact_no }}
-                </td>
-<td>
                   @if($latestAppt)
                     {{ \Carbon\Carbon::parse($latestAppt->appointment_date)->format('M d, Y') }}<br>
                     @if($latestAppt->slot)
+                      {{ \Carbon\Carbon::parse($latestAppt->slot->start_time)->format('h:i A') }} - 
+                      {{ \Carbon\Carbon::parse($latestAppt->slot->end_time)->format('h:i A') }}
                     @else
                       {{ \Carbon\Carbon::parse($latestAppt->appointment_time)->format('h:i A') }}
                     @endif
@@ -78,26 +81,35 @@
                     <em class="text-muted">No appointment</em>
                   @endif
                 </td>
-                <!-- Status -->
-                <!-- <td class="status-cell">
-                  @if($latestAppt)
-                    @php $status = $latestAppt->status; @endphp
-                    <span class="badge px-3 py-2 rounded-pill text-capitalize
-                      {{ $status == 'pending' ? 'bg-warning text-dark' : '' }}
-                      {{ $status == 'approved' ? 'bg-success' : '' }}
-                      {{ $status == 'denied' ? 'bg-danger' : '' }}
-                      {{ $status == 'cancelled' ? 'bg-secondary' : '' }}
-                    ">
-                      {{ ucfirst($status) }}
-                    </span>
-                  @else
-                    <span class="badge bg-light text-muted">No Status</span>
-                  @endif
-                </td> -->
+
+                <!-- Actions -->
+                <td>
+                  <button type="button" 
+                          class="btn btn-sm btn-primary rounded-pill shadow-sm px-3"
+                          data-bs-toggle="modal" 
+                          data-bs-target="#viewPrescriptionModal"
+                          data-name="{{ $patient->firstname }} {{ $patient->lastname }}"
+                          data-age="{{ $patient->age && $patient->age > 0 ? $patient->age : 'N/A' }}"
+                          data-gender="{{ $patient->gender ?? 'N/A' }}"
+                          data-address="{{ $patient->address && trim($patient->address) != '' ? $patient->address : 'N/A' }}"
+                          data-medication="{{ $latestAppt->prescription->medication ?? 'N/A' }}"
+                          data-dosage="{{ $latestAppt->prescription->dosage ?? 'N/A' }}"
+                          data-notes="{{ $latestAppt->prescription->notes ?? 'N/A' }}"
+                          data-quantity="{{ $latestAppt->prescription->quantity ?? 'N/A' }}"
+                          data-appointment-datetime="{{ $latestAppt ? \Carbon\Carbon::parse($latestAppt->appointment_date)->format('M d, Y') : 'N/A' }}{{ $latestAppt && $latestAppt->slot ? ' | ' . \Carbon\Carbon::parse($latestAppt->slot->start_time)->format('h:i A') . ' - ' . \Carbon\Carbon::parse($latestAppt->slot->end_time)->format('h:i A') : '' }}"
+                          data-height="{{ $latestAppt->height ?? 'N/A' }}"
+                          data-weight="{{ $latestAppt->weight ?? 'N/A' }}"
+                          data-bmi="{{ $latestAppt->bmi ?? 'N/A' }}"
+                          data-blood="{{ $latestAppt->blood_type ?? 'N/A' }}"
+                          data-advice="{{ $latestAppt->advice ?? 'N/A' }}"
+                          data-doctor="{{ $latestAppt->doctor?->firstname ?? 'N/A' }} {{ $latestAppt->doctor?->lastname ?? '' }}">
+                    <i class="fas fa-eye me-1"></i> View
+                  </button>
+                </td>
               </tr>
             @empty
               <tr>
-                <td colspan="5" class="text-muted py-5">
+                <td colspan="6" class="text-muted py-5">
                   <i class="fas fa-inbox fa-2x mb-2"></i><br>
                   No patients found.
                 </td>
@@ -111,6 +123,60 @@
 
 </div>
 
+<!-- ✅ View Patient Info Modal -->
+<div class="modal fade" id="viewPrescriptionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-3 shadow">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold">View Patient Info</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        
+        <!-- Patient Info Section -->
+        <div class="section-header">
+          <h6 class="section-title text-muted">Patient Information</h6>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Name:</strong> <span id="vName">N/A</span></p>
+            <p><strong>Age:</strong> <span id="vAge">N/A</span></p>
+            <p><strong>Gender:</strong> <span id="vGender">N/A</span></p>
+            <p><strong>Address:</strong> <span id="vAddress">N/A</span></p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Date & Time:</strong> <span id="viewAppointmentDateTime">N/A</span></p>
+            <p><strong>Height:</strong> <span id="vHeight">N/A</span></p>
+            <p><strong>Weight:</strong> <span id="vWeight">N/A</span></p>
+            <p><strong>BMI:</strong> <span id="vBmi">N/A</span></p>
+            <p><strong>Blood Type:</strong> <span id="vBlood">N/A</span></p>
+          </div>
+        </div>
+
+        <!-- Consultation Section -->
+        <div class="section-header mt-3">
+          <h6 class="section-title text-muted">Consultation/Advice</h6>
+        </div>
+        <p><strong>Advice / Consultation:</strong> <span id="vAdvice">N/A</span></p>
+
+        <hr class="my-4">
+
+        <!-- Prescription Info Section -->
+        <div class="section-header">
+          <h6 class="section-title text-muted">Prescription (RX)</h6>
+        </div>
+        <p><strong>Medication:</strong> <span id="viewMedication">N/A</span></p>
+        <p><strong>Dosage:</strong> <span id="viewDosage">N/A</span></p>
+        <p><strong>Quantity:</strong> <span id="viewQuantity">N/A</span></p>
+        <p><strong>Notes:</strong> <span id="viewNotes">N/A</span></p>
+        <p><strong>Doctor:</strong> <span id="vDoctor">N/A</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ✅ Styles -->
 <style>
 .table-hover tbody tr:hover {
@@ -118,116 +184,54 @@
   transform: scale(1.01);
   transition: all 0.2s ease;
 }
-
-.card {
-  border-radius: 1rem;
-}
-
-.badge {
-  font-size: 0.85rem;
-}
-
-.btn {
-  transition: 0.2s ease-in-out;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-}
+.card { border-radius: 1rem; }
+.badge { font-size: 0.85rem; }
+.btn { transition: 0.2s ease-in-out; }
+.btn:hover { transform: translateY(-2px); }
 </style>
 
+<!-- ✅ JS -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const searchInput = document.getElementById("searchInput");
-    const table = document.getElementById("appointmentsTable");
 
-    function filterTable() {
-        const searchValue = searchInput.value.toLowerCase();
-        const rows = Array.from(table.querySelectorAll("tr"));
-
-        rows.forEach(row => {
-            // Skip "no patients" row
-            if (row.querySelector("td[colspan='5']")) return;
-
-            const patientCell = row.cells[1]; // 2nd column: Patient
-            const patientName = patientCell.textContent.toLowerCase();
-
-            row.style.display = patientName.includes(searchValue) ? "" : "none";
-        });
-    }
-
-    searchInput.addEventListener("input", filterTable);
-});
-</script>
-
-<!-- ✅ JS Search & Status Filter -->
-<script>
-document.addEventListener("DOMContentLoaded", function() {
+  // ✅ Filter/Search
   const searchInput = document.getElementById("searchInput");
-  const statusFilter = document.getElementById("statusFilter");
-  const rows = Array.from(document.querySelectorAll(".patient-row"));
+  const table = document.getElementById("appointmentsTable");
 
-  function filterTable() {
-    const searchValue = searchInput.value.toLowerCase();
-    const statusValue = statusFilter.value.toLowerCase();
+  searchInput.addEventListener("input", function() {
+    const searchValue = this.value.toLowerCase();
+    const rows = table.querySelectorAll("tr.patient-row");
 
     rows.forEach(row => {
-      const patientName = row.querySelector(".patient-name")?.textContent.toLowerCase() || "";
-      const statusText = row.querySelector(".status-cell span")?.textContent.toLowerCase() || "";
-
-      const matchesSearch = patientName.includes(searchValue);
-      const matchesStatus = statusValue === "" || statusText === statusValue;
-
-      row.style.display = (matchesSearch && matchesStatus) ? "" : "none";
+      const name = row.querySelector(".patient-name")?.textContent.toLowerCase() || "";
+      row.style.display = name.includes(searchValue) ? "" : "none";
     });
-  }
+  });
 
-  searchInput.addEventListener("input", filterTable);
-  statusFilter.addEventListener("change", filterTable);
+  // ✅ Modal dynamic fill
+  const viewModal = document.getElementById("viewPrescriptionModal");
+  viewModal.addEventListener("show.bs.modal", function (event) {
+    const button = event.relatedTarget;
+
+    document.getElementById("vName").innerText = button.getAttribute("data-name");
+    document.getElementById("vAge").innerText = button.getAttribute("data-age");
+    document.getElementById("vGender").innerText = button.getAttribute("data-gender");
+    document.getElementById("vAddress").innerText = button.getAttribute("data-address");
+    document.getElementById("viewMedication").innerText = button.getAttribute("data-medication");
+    document.getElementById("viewDosage").innerText = button.getAttribute("data-dosage");
+    document.getElementById("viewNotes").innerText = button.getAttribute("data-notes");
+    document.getElementById("viewQuantity").innerText = button.getAttribute("data-quantity");
+    document.getElementById("viewAppointmentDateTime").innerText = button.getAttribute("data-appointment-datetime");
+    document.getElementById("vHeight").innerText = button.getAttribute("data-height");
+    document.getElementById("vWeight").innerText = button.getAttribute("data-weight");
+    document.getElementById("vBmi").innerText = button.getAttribute("data-bmi");
+    document.getElementById("vBlood").innerText = button.getAttribute("data-blood");
+    document.getElementById("vAdvice").innerText = button.getAttribute("data-advice");
+    document.getElementById("vDoctor").innerText = button.getAttribute("data-doctor");
+  });
 });
 </script>
 
-
-<!-- JS -->
-<script>
-const sidebar = document.getElementById('sidebar');
-const mainContent = document.getElementById('mainContent');
-const toggleBtn = document.getElementById('sidebarToggle');
-const sidebarClose = document.getElementById('sidebarClose');
-
-// Hamburger toggle (mobile)
-toggleBtn.addEventListener('click', () => {
-  sidebar.style.transform = 'translateX(0)';
-});
-
-// Close button (mobile)
-sidebarClose.addEventListener('click', () => {
-  sidebar.style.transform = 'translateX(-100%)';
-});
-
-// Click outside to close sidebar (mobile)
-document.addEventListener('click', function(e){
-  if(window.innerWidth < 992){
-    if(!sidebar.contains(e.target) && !toggleBtn.contains(e.target)){
-      sidebar.style.transform = 'translateX(-100%)';
-    }
-  }
-});
-
-// Adjust main content margin based on sidebar (desktop)
-function handleResize() {
-  if(window.innerWidth >= 992){
-    sidebar.style.transform = 'translateX(0)';
-    mainContent.style.marginLeft = '250px'; // match sidebar width
-  } else {
-    sidebar.style.transform = 'translateX(-100%)';
-    mainContent.style.marginLeft = '0';
-  }
-}
-
-window.addEventListener('resize', handleResize);
-window.addEventListener('load', handleResize);
-</script>
 <script>
   const notifUrl = "{{ route('doctor.notifications.fetch') }}";
 </script>

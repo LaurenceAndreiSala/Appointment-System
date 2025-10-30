@@ -114,20 +114,14 @@
 </div>
 
 
+<!-- ✅ Download PDF Button Only -->
+<div class="text-center mt-4">
+<a href="{{ route('admin.report.pdf') }}" class="btn btn-danger btn-lg shadow-sm">
+  <i class="fas fa-file-pdf me-2"></i> Download Summary Report (PDF)
+</a>
 
-<div class="text-center mt-3">
-  <label class="form-label">Download Summary Report</label>
-  <select name="report" class="form-select" id="reportSelect" required>
-    <option value="">-- Select Download --</option>
-    <option value="pdf">Download PDF</option>
-    <!-- You can add more formats here if needed -->
-  </select>
-  <div id="downloadIcon" style="display: none;">
-    <a href="{{ secure_url(route('admin.report.pdf', false)) }}" class="btn btn-danger mt-2">
-      <i class="fas fa-file-pdf"></i> Download PDF
-    </a>
-  </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -199,15 +193,15 @@ new Chart(document.getElementById("appointmentsPerDay"), {
 /* ---------- Financial Overview (Pie) ---------- */
 const revenue = @json($revenue ?? 0);
 const pendingPayments = @json($pendingPayments ?? 0);
-const refundPayments = @json($refundPayments ?? 0);
+const fieldPayments = @json($fieldPayments ?? 0);
 const avgPerPatient = @json($avgPerPatient ?? 0);
 
 new Chart(document.getElementById("financialOverview"), {
     type: 'pie',
     data: {
-        labels: ["Revenue", "Pending", "Refund", "Avg Per Patient"],
+        labels: ["Revenue", "Pending", "field", "Avg Per Patient"],
         datasets: [{
-            data: [revenue, pendingPayments, refundPayments, avgPerPatient],
+            data: [revenue, pendingPayments, fieldPayments, avgPerPatient],
             backgroundColor: ["#5cb85c", "#f0ad4e", "#d9534f", "#5bc0de"]
         }]
     },

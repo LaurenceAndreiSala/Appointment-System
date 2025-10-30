@@ -191,10 +191,10 @@ public function storeSlot(Request $request)
     $pendingAppointments   = Appointment::where('status', 'pending')->count();
     $cancelledAppointments = Appointment::where('status', 'cancelled')->count();
 
-    // Financials: revenue/pending/refund (amounts)
+    // Financials: revenue/pending/field (amounts)
     $revenue = (float) Payment::where('payment_status', 'success')->sum('amount');
     $pendingPayments = (float) Payment::where('payment_status', 'pending')->sum('amount');
-    $refundPayments  = (float) Payment::where('payment_status', 'refund')->sum('amount');
+    $fieldPayments  = (float) Payment::where('payment_status', 'field')->sum('amount');
 
     // Average per patient (guard division by zero)
     $patientsCount = max(1, $patientCount);
@@ -244,7 +244,7 @@ public function storeSlot(Request $request)
         'users','doctorCount','patientCount','totaluserCount','totalPayments',
         'patients','doctors','notificationCount',
         'completedAppointments','pendingAppointments','cancelledAppointments',
-        'revenue','pendingPayments','refundPayments','avgPerPatient',
+        'revenue','pendingPayments','fieldPayments','avgPerPatient',
         'monthlyTotals','appointmentsPerDayLabels','appointmentsPerDayData',
         'slots','archivedSlots'
     ));
@@ -270,7 +270,7 @@ public function denyAppointment($id)
 
 public function exportPDF()
 {
-      // ✅ Appointments per day (last 7 days)
+    // ✅ Appointments per day (last 7 days)
     $appointmentsPerDay = Appointment::selectRaw('DATE(created_at) as date, COUNT(*) as count')
         ->where('created_at', '>=', Carbon::now()->subDays(7))
         ->groupBy('date')
@@ -279,20 +279,49 @@ public function exportPDF()
     // ✅ Financial Overview
     $revenue = Payment::where('payment_status', 'success')->sum('amount');
     $pending = Payment::where('payment_status', 'pending')->sum('amount');
-    $refund  = Payment::where('payment_status', 'refund')->sum('amount');
+    $field  = Payment::where('payment_status', 'field')->sum('amount');
+
     $patientCount = User::where('role_id', 3)->count();
     $patientsCount = max(1, $patientCount);
     $avgPerPatient = $patientsCount ? ($revenue / $patientsCount) : 0;
+
     $completedAppointments = Appointment::where('status', 'approved')->count();
     $cancelledAppointments = Appointment::where('status', 'cancelled')->count();
     $pendingAppointments   = Appointment::where('status', 'pending')->count();
     $totalPayments         = Payment::where('payment_status', 'success')->sum('amount');
 
+    // ✅ Generate Charts (QuickChart.io)
+    $statusChartUrl = 'https://quickchart.io/chart?c=' . urlencode(json_encode([
+        'type' => 'pie',
+        'data' => [
+            'labels' => ['Completed', 'Pending', 'Cancelled'],
+            'datasets' => [[
+                'data' => [$completedAppointments, $pendingAppointments, $cancelledAppointments],
+                'backgroundColor' => ['#4caf50', '#ff9800', '#f44336']
+            ]]
+        ],
+        'options' => ['plugins' => ['title' => ['display' => true, 'text' => 'Appointment Status']]]
+    ]));
+
+    $paymentChartUrl = 'https://quickchart.io/chart?c=' . urlencode(json_encode([
+        'type' => 'doughnut',
+        'data' => [
+            'labels' => ['Revenue', 'Pending', 'field'],
+            'datasets' => [[
+                'data' => [$revenue, $pending, $field],
+                'backgroundColor' => ['#2196f3', '#ffc107', '#e91e63']
+            ]]
+        ],
+        'options' => ['plugins' => ['title' => ['display' => true, 'text' => 'Payment Summary']]]
+    ]));
+
+    // ✅ Load the Blade view into PDF
     $pdf = Pdf::loadView('admin.reports.summary-pdf', compact(
-        'completedAppointments','cancelledAppointments',
-        'pendingAppointments','totalPayments','appointmentsPerDay',
-        'revenue','pending','refund','avgPerPatient','patientsCount','patientCount'
+        'completedAppointments','cancelledAppointments','pendingAppointments',
+        'totalPayments','appointmentsPerDay','revenue','pending','field',
+        'avgPerPatient','patientsCount','patientCount','statusChartUrl','paymentChartUrl'
     ));
+
     return $pdf->download('summary-report.pdf');
 }
 

@@ -58,8 +58,7 @@ Route::prefix('admin')->group(function () {
 
     Route::get('/summary-report', [AdminDashboardController::class, 'summaryreport'])->name('admin.summary-report');
        
-    Route::get('/admin/report/pdf', [AdminDashboardController::class, 'exportPDF'])->name('admin.report.pdf');
-    Route::get('/admin/report/excel', [AdminDashboardController::class, 'exportExcel'])->name('admin.report.excel');
+    Route::get('/summary-report/pdf', [AdminDashboardController::class, 'exportPDF'])->name('admin.report.pdf');
 
 
  Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])

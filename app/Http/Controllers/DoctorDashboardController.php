@@ -126,6 +126,7 @@ public function viewpatients()
         ->take(10)
         ->get();
 
+            $doctors = User::where('role_id', 2)->get();
     $appointments = Appointment::with(['patient','doctor'])
         ->where('doctor_id', auth()->id())
         ->whereNotNull('patient_id')
@@ -144,7 +145,7 @@ $patients = User::where('role_id', 3)
     ->get();
 
 
-    return view('doctor.view-patients', compact('appointments','patients','notificationCount','notifications'));
+    return view('doctor.view-patients', compact('appointments','patients','notificationCount','notifications','doctors'));
 }
 
 public function writeprescripts()
