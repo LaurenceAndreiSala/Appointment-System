@@ -1,21 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\IntroPageController;
-use App\Http\Controllers\Admin\DoctorController;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\NotificationController;
-use App\Http\Controllers\Admin\ReportController;
-use App\Http\Controllers\Admin\SystemLogController;
-use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\DoctorDashboardController;
 use App\Http\Controllers\PatientDashboardController;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\SystemLogController;
+use App\Http\Controllers\DoctorDashboardController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PrescriptionController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\DoctorController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\IntroPageController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\MessageController;
+use Illuminate\Support\Facades\Route;
 
 
 /*
@@ -24,7 +24,7 @@ use App\Http\Controllers\MessageController;
 |--------------------------------------------------------------------------
 */
 
-// Intro / Landing
+    // Intro / Landing
     Route::get('/', [IntroPageController::class, 'intropage']);
 
     // Auth
@@ -35,7 +35,7 @@ use App\Http\Controllers\MessageController;
     Route::get('/register', [RegisterController::class, 'showregister'])->name('register');  
     Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 
-// -------------------- ADMIN --------------------
+    // -------------------- ADMIN --------------------
     Route::prefix('admin')->group(function () {
     Route::get('/admin-dashboard', [AdminDashboardController::class, 'index'])->name('admin.admin-dashboard');
     Route::resource('/users', UserController::class);
@@ -59,8 +59,8 @@ use App\Http\Controllers\MessageController;
     Route::get('/summary-report', [AdminDashboardController::class, 'summaryreport'])->name('admin.summary-report');
        
     Route::get('/summary-report/pdf', [AdminDashboardController::class, 'exportPDF'])->name('admin.report.pdf');
+    });
 
-});
     Route::post('admin//notifications/{id}/read', [NotificationController::class, 'markAsRead'])
         ->name('admin.notifications.read');
     Route::delete('notifications/{id}', [NotificationController::class, 'destroy'])->name('admin.notifications.delete');
@@ -78,7 +78,7 @@ use App\Http\Controllers\MessageController;
     Route::post('/doctor/notifications/{id}/read', [DoctorDashboardController::class, 'markAsRead'])
     ->name('doctor.notifications.read');
 
-// -------------------- DOCTOR --------------------
+    // -------------------- DOCTOR --------------------
     Route::prefix('doctor')->group(function () {
     Route::get('/doctor-dashboard', [DoctorDashboardController::class, 'index'])->name('doctor.doctor-dashboard');
 
@@ -106,7 +106,7 @@ use App\Http\Controllers\MessageController;
     Route::post('/doctor/prescriptions/store', [DoctorDashboardController::class, 'storePrescription'])->name('doctor.prescriptions.store');
     Route::get('/my-profile', [DoctorDashboardController::class, 'myprofile'])->name('doctor.my-profile');
     Route::post('/doctor/my-profile/update', [PatientDashboardController::class, 'updateProfile'])->name('doctor.update-profile');
-});
+    });
 
     Route::post('/doctor/write-prescriptions/archive', [DoctorDashboardController::class, 'archivePrescription'])->name('doctor.write-prescriptions.archive');
     Route::post('/doctor/write-prescriptions/restore', [DoctorDashboardController::class, 'restorePrescription'])
@@ -123,7 +123,7 @@ use App\Http\Controllers\MessageController;
         Route::get('/notifications/fetch', [NotificationController::class, 'fetchNotifications'])->name('notifications.fetch');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 
-// -------------------- PATIENT --------------------
+    // -------------------- PATIENT --------------------
 
     Route::prefix('patient')->group(function () {
     Route::get('/patient-dashboard', [PatientDashboardController::class, 'index'])->name('patient.patient-dashboard');
@@ -163,7 +163,7 @@ use App\Http\Controllers\MessageController;
     Route::post('/patient/payment/{id}', [PaymentController::class, 'process'])->name('patient.payment.process');
     Route::get('/patient/payment/receipt/{id}', [PaymentController::class, 'receipt'])->name('patient.payment.receipt');
 
-});
+    });
 
     Route::get('/appointments/slots/{year}/{month}', [PatientDashboardController::class, 'getSlots'])
         ->name('appointments.getSlots');
@@ -189,7 +189,7 @@ use App\Http\Controllers\MessageController;
         return view('mock.gcash-checkout', compact('appt'));
     })->name('gcash.mock.checkout');
 
-// Fake GCash "pay now" route
+    // Fake GCash "pay now" route
     Route::post('/patient/payment/{id}/gcash/mock/pay', function($id) {
     $appt = \App\Models\Appointment::findOrFail($id);
 
@@ -204,7 +204,7 @@ use App\Http\Controllers\MessageController;
 
     return redirect()->route('patient.view-appointment')
         ->with('success', 'Mock GCash payment successful!');
-})->name('gcash.mock.pay');
+    })->name('gcash.mock.pay');
 
     Route::get('/messages/fetch/{receiver_id}', [MessageController::class, 'fetch'])->name('messages.fetch');;
     Route::post('/messages/send', [MessageController::class, 'send'])->name('messages.send');
