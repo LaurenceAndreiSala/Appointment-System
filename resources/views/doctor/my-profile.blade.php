@@ -22,11 +22,11 @@
     <div class="alert alert-success">{{ session('success') }}</div>
   @endif
 
-           <form action="{{ secure_url(route('doctor.update-profile', [], false)) }}" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
+           <form action="{{ route('doctor.update-profile') }}" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
     @csrf
 
     <div class="text-center mb-4">
-      <img src="{{ asset(Auth::user()->profile_picture ?? 'img/default.png') }}" 
+      <img id="profilePreview" src="{{ asset(Auth::user()->profile_picture ?? 'img/default.png') }}" 
            alt="Profile Picture" 
            class="rounded-circle mb-2"
            style="width:100px; height:100px; object-fit:cover;">
@@ -67,7 +67,7 @@
 
     <button type="submit" class="btn btn-primary">Update Profile</button>
   </form>
-  <form action="{{ secure_url(route('doctor.signature.update', [], false)) }}"method="POST" enctype="multipart/form-data">
+  <form action="{{ route('doctor.signature.update') }}"method="POST" enctype="multipart/form-data">
     @csrf
     <div class="mb-3">
       <label class="form-label">Signature (PNG / JPG)</label>
@@ -92,4 +92,12 @@
 </script>
 <script src="{{ asset('js/notification.js') }}"></script>
 
+<script>
+  document.querySelector('input[name="profile_picture"]').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  if (file) {
+    document.getElementById("profilePreview").src = URL.createObjectURL(file);
+  }
+});
+</script>
 @endsection

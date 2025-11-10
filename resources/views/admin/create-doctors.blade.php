@@ -13,7 +13,7 @@
       <!-- ✅ Page Header -->
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
     <h2 class="fw-bold mb-2 mb-md-0 text-primary">
-      <i class="fas fa-user-md me-2"></i> Create Doctor Account
+      <i class="fas fa-user-md me-2"></i> Manage Doctor Account
     </h2>
   </div>
   
@@ -23,7 +23,7 @@
 
           <div class="card shadow-sm border-0 rounded-4 mb-3">
         <div class="card-body p-3 p-md-4">
-    <form method="POST" action="{{ secure_url(route('doctors.store', [], false)) }}">
+    <form method="POST" action="{{ route('doctors.store') }}">
       @csrf
 
       <div class="row mb-3">
@@ -148,8 +148,8 @@
                 {{ ucfirst($doctor->status) }}
               </span>
             </td>
-            <td>
-             <form method="POST" action="{{ secure_url(route('doctors.toggleAbsence', $doctor->id, [], false)) }}" style="display:inline;">
+            <td> 
+             <form method="POST" action="{{ route('doctors.toggleAbsence', $doctor->id) }}" style="display:inline;">
                 @csrf
                 @method('PATCH')
                 @if($doctor->is_absent)

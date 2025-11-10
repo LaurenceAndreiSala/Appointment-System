@@ -24,7 +24,7 @@
     <select id="statusFilter" class="form-select">
       <option value="">All Status</option>
       <option value="pending">Pending</option>
-      <option value="approved">Approved</option>
+      <option value="complete">Complete</option>
       <option value="denied">Denied</option>
       <option value="cancelled">Cancelled</option>
     </select>
@@ -83,7 +83,7 @@
       <td class="status-cell">
         <span class="badge px-3 py-2 rounded-pill text-capitalize 
           @if($appt->status == 'pending') bg-warning text-dark 
-          @elseif($appt->status == 'approved') bg-success 
+          @elseif($appt->status == 'complete') bg-success 
           @elseif($appt->status == 'denied') bg-danger 
           @elseif($appt->status == 'cancelled') bg-secondary 
           @else bg-info text-dark @endif">
@@ -95,7 +95,7 @@
       <td>
   <div class="d-flex justify-content-center gap-2 flex-wrap">
       <!-- ✅ Enable Approve if prescription written -->
-         <form action="{{ secure_url(route('doctor.appointments.approve', $appt->id, [], false)) }}" method="POST">
+         <form action="{{ route('doctor.appointments.approve', $appt->id') }}" method="POST">
         @csrf
         <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm">
           <i class="fas fa-check me-1"></i> Approve
@@ -103,7 +103,7 @@
       </form>
 
     <!-- ❌ Deny button still always available -->
-    <form action="{{ secure_url(route('doctor.view-appointment.deny', $appt->id, [], false)) }}" method="POST">
+    <form action="{{ route('doctor.view-appointment.deny', $appt->id') }}" method="POST">
       @csrf
       <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm">
         <i class="fas fa-times me-1"></i> Deny

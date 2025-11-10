@@ -28,7 +28,7 @@
     @endif
 
     <!-- Add Slot Form -->
-    <form action="{{ secure_url(route('doctor.store-slot', [], false)) }}" method="POST" class="mb-4">
+    <form action="{{ route('doctor.store-slot') }}" method="POST" class="mb-4">
       @csrf
 
       @php
@@ -157,8 +157,8 @@
                   <td>{{ $slot->date }}</td>
                   <td>{{ \Carbon\Carbon::parse($slot->start_time)->format('g:i A') }}</td>
                   <td>{{ \Carbon\Carbon::parse($slot->end_time)->format('g:i A') }}</td>
-                  <td>
-                    <form action="{{ secure_url(route('admin.slots.restore', $slot->id, [], false)) }}" method="POST">
+                  <td> 
+                    <form action="{{ route('admin.slots.restore', $slot->id) }}" method="POST">
                       @csrf
                       @method('PUT')
                       <button type="submit" class="btn btn-sm btn-success">
@@ -193,7 +193,7 @@
         </div>
         <div class="modal-footer justify-content-center">                
 
-          <form id="archiveForm" method="POST" action="{{ secure_url(route('admin.slots.archive', [], false)) }}">
+          <form id="archiveForm" method="POST" action="{{ route('admin.slots.archive') }}">
             @csrf
             <input type="hidden" name="slot_id" id="archiveSlotId">
             <button type="submit" class="btn btn-secondary">Yes, Archive</button>

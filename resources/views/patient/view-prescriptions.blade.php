@@ -57,8 +57,8 @@
                 <td data-label="Medication">{{ $prescription->medication }} ({{ $prescription->quantity }})</td>
                 <td data-label="Dosage">{{ $prescription->dosage }}</td>
                 <td data-label="Notes">{{ $prescription->notes ?? '-' }}</td>
-                <td>
-<a href="{{ secure_url(route('patient.prescriptions.download', $prescription->id, false)) }}"
+                <td>  
+<a href="{{ route('patient.prescriptions.download', $prescription->id) }}"
      class="btn btn-outline-primary btn-sm">
      <i class="fas fa-download me-1"></i> Download
   </a>

@@ -23,9 +23,9 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
    public function boot(): void
-{
-    if (config('app.env') === 'production') {
-        URL::forceScheme('https');
+    {
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+            URL::forceScheme('https');
+        }
     }
-}
 }

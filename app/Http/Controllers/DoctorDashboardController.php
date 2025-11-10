@@ -12,6 +12,7 @@ use App\Models\Notification;
 use App\Models\Prescription;
 use Illuminate\Support\Str;
 use App\Events\CallStarted;
+use App\Models\Feedback;
 use Carbon\Carbon;
 use Pusher\Pusher;
 
@@ -24,6 +25,12 @@ class DoctorDashboardController extends Controller
 $notificationCount = Appointment::where('doctor_id', auth()->id())
     ->whereIn('status', ['pending']) // only pending means "new"
     ->count();
+
+    $feedbacks = Feedback::with('patient')
+    ->where('doctor_id', auth()->id())
+    ->latest()
+    ->take(10)
+    ->get();
 
 $notifications = Appointment::with('patient')
     ->where('doctor_id', auth()->id())
@@ -93,7 +100,7 @@ $patients = User::where('role_id', 3)
 
 
 
-    return view('doctor.doctor-dashboard', array_merge ( compact('patientCount','appointments','appointmentCount','patients','notificationCount','notifications', 'prescriptionsCount')));
+    return view('doctor.doctor-dashboard', array_merge ( compact('patientCount','appointments','appointmentCount','patients','notificationCount','notifications', 'prescriptionsCount','feedbacks')));
 }
 
 private function getDoctorNotifications()
@@ -102,13 +109,13 @@ private function getDoctorNotifications()
 
     $notifications = Appointment::with('patient')
         ->where('doctor_id', $doctorId)
-        ->whereIn('status', ['pending', 'approved'])
+        ->whereIn('status', ['pending', 'complete'])
         ->orderBy('appointment_date', 'desc')
         ->take(10)
         ->get();
 
     $notificationCount = Appointment::where('doctor_id', $doctorId)
-        ->whereIn('status', ['pending', 'approved'])
+        ->whereIn('status', ['pending', 'complete'])
         ->count();
 
     return compact('notifications', 'notificationCount');
@@ -118,7 +125,7 @@ private function getDoctorNotifications()
 public function viewpatients()
 {   
     $notificationCount = Appointment::where('patient_id', auth()->id())
-        ->whereIn('status', ['pending', 'approved'])
+        ->whereIn('status', ['pending', 'complete'])
         ->count();
 
     $notifications = Appointment::with('patient')
@@ -151,7 +158,7 @@ $patients = User::where('role_id', 3)
 public function writeprescripts()
 {
     $notificationCount = Appointment::where('patient_id', auth()->id())
-        ->whereIn('status', ['pending', 'approved'])
+        ->whereIn('status', ['pending', 'complete'])
         ->count();
 
     $notifications = Appointment::with('patient')
@@ -231,7 +238,7 @@ public function myprofile()
     {
         $doctor = auth()->user()->doctor; // adjust if your auth relationship differs
         $notificationCount = Appointment::where('patient_id', auth()->id())
-        ->whereIn('status', ['pending', 'approved'])
+        ->whereIn('status', ['pending', 'complete'])
         ->count();
        
         $notifications = Appointment::with('patient')
@@ -314,19 +321,25 @@ public function restorePrescription(Request $request)
 
 public function chatcall()
 {
-    $appointments = Appointment::with(['patient','doctor'])->get();
+    $appointments = Appointment::with(['patient','doctor','slot'])
+        ->where('doctor_id', auth()->id())
+        ->where('status', 'complete')   // ✅ only approved
+        ->whereNotNull('patient_id')
+        ->orderBy('appointment_date', 'asc')
+        ->get();
 
     $notificationCount = Appointment::where('patient_id', auth()->id())
-        ->whereIn('status', ['pending', 'approved'])
+        ->whereIn('status', ['pending', 'complete'])
         ->count();
 
     $notifications = Appointment::with('patient')
-    ->orderBy('appointment_date', 'desc')
-    ->take(10)  
-    ->get();
+        ->orderBy('appointment_date', 'desc')
+        ->take(10)
+        ->get();
 
-        return view('doctor.chat-call', compact('notificationCount','notifications','appointments'));
+    return view('doctor.chat-call', compact('notificationCount','notifications','appointments'));
 }
+
 
   public function viewappointment(Request $request)
 {
@@ -338,12 +351,12 @@ public function chatcall()
         ->where('doctor_id', $doctorId)
         ->whereNotNull('patient_id');
 
-    if ($status && in_array($status, ['pending', 'approved', 'denied', 'cancelled'])) {
+    if ($status && in_array($status, ['pending', 'complete', 'denied', 'cancelled'])) {
         $appointmentsQuery->where('status', $status);
     }
 
-    // Optional: sort by status order (Pending → Approved → Denied → Cancelled)
-    $statusOrder = ['pending', 'approved', 'denied', 'cancelled'];
+    // Optional: sort by status order (Pending → complete → Denied → Cancelled)
+    $statusOrder = ['pending', 'complete', 'denied', 'cancelled'];
     $appointmentsQuery->orderByRaw("FIELD(status, '" . implode("','", $statusOrder) . "')");
 
     $appointments = $appointmentsQuery->get();
@@ -356,7 +369,7 @@ public function chatcall()
         ->get();
 
     $notificationCount = Appointment::where('patient_id', $doctorId)
-        ->whereIn('status', ['pending', 'approved'])
+        ->whereIn('status', ['pending', 'complete'])
         ->count();
 
     $notifications = Appointment::with('patient')
@@ -371,10 +384,10 @@ public function chatcall()
 public function approveAppointment($id)
 {
     $appointment = Appointment::findOrFail($id);
-    $appointment->status = 'approved';
+    $appointment->status = 'complete';
     $appointment->save();
 
-    return back()->with('success', 'Appointment approved!');
+    return back()->with('success', 'Appointment complete!');
 }
 
 public function denyAppointment($id)
@@ -432,36 +445,18 @@ public function storeSlot(Request $request)
 
 public function fetchNotifications()
 {
-    
-     $notifications = Notification::where('user_id', auth()->id())
-        ->whereDate('created_at', Carbon::today()) // today only
-        ->latest()
-        ->take(10)
+    $doctorId = auth()->id();
+    $today = now()->startOfDay();
+
+    $notifications = Notification::where('doctor_id', $doctorId)
+        ->where('created_at', '>=', $today)   // ✅ Only today
+        ->orderBy('created_at', 'desc')
         ->get();
 
-     $today = \Carbon\Carbon::today();
-
-    $notifications = Appointment::with('patient')
-        ->where('doctor_id', auth()->id())
-        ->whereDate('appointment_date', $today) // ✅ only today
-        ->whereIn('status', ['pending', 'approved'])
-        ->orderBy('appointment_date', 'asc')
-        ->take(10)
-        ->get()
-        ->map(function ($appt) {
-            return [
-                'id' => $appt->id,
-                'appointment_date' => \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y'),
-                'appointment_time' => $appt->slot ? \Carbon\Carbon::parse($appt->slot->start_time)->format('h:i A') : 'N/A',
-                'patient' => [
-                    'firstname' => $appt->patient->firstname ?? '',
-                    'lastname'  => $appt->patient->lastname ?? '',
-                    'profile_picture' => $appt->patient->profile_picture 
-                        ? asset($appt->patient->profile_picture) 
-                        : asset('img/default-avatar.png'),
-                ],
-            ];
-        });
+    return response()->json([
+        'count' => $notifications->count(),
+        'notifications' => $notifications
+    ]);
 
   return response()->json([
         'count' => $notifications->where('is_read', 0)->count(),

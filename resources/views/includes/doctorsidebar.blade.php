@@ -69,7 +69,7 @@
           </li>
          <!-- Logout -->
       <li class="nav-item mt-3">
-        <form action="{{ secure_url(route('logout', [], false)) }}" method="POST">
+        <form action="{{ route('logout') }}" method="POST">
           @csrf
           <button type="submit" class="nav-link d-flex align-items-center 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
             <i data-feather="log-out" class="me-2"></i> Logout
@@ -130,7 +130,7 @@
             </a>
           </li>
            <li class="nav-item mt-3">
-            <form action="{{ secure_url(route('logout', [], false)) }}" method="POST">
+            <form action="{{ route('logout') }}" method="POST">
           @csrf
           <button type="submit" class="nav-link d-flex align-items-center 'active bg-white text-primary fw-bold rounded shadow-sm' : 'text-white' }}">
             <i data-feather="log-out" class="me-2"></i> Logout

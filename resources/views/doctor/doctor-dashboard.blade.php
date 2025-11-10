@@ -69,7 +69,7 @@
     <select id="statusFilter" class="form-select">
       <option value="">All Status</option>
       <option value="pending">Pending</option>
-      <option value="approved">Approved</option>
+      <option value="complete">Complete</option>
       <option value="denied">Denied</option>
       <option value="cancelled">Cancelled</option>
     </select>
@@ -128,7 +128,7 @@
       <td class="status-cell">
         <span class="badge px-3 py-2 rounded-pill text-capitalize 
           @if($appt->status == 'pending') bg-warning text-dark 
-          @elseif($appt->status == 'approved') bg-success 
+          @elseif($appt->status == 'complete') bg-success 
           @elseif($appt->status == 'denied') bg-danger 
           @elseif($appt->status == 'cancelled') bg-secondary 
           @else bg-info text-dark @endif">
@@ -140,15 +140,15 @@
       <td>
   <div class="d-flex justify-content-center gap-2 flex-wrap">
       <!-- ✅ Enable Approve if prescription written -->
-         <form action="{{ secure_url(route('doctor.appointments.approve', $appt->id, [], false)) }}" method="POST">
-        @csrf
+         <form action="{{ route('doctor.appointments.complete', $appt->id) }}" method="POST"> 
+         @csrf
         <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm">
-          <i class="fas fa-check me-1"></i> Approve
+          <i class="fas fa-check me-1"></i> Complete
         </button>
       </form>
 
     <!-- ❌ Deny button still always available -->
-    <form action="{{ secure_url(route('doctor.view-appointment.deny', $appt->id, [], false)) }}" method="POST">
+    <form action="{{ route('doctor.view-appointment.deny', $appt->id) }}" method="POST">
       @csrf
       <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm">
         <i class="fas fa-times me-1"></i> Deny
@@ -171,9 +171,68 @@
         </div>
       </div>
 
+      <!-- ✅ Feedback Section -->
+<div class="card shadow-sm border-0 p-4 mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold text-primary">
+      <i class="fas fa-star me-2"></i>Patient Feedback
+    </h2>
+  </div>
+  
+      <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="bg-success text-white text-center">
+        <tr>
+          <th>Patient</th>
+          <th>Rating</th>
+          <th>Comments</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+
+      <tbody class="text-center">
+        @forelse($feedbacks as $fb)
+          <tr>
+            <td>
+              {{ $fb->patient->firstname ?? 'Unknown' }}
+              {{ $fb->patient->lastname ?? '' }}
+            </td>
+
+            <td>
+              {{-- ⭐ Stars --}}
+              @for($i=1; $i<=5; $i++)
+                @if($i <= $fb->rating)
+                  <i class="fas fa-star text-warning"></i>
+                @else
+                  <i class="far fa-star text-muted"></i>
+                @endif
+              @endfor
+            </td>
+
+            <td>
+              {{ $fb->comments ? $fb->comments : 'No comments' }}
+            </td>
+
+            <td>
+              {{ \Carbon\Carbon::parse($fb->created_at)->format('M d, Y') }}
+            </td>
+          </tr>
+        @empty
+          <tr>
+            <td colspan="4" class="text-muted py-4">
+              <i class="fas fa-inbox fa-2x mb-2"></i><br>
+              No feedback available.
+            </td>
+          </tr>
+        @endforelse
+      </tbody>
+    </table>
+  </div>
+</div>
     </div>
   </div>
 </div>
+
 
 <style>
   .table-hover tbody tr:hover {

@@ -10,6 +10,7 @@ use App\Models\Appointment;
 use App\Models\Prescription;
 use App\Models\Notification;
 use Illuminate\Support\Str;
+use App\Models\Feedback;
 use App\Events\AppointmentBooked;
 
 use Carbon\Carbon;
@@ -43,7 +44,7 @@ public function index()
         ->get();
         
     $notificationCount = Appointment::where('patient_id', auth()->id())
-        ->whereIn('status', ['pending', 'approved'])
+        ->whereIn('status', ['pending', 'complete'])
         ->count();
 
     $doctorCount = User::where('role_id', 2)->count();
@@ -140,7 +141,7 @@ public function chatcalls()
 
     $appointments = Appointment::with(['doctor', 'slot'])
         ->where('patient_id', auth()->id())
-        ->where('status', 'approved') // only approved
+        ->where('status', 'complete') // only complete
         ->whereNotNull('meeting_url') // must have link
         ->orderBy('appointment_date', 'asc')
         ->get();
@@ -149,12 +150,47 @@ public function chatcalls()
 }
 
     // ✅ Feedback page
-    public function feedback()
-    {
-        return view('patient.give-feedback');
-    }
+// ✅ Show feedback form for a completed appointment
+public function feedback($appointmentId)
+{
+    $appointment = Appointment::where('id', $appointmentId)
+        ->where('patient_id', auth()->id())
+        ->where('status', 'complete') // only completed appointments
+        ->firstOrFail();
 
-    public function updateProfile(Request $request)
+    // Check if feedback already exists
+    $existingFeedback = $appointment->feedback;
+
+    return view('patient.give-feedback', compact('appointment', 'existingFeedback'));
+}
+
+public function storeFeedback(Request $request, $appointmentId)
+{
+    $appointment = Appointment::where('id', $appointmentId)
+        ->where('patient_id', auth()->id())
+        ->where('status', 'complete')
+        ->firstOrFail();
+
+    $request->validate([
+        'rating' => 'required|integer|min:1|max:5',
+        'comment' => 'nullable|string|max:1000',
+    ]);
+
+    // Create or update feedback
+    $appointment->feedback()->updateOrCreate(
+        ['appointment_id' => $appointment->id],
+        [
+            'patient_id' => auth()->id(),
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+        ]
+    );
+
+    return redirect()->route('patient.view-appointment')
+                     ->with('success', '✅ Feedback submitted successfully!');
+}
+
+public function updateProfile(Request $request)
 {
     $user = auth()->user();
 

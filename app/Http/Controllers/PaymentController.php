@@ -16,9 +16,9 @@ class PaymentController extends Controller
     {
         $appointment = Appointment::with('doctor')->findOrFail($id);
 
-        if ($appointment->status !== 'approved') {
+        if ($appointment->status !== 'complete') {
             return redirect()->route('patient.view-appointment')
-                ->with('error', 'Appointment is not approved yet.');
+                ->with('error', 'Appointment is not complete yet.');
         }
 
         return view('patient.payment', compact('appointment'));

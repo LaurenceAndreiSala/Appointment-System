@@ -18,7 +18,7 @@ public function up()
         $table->foreignId('patient_id')->constrained('users')->onDelete('cascade');
         $table->foreignId('doctor_id')->constrained('users')->onDelete('cascade');
         $table->unsignedBigInteger('slot_id')->nullable();
-        $table->enum('status', ['pending','approved','denied','archived'])->default('pending');
+        $table->enum('status', ['pending','complete','denied','archived'])->default('pending');
         $table->string('reason')->nullable();
         $table->date('appointment_date');
         $table->time('appointment_time');

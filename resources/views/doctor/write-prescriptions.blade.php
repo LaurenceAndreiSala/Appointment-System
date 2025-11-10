@@ -32,7 +32,7 @@
     <select id="statusFilter" class="form-select">
       <option value="">All Status</option>
       <option value="pending">Pending</option>
-      <option value="approved">Approved</option>
+      <option value="complete">Complete</option>
       <option value="denied">Denied</option>
       <option value="cancelled">Cancelled</option>
     </select>
@@ -50,7 +50,7 @@
       </div>
       
       <!-- Modal Body -->
-          <form id="writePrescriptionForm" action="{{ secure_url(route('doctor.prescriptions.store', [], false)) }}" method="POST">
+          <form id="writePrescriptionForm" action="{{ route('doctor.prescriptions.store') }}" method="POST">
         @csrf
         <input type="hidden" name="appointment_id" id="prescriptionAppointmentId">
 
@@ -221,8 +221,8 @@
         <h5 class="modal-title fw-bold">Edit Prescription</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
- 
-      <form id="editPrescriptionForm" method="POST" action="{{ secure_url(route('doctor.prescriptions.update', [], false)) }}">
+  
+      <form id="editPrescriptionForm" method="POST" action="{{ route('doctor.prescriptions.update') }}">
         @csrf
         @method('PUT')
         <input type="hidden" name="prescription_id" id="editPrescriptionId">
@@ -319,8 +319,8 @@
                 <td>
                   @if($appt->status == 'pending')
                     <span class="badge bg-warning text-dark">Pending</span>
-                  @elseif($appt->status == 'approved')
-                    <span class="badge bg-success">Approved</span>
+                  @elseif($appt->status == 'complete')
+                    <span class="badge bg-success">Complete</span>
                   @elseif($appt->status == 'denied')
                     <span class="badge bg-danger">Denied</span>
                   @elseif($appt->status == 'cancelled')

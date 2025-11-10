@@ -26,7 +26,7 @@
           <select id="statusFilter" class="form-select">
             <option value="">All Status</option>
             <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
+            <option value="complete">Complete</option>
             <option value="denied">Denied</option>
             <option value="cancelled">Cancelled</option>
           </select>
@@ -49,6 +49,7 @@
         <th>Date & Time</th>
         <th>Status</th>
         <th>Action</th>
+        <th>Give Feedback</th>
       </tr>
     </thead>
      <tbody id="appointmentsTable">
@@ -69,47 +70,69 @@
           <td data-label="Status">
             @switch($appt->status)
               @case('pending') <span class="badge bg-warning text-dark">Pending</span> @break
-              @case('approved') <span class="badge bg-success">Approved</span> @break
+              @case('complete') <span class="badge bg-success">complete</span> @break
               @case('denied') <span class="badge bg-danger">Denied</span> @break
               @case('cancelled') <span class="badge bg-secondary">Cancelled</span> @break
               @default <span class="badge bg-info">{{ ucfirst($appt->status) }}</span>
             @endswitch
           </td>
           <td data-label="Action">
-            <div class="d-flex flex-column gap-2">
-              @if($appt->status == 'pending')
-              
-                <form action="{{ secure_url(route('patient.cancel', $appt->id, false)) }}" method="POST">
-                  @csrf
-                  <button type="submit" class="btn btn-sm btn-secondary w-100">Cancel</button>
-                </form>
+  <div class="d-flex flex-column gap-2">
+    @if($appt->status == 'pending')
+      <form action="{{ route('patient.cancel', $appt->id) }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-sm btn-secondary w-100">Cancel</button>
+      </form>
 
-              @elseif($appt->status == 'approved' && !$appt->payment)
-                <button type="button" 
-                        class="btn btn-sm btn-warning payNowBtn w-100" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#paymentModal"
-                        data-id="{{ $appt->id }}"
-                        data-doctor="{{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}"
-                        data-date="{{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}"
-                        data-time="{{ $appt->appointment_time ? \Carbon\Carbon::parse($appt->appointment_time)->format('h:i A') : '' }}"
-                        data-amount="{{ $appt->amount ?? 500 }}">
-                  <i class="fas fa-coins"></i> Pay Now
-                </button>
+    @elseif($appt->status == 'complete' && !$appt->payment)
+      <button type="button" 
+              class="btn btn-sm btn-warning payNowBtn w-100" 
+              data-bs-toggle="modal" 
+              data-bs-target="#paymentModal"
+              data-id="{{ $appt->id }}"
+              data-doctor="{{ $appt->doctor?->firstname }} {{ $appt->doctor?->lastname }}"
+              data-date="{{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}"
+              data-time="{{ $appt->appointment_time ? \Carbon\Carbon::parse($appt->appointment_time)->format('h:i A') : '' }}"
+              data-amount="{{ $appt->amount ?? 500 }}">
+        <i class="fas fa-coins"></i> Pay Now
+      </button>
 
-              @elseif($appt->payment && $appt->payment->payment_status == 'success')
-                <span class="badge bg-success">Paid</span><br>
-                <small>Ref: {{ $appt->payment->reference_number }}</small><br>
-                <button type="button" 
-                        class="btn btn-sm btn-outline-info mt-1 receiptBtn w-100" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#receiptModal"
-                        data-url="{{ secure_url(route('patient.payment.receipt', $appt->payment->id, false)) }}">
-                  <i class="fas fa-download"></i> Receipt
-                </button>
-              @endif
-            </div>
-          </td>
+    @elseif($appt->payment && $appt->payment->payment_status == 'success')
+      <span class="badge bg-success">Paid</span><br>
+      <small>Ref: {{ $appt->payment->reference_number }}</small><br>
+      <button type="button" 
+              class="btn btn-sm btn-outline-info mt-1 receiptBtn w-100" 
+              data-bs-toggle="modal" 
+              data-bs-target="#receiptModal"  
+              data-url="{{ route('patient.payment.receipt', $appt->payment->id) }}">
+        <i class="fas fa-download"></i> Receipt
+      </button>
+<td data-label="Feedback">
+    @if($appt->status == 'complete') {{-- change 'complete' to 'complete' --}}
+        @if($appt->feedback)
+            <button class="btn btn-sm btn-outline-info viewFeedbackBtn" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#feedbackModal"
+                    data-rating="{{ $appt->feedback->rating }}"
+                    data-comments="{{ $appt->feedback->comments }}">
+                <i class="fas fa-eye"></i> View Feedback
+            </button>
+        @else
+            <button class="btn btn-sm btn-primary giveFeedbackBtn" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#feedbackModal"
+                    data-id="{{ $appt->id }}">
+                <i class="fas fa-star"></i> Give Feedback
+            </button>
+        @endif
+    @else
+        <span class="text-muted">N/A</span>
+    @endif
+</td>
+
+    @endif
+  </div>
+</td>
         </tr>
       @empty
         <tr>
@@ -123,6 +146,54 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="feedbackModalLabel">Feedback</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="feedbackForm" method="POST" action="{{ route('feedback.store') }}">
+          @csrf
+          <input type="hidden" name="appointment_id" id="feedbackAppointmentId">
+
+         <div class="mb-3">
+  <label for="feedbackRating" class="form-label">Rating (1-5)</label>
+  <select name="rating" id="feedbackRating" class="form-select" required>
+    <option value="" disabled selected>-- Select Rating --</option>
+    <option value="1">1 - Poor</option>
+    <option value="2">2 - Fair</option>
+    <option value="3">3 - Good</option>
+    <option value="4">4 - Very Good</option>
+    <option value="5">5 - Excellent</option>
+  </select>
+</div>
+
+
+          <div class="mb-3">
+            <label for="comments" class="form-label">Comments</label>
+            <textarea name="comments" id="feedbackComments" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="text-end">
+            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+
+   <div id="viewFeedback" style="display:none;">
+  <p><strong>Rating:</strong> <span id="viewRatingStars"></span></p>
+  <p><strong>Comments:</strong> <span id="viewComments"></span></p>
+</div>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -289,6 +360,11 @@
     color: #333;
   }
 }
+.view-stars {
+  color: #ffc107;
+  font-size: 1.5rem;
+}
+
 </style>
 
 <script>
@@ -372,6 +448,53 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Show modal
       new bootstrap.Modal(document.getElementById("gcashCheckoutModal")).show();
+    }
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  const feedbackModal = document.getElementById('feedbackModal');
+  const feedbackForm = document.getElementById('feedbackForm');
+  const feedbackAppointmentId = document.getElementById('feedbackAppointmentId');
+  const feedbackRating = document.getElementById('feedbackRating');
+  const feedbackComments = document.getElementById('feedbackComments');
+  const viewFeedback = document.getElementById('viewFeedback');
+  const viewRatingStars = document.getElementById('viewRatingStars'); // Updated
+  const viewComments = document.getElementById('viewComments');
+
+  // When modal shows
+  feedbackModal.addEventListener('show.bs.modal', function(event) {
+    const button = event.relatedTarget;
+
+    if(button.classList.contains('giveFeedbackBtn')){
+      // Give Feedback mode
+      feedbackForm.style.display = 'block';
+      viewFeedback.style.display = 'none';
+      feedbackAppointmentId.value = button.dataset.id;
+      feedbackRating.value = '';
+      feedbackComments.value = '';
+
+      // Clear previous stars selection
+      const stars = document.querySelectorAll('#starRating span');
+      stars.forEach(s => s.classList.remove('selected'));
+    }
+
+    if(button.classList.contains('viewFeedbackBtn')){
+      // View Feedback mode
+      feedbackForm.style.display = 'none';
+      viewFeedback.style.display = 'block';
+
+      // Render stars instead of number
+      const rating = parseInt(button.dataset.rating) || 0;
+      viewRatingStars.innerHTML = '';
+      for(let i=1; i<=5; i++){
+        const star = document.createElement('span');
+        star.classList.add('view-stars');
+        star.innerHTML = i <= rating ? '&#9733;' : '&#9734;'; // filled or empty star
+        viewRatingStars.appendChild(star);
+      }
+
+      viewComments.textContent = button.dataset.comments || 'No comments';
     }
   });
 });

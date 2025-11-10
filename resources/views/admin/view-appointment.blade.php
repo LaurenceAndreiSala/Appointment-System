@@ -27,7 +27,7 @@
     <select id="statusFilter" class="form-select">
       <option value="">All Status</option>
       <option value="pending">Pending</option>
-      <option value="approved">Approved</option>
+      <option value="complete">Complete</option>
       <option value="denied">Denied</option>
       <option value="cancelled">Cancelled</option>
     </select>
@@ -94,8 +94,8 @@
             <td>
               @if($appt->status == 'pending')
                 <span class="badge bg-warning text-dark">Pending</span>
-              @elseif($appt->status == 'approved')
-                <span class="badge bg-success">Approved</span>
+              @elseif($appt->status == 'complete')
+                <span class="badge bg-success">Complete</span>
               @elseif($appt->status == 'denied')
                 <span class="badge bg-danger">Denied</span>
               @elseif($appt->status == 'cancelled')
@@ -184,7 +184,7 @@
       </div>
       
       <!-- Modal Body -->
-       <form method="POST" id="editPatientInfoForm" action="{{ secure_url(route('admin.updatePatientInfo', [], false)) }}">
+       <form method="POST" id="editPatientInfoForm" action="{{ route('admin.updatePatientInfo') }}">
   @csrf
   <input type="hidden" name="appointment_id" id="editpatientInfoId">
 

@@ -21,12 +21,12 @@
 
   @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
-  @endif
-   <form action="{{ secure_url(route('patient.update-profile', [], false)) }}" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
+  @endif 
+   <form action="{{ route('patient.update-profile') }}" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
     @csrf
 
     <div class="text-center mb-4">
-      <img src="{{ asset(Auth::user()->profile_picture ?? 'img/default-profile.png') }}" 
+      <img id="profilePreview" src="{{ asset(Auth::user()->profile_picture ?? 'img/default-profile.png') }}" 
            alt="Profile Picture" 
            class="rounded-circle mb-2"
            style="width:100px; height:100px; object-fit:cover;">
@@ -136,5 +136,11 @@ channel.bind("App\\Events\\CallStarted", function(data) {
   };
 });
 
+document.querySelector('input[name="profile_picture"]').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  if (file) {
+    document.getElementById("profilePreview").src = URL.createObjectURL(file);
+  }
+});
 </script>
 @endsection

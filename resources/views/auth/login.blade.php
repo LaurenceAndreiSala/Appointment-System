@@ -25,7 +25,7 @@
             <h3 class="fw-bold text-center mb-4 text-primary">Log In to MediCAL</h3>
 
         <!-- <form action="{{ secure_url(route('login', [], false)) }}" method="POST"> -->
-        <form action="{{ secure_url(route('login', [], false)) }}" method="POST">
+        <form action="{{ route('login') }}" method="POST">
               @csrf
 
               <!-- Email -->

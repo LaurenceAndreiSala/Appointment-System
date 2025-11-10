@@ -24,7 +24,7 @@ class AdminDashboardController extends Controller
         $totaluserCount = User::whereIn('role_id', [2, 3])->count();
         $users = User::with('role')->get();
 
-        $notificationCount = Appointment::whereIn('status', ['pending', 'approved'])->count();
+        $notificationCount = Appointment::whereIn('status', ['pending', 'complete'])->count();
 
        $totalPayments = Payment::where('payment_status', 'success')->sum('amount');
 
@@ -184,10 +184,10 @@ public function storeSlot(Request $request)
     $users = User::with('role')->get();
 
     // Notifications
-    $notificationCount = Appointment::whereIn('status', ['pending', 'approved'])->count();
+    $notificationCount = Appointment::whereIn('status', ['pending', 'complete'])->count();
 
     // Appointments counts for summary cards / pie chart
-    $completedAppointments = Appointment::where('status', 'approved')->count();
+    $completedAppointments = Appointment::where('status', 'complete')->count();
     $pendingAppointments   = Appointment::where('status', 'pending')->count();
     $cancelledAppointments = Appointment::where('status', 'cancelled')->count();
 
@@ -285,7 +285,7 @@ public function exportPDF()
     $patientsCount = max(1, $patientCount);
     $avgPerPatient = $patientsCount ? ($revenue / $patientsCount) : 0;
 
-    $completedAppointments = Appointment::where('status', 'approved')->count();
+    $completedAppointments = Appointment::where('status', 'complete')->count();
     $cancelledAppointments = Appointment::where('status', 'cancelled')->count();
     $pendingAppointments   = Appointment::where('status', 'pending')->count();
     $totalPayments         = Payment::where('payment_status', 'success')->sum('amount');

@@ -39,7 +39,7 @@
             </thead>
             <tbody>
               @forelse($appointments as $appt)
-              @if($appt->status == 'approved')
+              @if($appt->status == 'complete')
               <tr class="align-middle">
                 <td class="fw-semibold">{{ $appt->patient?->firstname }} {{ $appt->patient?->lastname }}</td>
                 <td>{{ \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') }}</td>
@@ -162,8 +162,8 @@ document.addEventListener("click", async (e) => {
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Starting...';
 
-  try {
-    const response = await fetch(`{{ secure_url('doctor/start-call') }}/${appointmentId}`, {
+  try {  
+    const response = await fetch(`/doctor/start-call/${appointmentId}`, {
       method: "POST",
       headers: {
         "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Load unread message counts initially
   async function loadUnreadCounts() {
     try {
-      const res = await fetch(`{{ secure_url('messages/unread-counts') }}`);
+      const res = await fetch(`{{ route('messages.unread-counts') }}`);
       const data = await res.json();
       Object.entries(data).forEach(([senderId, count]) => {
         const badge = document.getElementById("chatBadge" + senderId);
@@ -252,14 +252,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const badge = document.getElementById("chatBadge" + receiverId);
     if (badge) badge.classList.add("d-none");
 
-    // 🔹 Mark as read
-    fetch(`{{ secure_url('messages/mark-read') }}/${receiverId}`, {
+    // 🔹 Mark as read 
+    fetch(`/messages/mark-read/${receiverId}`, {
       method: "POST",
       headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
     });
 
     // 🔹 Fetch old messages
-    const res = await fetch(`{{ secure_url('messages/fetch') }}/${receiverId}`);
+    const res = await fetch(`/messages/fetch/${receiverId}`);
     const messages = await res.json();
 
     messages.forEach(msg => {
@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const receiverId = receiverInput.value;
     if (!message) return;
 
-    await fetch(`{{ secure_url(route('messages.send', [], false)) }}`, {
+    await fetch(`{{ route('messages.send') }}`, {
       method: "POST",
       headers: {
         "X-CSRF-TOKEN": "{{ csrf_token() }}",
@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
       chatBox.scrollTop = chatBox.scrollHeight;
 
       // Mark as read
-      fetch(`{{ secure_url('messages/mark-read') }}/${receiverId}`, {
+      fetch(`/messages/mark-read//${receiverId}`, {
         method: "POST",
         headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" },
       });
