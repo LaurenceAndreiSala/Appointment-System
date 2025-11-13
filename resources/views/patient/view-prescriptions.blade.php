@@ -47,7 +47,7 @@
           <tbody id="appointmentsTable">
             @foreach($prescriptions as $prescription)
               <tr>
-                <td data-label="Date">{{ now()->setTimezone('Asia/Manila')->format('M d, Y h:i A') }}</td>
+                <td data-label="Date">{{ \Carbon\Carbon::parse($prescription->created_at)->format('M d, Y') }}</td>
                 <td data-label="Doctor">
                   {{ $prescription->appointment->doctor->firstname ?? '' }}
                   {{ $prescription->appointment->doctor->lastname ?? '' }}

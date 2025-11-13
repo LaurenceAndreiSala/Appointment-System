@@ -139,7 +139,9 @@ public function updatePatientInfo(Request $request)
     $patients = User::where('role_id', 3)->get(); // all patients
     $doctors = User::where('role_id', 2)->get();  
     $prescription = Prescription::all();
-    return view('admin.view-appointment', compact('appointments','patients','prescription','doctors'));
+    $archivedPrescriptions = Prescription::where('is_archived', 1)->get();
+
+    return view('admin.view-appointment', compact('appointments','patients','prescription','doctors','archivedPrescriptions'));
 }
 
 public function storeSlot(Request $request)

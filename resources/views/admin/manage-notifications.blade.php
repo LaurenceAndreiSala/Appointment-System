@@ -36,7 +36,6 @@
                   <th scope="col">User</th>
                   <th scope="col">Message</th>
                   <th scope="col">Sent At</th>
-                  <th scope="col">Status</th>
                   <th scope="col">Actions</th>
                 </tr>
               </thead>
@@ -47,20 +46,20 @@
                     <td>{{ $notif->user->lastname ?? 'N/A' }}</td>
                     <td class="text-start">{{ $notif->message }}</td>
                     <td>{{ $notif->created_at ? $notif->created_at->format('M d, Y h:i A') : '-' }}</td>
-                    <td>
+                    <!-- <td>
                       <span class="badge px-3 py-2 rounded-pill 
                         {{ $notif->read ? 'bg-success' : 'bg-warning text-dark' }}">
                         {{ $notif->read ? 'Read' : 'Unread' }}
                       </span>
-                    </td>
+                    </td> -->
                     <td>
                       <div class="d-flex justify-content-center gap-2 flex-wrap">
                         @if(!$notif->read) 
                             <form method="POST" action="{{ route('admin.notifications.read', $notif->id) }}" class="d-inline">
                             @csrf
-                            <button class="btn btn-outline-primary btn-sm px-3 shadow-sm">
+                            <!-- <button class="btn btn-outline-primary btn-sm px-3 shadow-sm">
                               <i class="fas fa-envelope-open me-1"></i> Mark Read
-                            </button>
+                            </button> -->
                           </form>
                         @endif  
                         <form method="POST" action="{{ route('admin.notifications.delete', $notif->id) }}" class="d-inline">

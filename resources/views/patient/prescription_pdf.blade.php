@@ -90,10 +90,10 @@
 
     <h2>Dr. {{ $prescription->appointment->doctor->firstname }} {{ $prescription->appointment->doctor->lastname }}, MD</h2>
     <div class="sub-header">
-      {{ $prescription->appointment->doctor->clinic_address ?? 'Pagamutan ng Dasmariñas, Cavite' }}<br>
-      Tel No.: {{ $prescription->appointment->doctor->contact_number ?? '(046) 435-0180' }}
+      {{ $prescription->appointment->doctor->clinic_address ?? 'Saavedra Building, Cabili Avenue, Iligan City' }}<br>
+      Cell No.: {{ $prescription->appointment->doctor->contact_number ?? '(63) 263062155' }}
     </div>
-  </div>
+  </div>   
 
   <!-- ✅ Date + RX Icon -->
   <div class="schedule">

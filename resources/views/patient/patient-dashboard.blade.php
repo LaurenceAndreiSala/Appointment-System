@@ -68,7 +68,7 @@
           <select id="statusFilter" class="form-select">
             <option value="">All Status</option>
             <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
+            <option value="complete">Complete</option>
             <option value="denied">Denied</option>
             <option value="cancelled">Cancelled</option>
           </select>
@@ -106,7 +106,7 @@
                   <td>
                     <span class="badge px-3 py-2 rounded-pill
                       @if($appt->status == 'pending') bg-warning text-dark
-                      @elseif($appt->status == 'approved') bg-success
+                      @elseif($appt->status == 'complete') bg-success
                       @elseif($appt->status == 'denied') bg-danger
                       @else bg-secondary text-dark @endif">
                       {{ ucfirst($appt->status) }}

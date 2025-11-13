@@ -120,8 +120,7 @@
   <i class="fas fa-edit me-1"></i> Write
 </button>
 
-
-                    <!-- Archive Prescription -->
+                    <!-- Archive Prescription
                     @if($appt->prescription)
                       <button type="button"
                               class="btn btn-sm btn-secondary rounded-pill shadow-sm px-3 btn-archive"
@@ -132,7 +131,7 @@
                       <button type="button" class="btn btn-sm btn-secondary rounded-pill shadow-sm px-3" disabled title="No prescription to archive">
                         <i class="fas fa-archive me-1"></i> Archive
                       </button>
-                    @endif
+                    @endif -->
 
                     <!-- View Prescription -->
                     <button type="button" 

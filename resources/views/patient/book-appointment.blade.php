@@ -59,9 +59,9 @@
             <h5 class="fw-bold text-primary mb-3"><i class="fas fa-clock me-2"></i>Select Time</h5>
 
           <form id="appointmentForm" action="{{ route('patient.appointments.store') }}" method="POST">
-    @csrf
-    <input type="hidden" name="doctor_id" id="doctor_id">
-    <input type="hidden" name="slot_id" id="slot_id">
+          @csrf
+          <input type="hidden" name="doctor_id" id="doctor_id">
+          <input type="hidden" name="slot_id" id="slot_id">
 
               <div id="timeSlotsContainer" class="border rounded-4 bg-light p-3 text-center">
                 <p class="text-muted mb-0">Click a date on the calendar to view available time slots.</p>

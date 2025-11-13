@@ -90,7 +90,9 @@
     <input type="hidden" id="receiver_id">
     <div class="input-group">
       <input type="text" id="messageInput" class="form-control" placeholder="Type a message...">
-      <button class="btn btn-primary" id="sendBtn">Send</button>
+      <button class="btn btn-primary" id="sendBtn">
+        <i class="fas fa-paper-plane"></i> Send
+      </button> 
     </div>
   </div>
 </div>

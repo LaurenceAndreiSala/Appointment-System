@@ -101,7 +101,7 @@
     <tbody id="slotsTable" class="text-center">
       @forelse($slots as $slot)
       <tr>
-        <td>{{ \Carbon\Carbon::parse($slot->appointment_date)->format('M d, Y') }}</td>
+        <td>{{ \Carbon\Carbon::parse($slot->created_at)->format('M d, Y') }}</td>
         <td>{{ \Carbon\Carbon::parse($slot->start_time)->format('g:i A') }}</td>
         <td>{{ \Carbon\Carbon::parse($slot->end_time)->format('g:i A') }}</td>
         <td>
